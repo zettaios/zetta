@@ -9,8 +9,13 @@
 /* Begin PBXBuildFile section */
 		190E2CD31F528248381A253D /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93731F1E0D5A6AA529EDBBCC /* Pods.framework */; };
 		C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */; };
-		C560B5401C4996A900E5F1F9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B53F1C4996A900E5F1F9 /* ViewController.swift */; };
 		C560B5451C4996A900E5F1F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C560B5441C4996A900E5F1F9 /* Assets.xcassets */; };
+		C560B5511C499C2B00E5F1F9 /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5501C499C2B00E5F1F9 /* ConnectionViewController.swift */; };
+		C560B5531C499C3B00E5F1F9 /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5521C499C3B00E5F1F9 /* ConnectionView.swift */; };
+		C560B5551C49A28600E5F1F9 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C560B5541C49A28600E5F1F9 /* Settings.bundle */; };
+		C560B5571C49B0F900E5F1F9 /* DeviceListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */; };
+		C560B5591C49B14800E5F1F9 /* DeviceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5581C49B14800E5F1F9 /* DeviceCell.swift */; };
+		C560B55B1C49B41800E5F1F9 /* AppStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B55A1C49B41800E5F1F9 /* AppStyles.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,9 +24,14 @@
 		93731F1E0D5A6AA529EDBBCC /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C560B53A1C4996A900E5F1F9 /* Zetta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zetta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C560B53F1C4996A900E5F1F9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		C560B5441C4996A900E5F1F9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C560B5491C4996A900E5F1F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C560B5501C499C2B00E5F1F9 /* ConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
+		C560B5521C499C3B00E5F1F9 /* ConnectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
+		C560B5541C49A28600E5F1F9 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceListViewController.swift; sourceTree = "<group>"; };
+		C560B5581C49B14800E5F1F9 /* DeviceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceCell.swift; sourceTree = "<group>"; };
+		C560B55A1C49B41800E5F1F9 /* AppStyles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStyles.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,9 +85,14 @@
 			isa = PBXGroup;
 			children = (
 				C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */,
-				C560B53F1C4996A900E5F1F9 /* ViewController.swift */,
+				C560B55A1C49B41800E5F1F9 /* AppStyles.swift */,
+				C560B5501C499C2B00E5F1F9 /* ConnectionViewController.swift */,
+				C560B5521C499C3B00E5F1F9 /* ConnectionView.swift */,
+				C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */,
+				C560B5581C49B14800E5F1F9 /* DeviceCell.swift */,
 				C560B5441C4996A900E5F1F9 /* Assets.xcassets */,
 				C560B5491C4996A900E5F1F9 /* Info.plist */,
+				C560B5541C49A28600E5F1F9 /* Settings.bundle */,
 			);
 			path = Zetta;
 			sourceTree = "<group>";
@@ -144,6 +159,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C560B5551C49A28600E5F1F9 /* Settings.bundle in Resources */,
 				C560B5451C4996A900E5F1F9 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -217,7 +233,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C560B5401C4996A900E5F1F9 /* ViewController.swift in Sources */,
+				C560B5571C49B0F900E5F1F9 /* DeviceListViewController.swift in Sources */,
+				C560B5531C499C3B00E5F1F9 /* ConnectionView.swift in Sources */,
+				C560B5511C499C2B00E5F1F9 /* ConnectionViewController.swift in Sources */,
+				C560B55B1C49B41800E5F1F9 /* AppStyles.swift in Sources */,
+				C560B5591C49B14800E5F1F9 /* DeviceCell.swift in Sources */,
 				C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
