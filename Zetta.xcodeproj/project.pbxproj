@@ -9,18 +9,14 @@
 /* Begin PBXBuildFile section */
 		C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */; };
 		C560B5401C4996A900E5F1F9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B53F1C4996A900E5F1F9 /* ViewController.swift */; };
-		C560B5431C4996A900E5F1F9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C560B5411C4996A900E5F1F9 /* Main.storyboard */; };
 		C560B5451C4996A900E5F1F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C560B5441C4996A900E5F1F9 /* Assets.xcassets */; };
-		C560B5481C4996A900E5F1F9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C560B5461C4996A900E5F1F9 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C560B53A1C4996A900E5F1F9 /* Zetta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zetta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C560B53F1C4996A900E5F1F9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		C560B5421C4996A900E5F1F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C560B5441C4996A900E5F1F9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C560B5471C4996A900E5F1F9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C560B5491C4996A900E5F1F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -56,9 +52,7 @@
 			children = (
 				C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */,
 				C560B53F1C4996A900E5F1F9 /* ViewController.swift */,
-				C560B5411C4996A900E5F1F9 /* Main.storyboard */,
 				C560B5441C4996A900E5F1F9 /* Assets.xcassets */,
-				C560B5461C4996A900E5F1F9 /* LaunchScreen.storyboard */,
 				C560B5491C4996A900E5F1F9 /* Info.plist */,
 			);
 			path = Zetta;
@@ -123,9 +117,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C560B5481C4996A900E5F1F9 /* LaunchScreen.storyboard in Resources */,
 				C560B5451C4996A900E5F1F9 /* Assets.xcassets in Resources */,
-				C560B5431C4996A900E5F1F9 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -159,25 +151,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		C560B5411C4996A900E5F1F9 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C560B5421C4996A900E5F1F9 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		C560B5461C4996A900E5F1F9 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C560B5471C4996A900E5F1F9 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		C560B54A1C4996A900E5F1F9 /* Debug */ = {
@@ -265,6 +238,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				INFOPLIST_FILE = Zetta/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -277,6 +251,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				INFOPLIST_FILE = Zetta/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
