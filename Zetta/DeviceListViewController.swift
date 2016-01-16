@@ -22,6 +22,12 @@ class DeviceListViewController: UITableViewController {
 		tableView.rowHeight = 72
 		tableView.registerClass(DeviceCell.self, forCellReuseIdentifier: cellIdentifier)
     }
+	
+	// MARK: - data
+	
+	private func fetchDevices() {
+		
+	}
 
     // MARK: - table view
 
