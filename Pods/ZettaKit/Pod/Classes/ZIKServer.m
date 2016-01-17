@@ -13,8 +13,6 @@
 @interface ZIKServer ()
 
 @property (nonatomic, retain) NSDictionary *sirenData;
-@property (nonatomic, retain, readwrite) NSArray *devices;
-@property (nonatomic, retain, readwrite) NSString *name;
 @property (nonatomic, retain, readwrite) NSArray *links;
 
 @end
@@ -25,16 +23,16 @@
     return [[ZIKServer alloc] initWithDictionary:data];
 }
 
-- (instancetype) initWithDictionary:(NSDictionary *)data {
+- (id) initWithDictionary:(NSDictionary *)data {
     if (self = [super init]) {
-        if([data objectForKey:@"properties"] != nil) {
+        if([data objectForKey:@"properties"]) {
             NSDictionary *properties = data[@"properties"];
             if([properties objectForKey:@"name"]) {
                 self.name = properties[@"name"];
             }
         }
         
-        if ([data objectForKey:@"entities"] != nil) {
+        if ([data objectForKey:@"entities"]) {
             NSMutableArray *devices = [[NSMutableArray alloc] init];
             for (NSDictionary *deviceData in data[@"entities"]) {
                 [devices addObject:[ZIKDevice initWithDictionary:deviceData]];

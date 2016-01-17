@@ -1,28 +1,10 @@
 //
 //  ZIKDevice.h
-//  ZettaKit
+//  ReactiveLearning
 //
 //  Created by Matthew Dobson on 4/7/15.
-//  Copyright (c) 2015 Apigee and Contributors <matt@apigee.com>
+//  Copyright (c) 2015 Matthew Dobson. All rights reserved.
 //
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included in
-//  all copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-//  THE SOFTWARE.
-
 
 #import <Foundation/Foundation.h>
 #import "ZIKStream.h"
@@ -54,11 +36,6 @@
 @property (nonatomic, retain, readonly) NSString *state;
 
 /**
- The current properties of the device.
- */
-@property (nonatomic, retain, readonly) NSDictionary *properties;
-
-/**
  The current available transitions for the device to take.
  */
 @property (nonatomic, retain, readonly) NSArray *transitions;
@@ -68,7 +45,7 @@
  */
 @property (nonatomic, retain, readonly) NSArray *links;
 
-typedef void (^CompletionBlock)(NSError *err, ZIKDevice *device);
+typedef void (^CompletionBlock)(NSError *err, ZIKDevice *device, NSURLResponse *response);
 
 ///---------------------------
 /// @name Initialization
@@ -116,15 +93,14 @@ typedef void (^CompletionBlock)(NSError *err, ZIKDevice *device);
  
  @param name The name of the transition to execute.
  
- @return An RACSignal object that can be subscribed to and operated on. The observable subscribe to ZIKDevice instances.
  */
-- (RACSignal *) transition:(NSString *) name;
+- (void) transition:(NSString *) name;
 
 /**
  Perform an argumentless state transition on an object. This will simply send a transition call to the API without any extra data.
  
  @param name The name of the transition to execute.
- @param block A block object to be executed when the task finishes. This block has no return value and takes two arguments: Any error from attempting to complete the task, the new device representation from the completed task.
+ @param block A block object to be executed when the task finishes. This block has no return value and takes three arguments: Any error from attempting to complete the task, the new device representation from the completed task, and the HTTP response from the API.
  
  */
 - (void) transition:(NSString *) name andCompletion:(CompletionBlock)block;
@@ -134,17 +110,15 @@ typedef void (^CompletionBlock)(NSError *err, ZIKDevice *device);
  
  @param name The name of the transition to execute.
  @param args The `NSDictionary` of key value pairs representing arguments to be given to the transition.
- 
- @return An RACSignal object that can be subscribed to and operated on. The observable subscribe to ZIKDevice instances.
  */
-- (RACSignal *) transition:(NSString *) name withArguments:(NSDictionary *)args;
+- (void) transition:(NSString *) name withArguments:(NSDictionary *)args;
 
 /**
  Perform a transition with extra arguments.
  
  @param name The name of the transition to execute.
   @param args The `NSDictionary` of key value pairs representing arguments to be given to the transition.
- @param block A block object to be executed when the task finishes. This block has no return value and takes two arguments: Any error from attempting to complete the task, the new device representation from the completed task.
+ @param block A block object to be executed when the task finishes. This block has no return value and takes three arguments: Any error from attempting to complete the task, the new device representation from the completed task, and the HTTP response from the API.
  */
 - (void) transition:(NSString *)name withArguments:(NSDictionary *)args andCompletion:(CompletionBlock)block;
 

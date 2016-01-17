@@ -3,47 +3,26 @@
 //  ReactiveLearning
 //
 //  Created by Matthew Dobson on 4/7/15.
-//  Copyright (c) 2015 Apigee and Contributors <matt@apigee.com>
+//  Copyright (c) 2015 Matthew Dobson. All rights reserved.
 //
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this software and associated documentation files (the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions:
-//
-//  The above copyright notice and this permission notice shall be included in
-//  all copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-//  THE SOFTWARE.
-
 
 #import "ZIKDevice.h"
 #import "ZIKUtil.h"
 #import "ZIKLink.h"
 #import "ZIKTransition.h"
-#import "ZIKSession.h"
 
 @interface ZIKDevice ()
 
 @property (nonatomic, retain) NSArray *streams;
+@property (nonatomic, retain) NSDictionary *properties;
 @property (nonatomic, retain) NSDictionary *sirenData;
 
 @property (nonatomic, retain, readwrite) NSString *uuid;
 @property (nonatomic, retain, readwrite) NSString *type;
 @property (nonatomic, retain, readwrite, nullable) NSString *name;
 @property (nonatomic, retain, readwrite) NSString *state;
-@property (nonatomic, retain, readwrite) NSDictionary *properties;
 @property (nonatomic, retain, readwrite) NSArray *transitions;
 @property (nonatomic, retain, readwrite) NSArray *links;
-
-- (NSURLRequest *) requestForTransition:(NSString *)name withArgs:(NSDictionary *)args;
 
 @end
 
@@ -53,7 +32,7 @@
     return [[ZIKDevice alloc] initWithDictionary:data];
 }
 
-- (instancetype) initWithDictionary:(NSDictionary *)data {
+- (id) initWithDictionary:(NSDictionary *)data {
     if (self = [super init]) {
         [self refresh:data];
     }
@@ -77,24 +56,21 @@
 
 - (void) refresh:(NSDictionary *)data {
     self.sirenData = data;
-    if ([data objectForKey:@"properties"] != nil) {
+    if ([data objectForKey:@"properties"]) {
         self.properties = [data objectForKey:@"properties"];
         self.type = self.properties[@"type"];
-        self.uuid = self.properties[@"id"];
-        if (self.properties[@"name"] != nil && self.properties[@"name"] != [NSNull null]) {
-            self.name = self.properties[@"name"];
-        } else {
-            self.name = nil;
-        }
-        
-        if (self.properties[@"state"] != nil) {
-            self.state = self.properties[@"state"];
-        } else {
-            self.state = nil;
-        }
+		
+		if (self.properties[@"name"] != nil && self.properties[@"name"] != [NSNull null]) {
+			self.name = self.properties[@"name"];
+		} else {
+			self.name = nil;
+		}
+		
+		self.uuid = self.properties[@"id"];
+        self.state = self.properties[@"state"];
     }
     
-    if ([data objectForKey:@"links"] != nil) {
+    if ([data objectForKey:@"links"]) {
         NSMutableArray *links = [[NSMutableArray alloc] init];
         NSMutableArray *streams = [[NSMutableArray alloc] init];
         for (NSDictionary *linkData in data[@"links"]) {
@@ -120,21 +96,19 @@
     }
 }
 
-- (RACSignal *) transition:(NSString *)name {
-    return [self transition:name withArguments:@{}];
+- (void) transition:(NSString *)name {
+    [self transition:name withArguments:@{} andCompletion:nil];
 }
 
 - (void) transition:(NSString *)name andCompletion:(CompletionBlock)block {
     [self transition:name withArguments:@{} andCompletion:block];
 }
 
-- (RACSignal *) transition:(NSString *)name withArguments:(NSDictionary *)args {
-    NSURLRequest *req = [self requestForTransition:name withArgs:args];
-    ZIKSession *sharedSession = [ZIKSession sharedSession];
-    return [sharedSession taskForRequest:req];
+- (void) transition:(NSString *)name withArguments:(NSDictionary *)args {
+    [self transition:name withArguments:args andCompletion:nil];
 }
 
-- (NSURLRequest *) requestForTransition:(NSString *)name withArgs:(NSDictionary *)args {
+- (void) transition:(NSString *)name withArguments:(NSDictionary *)args andCompletion:(CompletionBlock)block {
     //Setup transition args
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithDictionary:args];
     [dict setObject:name forKey:@"action"];
@@ -148,29 +122,20 @@
     
     [request setValue:[NSString stringWithFormat:@"%lu", (unsigned long)[data length]] forHTTPHeaderField:@"Content-Length"];
     [request setHTTPBody:[data dataUsingEncoding:NSUTF8StringEncoding]];
-    return request;
-}
-
-- (void) transition:(NSString *)name withArguments:(NSDictionary *)args andCompletion:(CompletionBlock)block {
     
-    ZIKSession *sharedSession = [ZIKSession sharedSession];
+    //Prevent them retain cycles
+    __block ZIKDevice *device = self;
     
-    NSURLRequest *request = [self requestForTransition:name withArgs:args];
-    
-    RACSignal *task = [sharedSession taskForRequest:request];
-    
-    RACSignal *deviceMap = [task map:^id(NSDictionary *value) {
-        return [ZIKDevice initWithDictionary:value];
+    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request
+               completionHandler:^(NSData *responseData, NSURLResponse *response, NSError *error) {
+                   NSDictionary *data = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
+                   [device refresh:data];
+                   if (block != nil) {
+                       block(error, device, response);
+                   }
     }];
-    
-    RACSignal *singleDevice = [deviceMap take:1];
-    
-    [singleDevice subscribeNext:^(id x) {
-        block(nil, x);
-    } error:^(NSError *error) {
-        block(error, nil);
-    }];
-    
+    [task resume];
 }
 
 @end
