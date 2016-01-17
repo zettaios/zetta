@@ -1,8 +1,8 @@
 //
-//  ZIKServer.h
+//  ZIKSpdyDelegate.h
 //  ZettaKit
 //
-//  Created by Matthew Dobson on 4/7/15.
+//  Created by Matthew Dobson on 6/12/15.
 //  Copyright (c) 2015 Apigee and Contributors <matt@apigee.com>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,50 +24,35 @@
 //  THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import <ISpdy/ispdy.h>
 
 /**
- The `ZIKServer` class abstracts away the Zetta server resource.
+ The `ZIKSpdyDelegate` implements a way of performing HTTP transactions over the SPDY protocol.
  */
+@interface ZIKSpdyDelegate : NSObject<ISpdyRequestDelegate>
 
-@interface ZIKServer : NSObject
-
-/**
- The devices that currently belong to the server. An `NSArray` of `ZIKDevice` objects.
- */
-@property (nonatomic, retain, readonly) NSArray *devices;
-
-/**
- The human readable name of the server.
- */
-@property (nonatomic, retain, readonly) NSString *name;
-
-/**
- The links that are relevant to the current server context. An `NSArray` of `ZIKLink` objects.
- */
-@property (nonatomic, retain, readonly) NSArray *links;
+typedef void (^SPDYRequestCompletion)(ISpdyError *err, NSDictionary *headers, NSData *data);
 
 ///---------------------------
 /// @name Initialization
 ///---------------------------
 
 /**
- Initializes a `ZIKServer` with the specified siren document in `NSDictionary` form.
+ Initializes a `ZIKSpdyDelegate` with the specified request completion block.
  
- This is the designated initializer.
+ @param handler A block object that will be called when the SPDY HTTP transaction completes. This block has no return value and has three arguments: A potential SPDY error from the HTTP transaction. The return headers of the HTTP transaction. Finally the response body data of the HTTP transaction.
  
- @param data The base siren document to create the server with.
- 
- @return The newly-initialized `ZIKServer` object.
+ @return The newly-initialized `ZIKSpdyDelegate` object.
  */
-+ (instancetype) initWithDictionary:(NSDictionary *)data;
++ (instancetype) initWithCompletion:(SPDYRequestCompletion) block;
 
 /**
- Initializes a `ZIKServer` with the specified siren document in `NSDictionary` form.
+ Initializes a `ZIKSpdyDelegate` with the specified request completion block.
  
- @param data The base siren document to create the server with.
+ @param handler A block object that will be called when the SPDY HTTP transaction completes. This block has no return value and has three arguments: A potential SPDY error from the HTTP transaction. The return headers of the HTTP transaction. Finally the response body data of the HTTP transaction.
  
- @return The newly-initialized `ZIKServer` object.
+ @return The newly-initialized `ZIKSpdyDelegate` object.
  */
-- (instancetype) initWithDictionary:(NSDictionary *)data;
+- (instancetype) initWithCompletion:(SPDYRequestCompletion) block;
 
 @end

@@ -1,8 +1,8 @@
 //
-//  ZIKLink.m
-//  ReactiveLearning
+//  ZIKSpdyDelegate.m
+//  Pods
 //
-//  Created by Matthew Dobson on 4/13/15.
+//  Created by Matthew Dobson on 6/12/15.
 //  Copyright (c) 2015 Apigee and Contributors <matt@apigee.com>
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,41 +24,48 @@
 //  THE SOFTWARE.
 
 
-#import "ZIKLink.h"
 
-@interface ZIKLink ()
+//Experimental object for SPDY support
+//It implements the request delegate protocol.
+#import "ZIKSpdyDelegate.h"
 
-@property (nonatomic, retain, readwrite) NSString *href;
-@property (nonatomic, retain, readwrite) NSString *title;
-@property (nonatomic, retain, readwrite) NSArray *rel;
+@interface ZIKSpdyDelegate ()
+
+@property (nonatomic, copy) SPDYRequestCompletion block;
+@property (nonatomic, retain) NSDictionary *headers;
+@property (nonatomic, retain) NSData *data;
 
 @end
 
-@implementation ZIKLink
+@implementation ZIKSpdyDelegate
 
-+ (instancetype) initWithDictionary:(NSDictionary *)data {
-    return [[ZIKLink alloc] initWithDictionary:data];
++ (instancetype) initWithCompletion:(SPDYRequestCompletion) block {
+    return [[ZIKSpdyDelegate alloc] initWithCompletion:block];
 }
 
-- (instancetype) initWithDictionary:(NSDictionary *)data {
+- (instancetype) initWithCompletion:(SPDYRequestCompletion) block {
     if (self = [super init]) {
-        self.href = data[@"href"];
-        self.rel = data[@"rel"];
-        self.title = data[@"title"];
+        self.block = block;
+        self.headers = nil;
+        self.data = nil;
     }
     return self;
 }
 
-- (BOOL) hasRel:(NSString *)rel {
-    return [self.rel containsObject:rel];
+- (void) request:(ISpdyRequest *)req handleHeaders:(NSDictionary *)headers {
+    self.headers = headers;
 }
 
-- (BOOL)isSelf {
-    return [self hasRel:@"self"];
+- (void) request:(ISpdyRequest *)req handleEnd:(ISpdyError *)err {
+    self.block(err, self.headers, self.data);
 }
 
-- (NSString *)description {
-    return [NSString stringWithFormat:@"<ZIKLink: %@>", self.href];
+- (void) request:(ISpdyRequest *)req handleInput:(NSData *)input {
+    self.data = input;
+}
+
+- (void) request:(ISpdyRequest *)req handleResponse:(ISpdyResponse *)res {
+    
 }
 
 @end
