@@ -36,13 +36,10 @@ class DeviceListViewController: UITableViewController {
 			make.top.equalTo(view).offset(20)
 		}
 		
-		let temporaryURLString = "https://zetta-cloud-2.herokuapp.com/"
-		guard let url = NSURL(string: temporaryURLString) else {
-			print("Warning: unable to build URL from string \(temporaryURLString)")
-			return
+//		let temporaryURLString = "https://zetta-cloud-2.herokuapp.com/"
+		if let url = NSUserDefaults.standardUserDefaults().connectionHistory.first {
+			fetchDevicesFromURL(url)
 		}
-		
-		fetchDevicesFromURL(url)
     }
 	
 	// MARK: - data
