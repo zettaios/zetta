@@ -22,8 +22,7 @@ class SettingsViewController: UITableViewController {
 		title = "Settings"
 		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonTapped")
 		
-		tableView.backgroundColor = UIColor.whiteColor()
-		tableView.separatorStyle = .None
+		tableView.backgroundColor = UIColor.groupTableViewBackgroundColor()
     }
 	
 	override func viewWillAppear(animated: Bool) {
@@ -58,7 +57,7 @@ class SettingsViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		if indexPath.section == 0 {
-			let cell = BorderedCell(style: .Value1, reuseIdentifier: nil)
+			let cell = UITableViewCell(style: .Value1, reuseIdentifier: nil)
 			cell.textLabel?.text = "Connect using"
 			cell.detailTextLabel?.lineBreakMode = .ByTruncatingMiddle
 			cell.detailTextLabel?.text = NSUserDefaults.standardUserDefaults().connectionHistory.first?.absoluteString

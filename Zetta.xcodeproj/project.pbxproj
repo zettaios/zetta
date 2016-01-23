@@ -15,7 +15,6 @@
 		C560B5591C49B14800E5F1F9 /* DeviceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5581C49B14800E5F1F9 /* DeviceCell.swift */; };
 		C560B55B1C49B41800E5F1F9 /* AppStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B55A1C49B41800E5F1F9 /* AppStyles.swift */; };
 		C5B72C581C53CD3200E4B68C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C571C53CD3200E4B68C /* SettingsViewController.swift */; };
-		C5B72C5A1C53E96100E4B68C /* BorderedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C591C53E96100E4B68C /* BorderedCell.swift */; };
 		C5B72C5C1C53ECFE00E4B68C /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C5B1C53ECFE00E4B68C /* AppDefaults.swift */; };
 		C5B72C601C53F32F00E4B68C /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C5F1C53F32F00E4B68C /* ConnectionViewController.swift */; };
 		C5B72C621C53F92400E4B68C /* AddConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C611C53F92400E4B68C /* AddConnectionViewController.swift */; };
@@ -36,7 +35,6 @@
 		C560B5581C49B14800E5F1F9 /* DeviceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceCell.swift; sourceTree = "<group>"; };
 		C560B55A1C49B41800E5F1F9 /* AppStyles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStyles.swift; sourceTree = "<group>"; };
 		C5B72C571C53CD3200E4B68C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		C5B72C591C53E96100E4B68C /* BorderedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderedCell.swift; sourceTree = "<group>"; };
 		C5B72C5B1C53ECFE00E4B68C /* AppDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		C5B72C5F1C53F32F00E4B68C /* ConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
 		C5B72C611C53F92400E4B68C /* AddConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddConnectionViewController.swift; sourceTree = "<group>"; };
@@ -110,7 +108,6 @@
 			isa = PBXGroup;
 			children = (
 				C5B72C571C53CD3200E4B68C /* SettingsViewController.swift */,
-				C5B72C591C53E96100E4B68C /* BorderedCell.swift */,
 				C5B72C5F1C53F32F00E4B68C /* ConnectionViewController.swift */,
 				C5B72C611C53F92400E4B68C /* AddConnectionViewController.swift */,
 				C5B72C631C53F97300E4B68C /* AddConnectionView.swift */,
@@ -263,7 +260,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C5B72C5A1C53E96100E4B68C /* BorderedCell.swift in Sources */,
 				C5B72C681C53FB8B00E4B68C /* BorderedTextField.swift in Sources */,
 				C5B72C5C1C53ECFE00E4B68C /* AppDefaults.swift in Sources */,
 				C560B5571C49B0F900E5F1F9 /* DeviceListViewController.swift in Sources */,

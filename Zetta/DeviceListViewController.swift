@@ -43,10 +43,6 @@ class DeviceListViewController: UITableViewController {
 		}
 		
 		fetchDevicesFromURL(url)
-		
-		let controller = SettingsViewController()
-		let nav = UINavigationController(rootViewController: controller)
-		presentViewController(nav, animated: true, completion: nil)
     }
 	
 	// MARK: - data
