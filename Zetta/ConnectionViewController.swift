@@ -1,52 +1,61 @@
 //
-//  NoServerViewController.swift
+//  ConnectionViewController.swift
 //  Zetta
 //
-//  Created by Ben Packard on 1/15/16.
+//  Created by Ben Packard on 1/23/16.
 //  Copyright © 2016 Zetta. All rights reserved.
 //
 
 import UIKit
 
-class ConnectionViewController: UIViewController {
+class ConnectionViewController: UITableViewController {
 
-	private var mainView: ConnectionView {
-		return self.view as! ConnectionView
+	private let cellIdentifier = "Cell"
+	
+	convenience init() {
+		self.init(style: .Grouped)
 	}
 	
-	override func loadView() {
-		view = ConnectionView()
-	}
-	
-	override func viewDidLoad() {
-		super.viewDidLoad()
+    override func viewDidLoad() {
+        super.viewDidLoad()
 		
-		title = "Zetta"
+		title = "Connection History"
 		
-		mainView.spinner.startAnimating()
-		mainView.titleLabel.text = "Title"
-		mainView.subtitleLabel.text = "Subtitle"
-		mainView.settingsButton.setTitle("Open Settings", forState: .Normal)
-		mainView.settingsButton.addTarget(self, action: "openSettingsButtonTapped", forControlEvents: .TouchUpInside)
-		mainView.settingsButton.hidden = false
-		
-//		noServerLabel.text = "You are not connected to a server.\n\nServers can be managed in the Settings app."
+		tableView.rowHeight = 65
+		tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+    }
 
+    // MARK: - table view
+
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+	
+	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		return "App Server Connection History".uppercaseString
 	}
-	
-	override func viewDidAppear(animated: Bool) {
-		super.viewDidAppear(animated)
-		
-//		openSettingsButtonTapped()
-	}
-	
-	// MARK: - button actions
-	
-	@objc private func openSettingsButtonTapped() {
-		// deep link into the specific app's settings screen
-		if let url = NSURL(string: UIApplicationOpenSettingsURLString) {
-			UIApplication.sharedApplication().openURL(url)
+
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return NSUserDefaults.standardUserDefaults().connectionHistory.count + 1
+    }
+
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		let connections = NSUserDefaults.standardUserDefaults().connectionHistory
+		if indexPath.row == connections.count {
+			let cell = UITableViewCell()
+			cell.textLabel?.text = "Add Another App Server..."
+			cell.textLabel?.textColor = view.tintColor
+			return cell
 		}
+		
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
+		let connection = NSUserDefaults.standardUserDefaults().connectionHistory[indexPath.row]
+		cell.textLabel?.text = connection
+        return cell
+    }
+	
+	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		tableView.deselectRowAtIndexPath(indexPath, animated: true)
 	}
 	
 }

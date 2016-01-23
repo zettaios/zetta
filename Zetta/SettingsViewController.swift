@@ -24,7 +24,9 @@ class SettingsViewController: UITableViewController {
 		
 		tableView.backgroundColor = UIColor.whiteColor()
 		tableView.separatorStyle = .None
-		tableView.tableFooterView = UIView()
+		
+		let controller = ConnectionViewController()
+		navigationController?.pushViewController(controller, animated: false)
     }
 
     // MARK: - table view

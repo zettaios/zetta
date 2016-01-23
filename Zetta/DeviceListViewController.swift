@@ -27,7 +27,6 @@ class DeviceListViewController: UITableViewController {
 		title = "Zetta"
 		
 		tableView.tableFooterView = UIView()
-		tableView.rowHeight = 72
 		tableView.registerClass(DeviceCell.self, forCellReuseIdentifier: cellIdentifier)
 		
 		spinner.translatesAutoresizingMaskIntoConstraints = false
@@ -45,9 +44,9 @@ class DeviceListViewController: UITableViewController {
 		
 		fetchDevicesFromURL(url)
 		
-//		let controller = SettingsViewController()
-//		let nav = UINavigationController(rootViewController: controller)
-//		presentViewController(nav, animated: true, completion: nil)
+		let controller = SettingsViewController()
+		let nav = UINavigationController(rootViewController: controller)
+		presentViewController(nav, animated: true, completion: nil)
     }
 	
 	// MARK: - data
@@ -89,6 +88,10 @@ class DeviceListViewController: UITableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return section == 0 ? devices.count : 1
     }
+	
+	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+		return indexPath.section == 0 ? 72 : 55
+	}
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		if indexPath.section == 1 {
@@ -118,7 +121,7 @@ class DeviceListViewController: UITableViewController {
 		cell.backgroundColor = UIColor(red:0.290,  green:0.565,  blue:0.890, alpha:1)
 		let settingsLabel = UILabel()
 		settingsLabel.text = "Settings".uppercaseString
-		settingsLabel.font = UIFont.systemFontOfSize(18)
+		settingsLabel.font = UIFont.systemFontOfSize(16)
 		settingsLabel.textColor = UIColor.whiteColor()
 		settingsLabel.translatesAutoresizingMaskIntoConstraints = false
 		cell.contentView.addSubview(settingsLabel)

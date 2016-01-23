@@ -11,14 +11,13 @@
 		C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C544BE801C4ABAA20072CECD /* AppUtilities.swift */; };
 		C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */; };
 		C560B5451C4996A900E5F1F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C560B5441C4996A900E5F1F9 /* Assets.xcassets */; };
-		C560B5511C499C2B00E5F1F9 /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5501C499C2B00E5F1F9 /* ConnectionViewController.swift */; };
-		C560B5531C499C3B00E5F1F9 /* ConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5521C499C3B00E5F1F9 /* ConnectionView.swift */; };
 		C560B5571C49B0F900E5F1F9 /* DeviceListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */; };
 		C560B5591C49B14800E5F1F9 /* DeviceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5581C49B14800E5F1F9 /* DeviceCell.swift */; };
 		C560B55B1C49B41800E5F1F9 /* AppStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B55A1C49B41800E5F1F9 /* AppStyles.swift */; };
 		C5B72C581C53CD3200E4B68C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C571C53CD3200E4B68C /* SettingsViewController.swift */; };
 		C5B72C5A1C53E96100E4B68C /* BorderedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C591C53E96100E4B68C /* BorderedCell.swift */; };
 		C5B72C5C1C53ECFE00E4B68C /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C5B1C53ECFE00E4B68C /* AppDefaults.swift */; };
+		C5B72C601C53F32F00E4B68C /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C5F1C53F32F00E4B68C /* ConnectionViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,14 +29,13 @@
 		C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C560B5441C4996A900E5F1F9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C560B5491C4996A900E5F1F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C560B5501C499C2B00E5F1F9 /* ConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
-		C560B5521C499C3B00E5F1F9 /* ConnectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionView.swift; sourceTree = "<group>"; };
 		C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceListViewController.swift; sourceTree = "<group>"; };
 		C560B5581C49B14800E5F1F9 /* DeviceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceCell.swift; sourceTree = "<group>"; };
 		C560B55A1C49B41800E5F1F9 /* AppStyles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStyles.swift; sourceTree = "<group>"; };
 		C5B72C571C53CD3200E4B68C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		C5B72C591C53E96100E4B68C /* BorderedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderedCell.swift; sourceTree = "<group>"; };
 		C5B72C5B1C53ECFE00E4B68C /* AppDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
+		C5B72C5F1C53F32F00E4B68C /* ConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,16 +92,31 @@
 				C5B72C5B1C53ECFE00E4B68C /* AppDefaults.swift */,
 				C560B55A1C49B41800E5F1F9 /* AppStyles.swift */,
 				C544BE801C4ABAA20072CECD /* AppUtilities.swift */,
-				C560B5501C499C2B00E5F1F9 /* ConnectionViewController.swift */,
-				C560B5521C499C3B00E5F1F9 /* ConnectionView.swift */,
-				C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */,
-				C560B5581C49B14800E5F1F9 /* DeviceCell.swift */,
-				C5B72C571C53CD3200E4B68C /* SettingsViewController.swift */,
-				C5B72C591C53E96100E4B68C /* BorderedCell.swift */,
+				C5B72C5E1C53F28400E4B68C /* Device List */,
+				C5B72C5D1C53F27800E4B68C /* Settings */,
 				C560B5441C4996A900E5F1F9 /* Assets.xcassets */,
 				C560B5491C4996A900E5F1F9 /* Info.plist */,
 			);
 			path = Zetta;
+			sourceTree = "<group>";
+		};
+		C5B72C5D1C53F27800E4B68C /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				C5B72C571C53CD3200E4B68C /* SettingsViewController.swift */,
+				C5B72C591C53E96100E4B68C /* BorderedCell.swift */,
+				C5B72C5F1C53F32F00E4B68C /* ConnectionViewController.swift */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
+		C5B72C5E1C53F28400E4B68C /* Device List */ = {
+			isa = PBXGroup;
+			children = (
+				C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */,
+				C560B5581C49B14800E5F1F9 /* DeviceCell.swift */,
+			);
+			name = "Device List";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -244,13 +257,12 @@
 				C5B72C5A1C53E96100E4B68C /* BorderedCell.swift in Sources */,
 				C5B72C5C1C53ECFE00E4B68C /* AppDefaults.swift in Sources */,
 				C560B5571C49B0F900E5F1F9 /* DeviceListViewController.swift in Sources */,
-				C560B5531C499C3B00E5F1F9 /* ConnectionView.swift in Sources */,
-				C560B5511C499C2B00E5F1F9 /* ConnectionViewController.swift in Sources */,
 				C560B55B1C49B41800E5F1F9 /* AppStyles.swift in Sources */,
 				C560B5591C49B14800E5F1F9 /* DeviceCell.swift in Sources */,
 				C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */,
 				C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */,
 				C5B72C581C53CD3200E4B68C /* SettingsViewController.swift in Sources */,
+				C5B72C601C53F32F00E4B68C /* ConnectionViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -16,7 +16,8 @@ extension NSUserDefaults {
 	
 	func registerAppDefaults() {
 		let defaults: [String: AnyObject] = [
-			appKeys.connectionHistoryKey: [String](),
+//			appKeys.connectionHistoryKey: [String](),
+			appKeys.connectionHistoryKey: ["a", "b", "c"],
 		]
 		registerDefaults(defaults)
 	}
