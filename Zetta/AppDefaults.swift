@@ -10,24 +10,27 @@ import Foundation
 
 extension NSUserDefaults {
 	
-	struct appKeys {
+	private struct appKeys {
 		static let connectionHistoryKey = "ConnectionHistory"
 	}
 	
 	func registerAppDefaults() {
 		let defaults: [String: AnyObject] = [
-//			appKeys.connectionHistoryKey: [String](),
-			appKeys.connectionHistoryKey: ["a", "b", "c"],
+			appKeys.connectionHistoryKey: [String](),
 		]
 		registerDefaults(defaults)
 	}
 	
-	var connectionHistory: [String] {
+	var connectionHistory: [NSURL] {
 		get {
-			return arrayForKey(appKeys.connectionHistoryKey) as? [String] ?? [String]()
+			let strings = arrayForKey(appKeys.connectionHistoryKey) as? [String] ?? [String]()
+			return strings.flatMap{ NSURL(string: $0) }
 		}
 		set {
-			setObject(newValue, forKey: appKeys.connectionHistoryKey)
+			let connectionHistoryLength = 5
+			let strings = newValue.map({ $0.absoluteString })
+			let trimmed = Array(strings.prefix(connectionHistoryLength))
+			setObject(trimmed, forKey: appKeys.connectionHistoryKey)
 		}
 	}
 	

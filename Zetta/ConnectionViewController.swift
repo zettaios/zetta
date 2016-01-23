@@ -20,10 +20,21 @@ class ConnectionViewController: UITableViewController {
         super.viewDidLoad()
 		
 		title = "Connection History"
-		
+			
 		tableView.rowHeight = 65
 		tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+		
+		let controller = AddConnectionViewController()
+		let nav = UINavigationController(rootViewController: controller)
+		presentViewController(nav, animated: false, completion: nil)
     }
+	
+	override func viewWillAppear(animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		//refresh for new connections added
+		tableView.reloadData()
+	}
 
     // MARK: - table view
 
@@ -43,19 +54,43 @@ class ConnectionViewController: UITableViewController {
 		let connections = NSUserDefaults.standardUserDefaults().connectionHistory
 		if indexPath.row == connections.count {
 			let cell = UITableViewCell()
-			cell.textLabel?.text = "Add Another App Server..."
+			cell.textLabel?.text = connections.isEmpty ? "Add an App Server" : "Add Another App Server..."
 			cell.textLabel?.textColor = view.tintColor
 			return cell
 		}
 		
         let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
 		let connection = NSUserDefaults.standardUserDefaults().connectionHistory[indexPath.row]
-		cell.textLabel?.text = connection
+		cell.textLabel?.text = connection.absoluteString
+		cell.accessoryType = connection == connections.first ? .Checkmark : .None
         return cell
     }
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
+		
+		let defaults = NSUserDefaults.standardUserDefaults()
+		if indexPath.row < defaults.connectionHistory.count {
+			if indexPath.row == 0 { return }
+			
+			//update the checkmarks
+			let selectedCell = tableView.cellForRowAtIndexPath(indexPath)
+			selectedCell?.accessoryType = .Checkmark
+			for cell in tableView.visibleCells where cell != selectedCell {
+				cell.accessoryType = .None
+			}
+			
+			//bump the server and the row to the top of the list
+			let selectedConnection = defaults.connectionHistory[indexPath.row]
+			defaults.connectionHistory.removeAtIndex(indexPath.row)
+			defaults.connectionHistory.insert(selectedConnection, atIndex: 0)
+			tableView.moveRowAtIndexPath(indexPath, toIndexPath: NSIndexPath(forRow: 0, inSection: 0))
+
+		} else {
+			let controller = AddConnectionViewController()
+			let nav = UINavigationController(rootViewController: controller)
+			presentViewController(nav, animated: true, completion: nil)
+		}
 	}
 	
 }

@@ -16,3 +16,10 @@ func delay(delay:Double, closure:()->()) {
 		),
 		dispatch_get_main_queue(), closure)
 }
+
+extension String {	
+	func nonEmptyTrimmed() -> String? {
+		let trimmed = self.stringByTrimmingCharactersInSet(.whitespaceAndNewlineCharacterSet())
+		return !trimmed.isEmpty ? trimmed : nil
+	}
+}

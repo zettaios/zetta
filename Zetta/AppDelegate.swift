@@ -22,7 +22,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window?.rootViewController = nav
 		window?.makeKeyAndVisible()
 		
+		customizeUI()
+		
 		return true
+	}
+	
+	private func customizeUI() {
+		UINavigationBar.appearance().translucent = false
 	}
 
 
