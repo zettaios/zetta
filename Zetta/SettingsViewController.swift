@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import MessageUI
 
 class SettingsViewController: UITableViewController {
 	
 	private let supportEmail = "linksupport@apigee.com"
+//	private let mailController = MFMailComposeViewController()
 	
 	convenience init() {
 		self.init(style: .Grouped)
@@ -104,7 +106,25 @@ class SettingsViewController: UITableViewController {
 	}
 	
 	@objc private func emailSupportButtonTapped() {
-		print("email")
+		guard MFMailComposeViewController.canSendMail() else {
+			if let url = NSURL(string: "mailto:\(supportEmail)") {
+				UIApplication.sharedApplication().openURL(url)
+			}
+			return
+		}
+
+		let mailController = MFMailComposeViewController()
+		mailController.setToRecipients([self.supportEmail])
+		mailController.mailComposeDelegate = self
+		presentViewController(mailController, animated: true, completion: nil)
+	}
+	
+}
+
+extension SettingsViewController: MFMailComposeViewControllerDelegate {
+	
+	func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+		controller.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
 	}
 	
 }
