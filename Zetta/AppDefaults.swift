@@ -11,7 +11,7 @@ import Foundation
 extension NSUserDefaults {
 	
 	private struct appKeys {
-		static let connectionHistoryKey = "ConnectionHistory"
+		static let connectionHistoryKey = "Connection History"
 	}
 	
 	func registerAppDefaults() {

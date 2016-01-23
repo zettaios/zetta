@@ -9,10 +9,16 @@
 import UIKit
 import MessageUI
 
+protocol SettingsDelegate: class {
+	func selectedConnectionChanged()
+}
+
 class SettingsViewController: UITableViewController {
 	
+	weak var delegate: SettingsDelegate?
+	
+	private var previousURL: NSURL?
 	private let supportEmail = "linksupport@apigee.com"
-//	private let mailController = MFMailComposeViewController()
 	
 	convenience init() {
 		self.init(style: .Grouped)
@@ -20,6 +26,8 @@ class SettingsViewController: UITableViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		previousURL = NSUserDefaults.standardUserDefaults().connectionHistory.first
 		
 		title = "Settings"
 		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonTapped")
@@ -102,6 +110,11 @@ class SettingsViewController: UITableViewController {
 	// MARK: - button actions
 	
 	@objc private func doneButtonTapped() {
+		//if the selected connection changed, let the delegate know
+		if NSUserDefaults.standardUserDefaults().connectionHistory.first != previousURL {
+			delegate?.selectedConnectionChanged()
+		}
+		
 		presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
 	}
 	

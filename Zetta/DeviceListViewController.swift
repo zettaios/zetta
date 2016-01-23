@@ -36,13 +36,16 @@ class DeviceListViewController: UITableViewController {
 			make.top.equalTo(view).offset(20)
 		}
 		
-//		let temporaryURLString = "https://zetta-cloud-2.herokuapp.com/"
-		if let url = NSUserDefaults.standardUserDefaults().connectionHistory.first {
-			fetchDevicesFromURL(url)
-		}
+		fetchDevices()
     }
 	
 	// MARK: - data
+	
+	private func fetchDevices() {
+		if let url = NSUserDefaults.standardUserDefaults().connectionHistory.first {
+			fetchDevicesFromURL(url)
+		}
+	}
 	
 	//since both the server signal and the devices signal send 'completed' events, this is a 'fetch' rather than a 'monitor'
 	private func fetchDevicesFromURL(url: NSURL) {
@@ -129,8 +132,20 @@ class DeviceListViewController: UITableViewController {
 		
 		if indexPath.section == 1 {
 			let controller = SettingsViewController()
+			controller.delegate = self
 			let nav = UINavigationController(rootViewController: controller)
 			presentViewController(nav, animated: true, completion: nil)
 		}
 	}
+}
+
+extension DeviceListViewController: SettingsDelegate {
+	
+	func selectedConnectionChanged() {
+		//reload everything when the url is updated
+		devices.removeAll()
+		tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
+		fetchDevices()
+	}
+	
 }
