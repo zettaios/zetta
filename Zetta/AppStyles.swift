@@ -25,4 +25,18 @@ extension UIColor {
 		return UIColor(white: 0.612, alpha: 1)
 	}
 	
+	class func tableViewSeparatorColor() -> UIColor {
+		return UIColor(red:0.784,  green:0.780,  blue:0.800, alpha:1)
+	}
+	
+}
+
+extension UIView {
+	
+	class func hairline() -> UIView {
+		let line = UIView()
+		line.backgroundColor = UIColor.tableViewSeparatorColor()
+		return line
+	}
+	
 }

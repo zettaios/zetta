@@ -30,8 +30,6 @@ class ConnectionViewController: UIViewController {
 		mainView.settingsButton.addTarget(self, action: "openSettingsButtonTapped", forControlEvents: .TouchUpInside)
 		mainView.settingsButton.hidden = false
 		
-		
-		
 //		noServerLabel.text = "You are not connected to a server.\n\nServers can be managed in the Settings app."
 
 	}

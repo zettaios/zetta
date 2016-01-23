@@ -24,10 +24,9 @@ class DeviceListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		title = "Device list"
+		title = "Zetta"
 		
 		tableView.tableFooterView = UIView()
-		tableView.separatorStyle = .None
 		tableView.rowHeight = 72
 		tableView.registerClass(DeviceCell.self, forCellReuseIdentifier: cellIdentifier)
 		
@@ -35,7 +34,7 @@ class DeviceListViewController: UITableViewController {
 		view.addSubview(spinner)
 		spinner.snp_makeConstraints { (make) -> Void in
 			make.centerX.equalTo(view)
-			make.top.equalTo(view).offset(100)
+			make.top.equalTo(view).offset(20)
 		}
 		
 		let temporaryURLString = "https://zetta-cloud-2.herokuapp.com/"
@@ -45,6 +44,10 @@ class DeviceListViewController: UITableViewController {
 		}
 		
 		fetchDevicesFromURL(url)
+		
+//		let controller = SettingsViewController()
+//		let nav = UINavigationController(rootViewController: controller)
+//		presentViewController(nav, animated: true, completion: nil)
     }
 	
 	// MARK: - data
@@ -72,14 +75,26 @@ class DeviceListViewController: UITableViewController {
     // MARK: - table view
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
 
+	override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+		return 60
+	}
+	
+	override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+		return UIView()
+	}
+	
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return devices.count
+		return section == 0 ? devices.count : 1
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		if indexPath.section == 1 {
+			return settingsCell
+		}
+		
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else {
 			return UITableViewCell()
 		}
@@ -94,11 +109,32 @@ class DeviceListViewController: UITableViewController {
 		cell.deviceImageView.tintColor = UIColor(white: 0.9, alpha: 1)
 		cell.titleLabel.text = device.name ?? "Unnamed Device"
 		cell.subtitleLabel.text = "Subtitle"
-		
+
         return cell
     }
 	
+	var settingsCell: UITableViewCell {
+		let cell = UITableViewCell()
+		cell.backgroundColor = UIColor(red:0.290,  green:0.565,  blue:0.890, alpha:1)
+		let settingsLabel = UILabel()
+		settingsLabel.text = "Settings".uppercaseString
+		settingsLabel.font = UIFont.systemFontOfSize(18)
+		settingsLabel.textColor = UIColor.whiteColor()
+		settingsLabel.translatesAutoresizingMaskIntoConstraints = false
+		cell.contentView.addSubview(settingsLabel)
+		settingsLabel.snp_makeConstraints { (make) -> Void in
+			make.center.equalTo(cell.contentView)
+		}
+		return cell
+	}
+	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
+		
+		if indexPath.section == 1 {
+			let controller = SettingsViewController()
+			let nav = UINavigationController(rootViewController: controller)
+			presentViewController(nav, animated: true, completion: nil)
+		}
 	}
 }

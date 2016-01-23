@@ -14,6 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+		NSUserDefaults.standardUserDefaults().registerAppDefaults()
+		
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
 		let controller = DeviceListViewController()
 		let nav = UINavigationController(rootViewController: controller)
