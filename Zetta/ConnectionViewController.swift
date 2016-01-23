@@ -23,16 +23,12 @@ class ConnectionViewController: UITableViewController {
 			
 		tableView.rowHeight = 65
 		tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-		
-		let controller = AddConnectionViewController()
-		let nav = UINavigationController(rootViewController: controller)
-		presentViewController(nav, animated: false, completion: nil)
     }
 	
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		//refresh for new connections added
+		//new connection might have been added
 		tableView.reloadData()
 	}
 
@@ -57,13 +53,14 @@ class ConnectionViewController: UITableViewController {
 			cell.textLabel?.text = connections.isEmpty ? "Add an App Server" : "Add Another App Server..."
 			cell.textLabel?.textColor = view.tintColor
 			return cell
+		} else {
+			let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
+			let connection = NSUserDefaults.standardUserDefaults().connectionHistory[indexPath.row]
+			cell.textLabel?.text = connection.absoluteString
+			cell.textLabel?.lineBreakMode = .ByTruncatingMiddle
+			cell.accessoryType = connection == connections.first ? .Checkmark : .None
+			return cell
 		}
-		
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath)
-		let connection = NSUserDefaults.standardUserDefaults().connectionHistory[indexPath.row]
-		cell.textLabel?.text = connection.absoluteString
-		cell.accessoryType = connection == connections.first ? .Checkmark : .None
-        return cell
     }
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

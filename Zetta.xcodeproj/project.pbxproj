@@ -373,7 +373,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apigee.zetta-temp-2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "09dd9af9-b049-4428-a7ce-8d9404bb1174";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};

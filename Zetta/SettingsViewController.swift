@@ -24,10 +24,14 @@ class SettingsViewController: UITableViewController {
 		
 		tableView.backgroundColor = UIColor.whiteColor()
 		tableView.separatorStyle = .None
-		
-		let controller = ConnectionViewController()
-		navigationController?.pushViewController(controller, animated: false)
     }
+	
+	override func viewWillAppear(animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		//connection might have changes
+		tableView.reloadData()
+	}
 
     // MARK: - table view
 
@@ -56,7 +60,8 @@ class SettingsViewController: UITableViewController {
 		if indexPath.section == 0 {
 			let cell = BorderedCell(style: .Value1, reuseIdentifier: nil)
 			cell.textLabel?.text = "Connect using"
-//			cell.detailTextLabel?.text = ""
+			cell.detailTextLabel?.lineBreakMode = .ByTruncatingMiddle
+			cell.detailTextLabel?.text = NSUserDefaults.standardUserDefaults().connectionHistory.first?.absoluteString
 			cell.accessoryType = .DisclosureIndicator
 			return cell
 		} else if indexPath.section == 1 {
