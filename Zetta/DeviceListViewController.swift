@@ -14,13 +14,6 @@ class DeviceListViewController: UITableViewController {
 	private var devices = [ZIKDevice]()
 	private let cellIdentifier = "Cell"
 	
-	private lazy var spinner: UIActivityIndicatorView = {
-		let spinner = UIActivityIndicatorView()
-		spinner.hidesWhenStopped = true
-		spinner.color = UIColor.grayColor()
-		return spinner
-	}()
-	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
@@ -28,13 +21,6 @@ class DeviceListViewController: UITableViewController {
 		
 		tableView.tableFooterView = UIView()
 		tableView.registerClass(DeviceCell.self, forCellReuseIdentifier: cellIdentifier)
-		
-		spinner.translatesAutoresizingMaskIntoConstraints = false
-		view.addSubview(spinner)
-		spinner.snp_makeConstraints { (make) -> Void in
-			make.centerX.equalTo(view)
-			make.top.equalTo(view).offset(20)
-		}
 		
 		fetchDevices()
     }
@@ -49,8 +35,6 @@ class DeviceListViewController: UITableViewController {
 	
 	//since both the server signal and the devices signal send 'completed' events, this is a 'fetch' rather than a 'monitor'
 	private func fetchDevicesFromURL(url: NSURL) {
-		self.spinner.startAnimating()
-		
 		let rootSignal = ZIKSession.sharedSession().root(url)
 		let serverSignal = ZIKSession.sharedSession().servers(rootSignal)
 		let devicesSignal = ZIKSession.sharedSession().devices(serverSignal)
@@ -62,7 +46,6 @@ class DeviceListViewController: UITableViewController {
 			
 			dispatch_async(dispatch_get_main_queue(),{
 				self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
-				self.spinner.stopAnimating()
 			})
 		})
 	}
@@ -74,7 +57,7 @@ class DeviceListViewController: UITableViewController {
     }
 
 	override func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-		return 60
+		return 30
 	}
 	
 	override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -82,7 +65,7 @@ class DeviceListViewController: UITableViewController {
 	}
 	
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return section == 0 ? devices.count : 1
+		return section == 0 ? max(devices.count, 1) : 1
     }
 	
 	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -92,27 +75,56 @@ class DeviceListViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		if indexPath.section == 1 {
 			return settingsCell
+		} else if indexPath.section == 0 && devices.isEmpty {
+			return messageCell
+		} else {
+			guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else {
+				return UITableViewCell()
+			}
+			let device = devices[indexPath.row]
+			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
+			cell.deviceImageView.tintColor = UIColor(white: 0.9, alpha: 1)
+			cell.titleLabel.text = device.name ?? "Unnamed Device"
+			cell.subtitleLabel.text = "Subtitle"
+			return cell
 		}
-		
-		guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else {
-			return UITableViewCell()
-		}
-
-		guard indexPath.row < devices.count else {
-			return UITableViewCell()
-		}
-		
-		let device = devices[indexPath.row]
-		
-		cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
-		cell.deviceImageView.tintColor = UIColor(white: 0.9, alpha: 1)
-		cell.titleLabel.text = device.name ?? "Unnamed Device"
-		cell.subtitleLabel.text = "Subtitle"
-
-        return cell
     }
 	
-	var settingsCell: UITableViewCell {
+	private var messageCell: UITableViewCell {
+		let cell = UITableViewCell()
+		cell.contentView.backgroundColor = UIColor.whiteColor()
+		
+		let spinner = UIActivityIndicatorView()
+		spinner.color = UIColor.grayColor()
+		spinner.startAnimating()
+		spinner.translatesAutoresizingMaskIntoConstraints = false
+		cell.contentView.addSubview(spinner)
+		
+		let label = UILabel()
+		label.textColor = spinner.color
+		label.font = UIFont.systemFontOfSize(12)
+		label.numberOfLines = 0
+		if let urlString = NSUserDefaults.standardUserDefaults().connectionHistory.first?.absoluteString {
+			label.text = "Waiting for devices to join\n\(urlString)"
+		}
+		label.translatesAutoresizingMaskIntoConstraints = false
+		cell.contentView.addSubview(label)
+		
+		spinner.snp_makeConstraints { (make) -> Void in
+			make.centerY.equalTo(cell.contentView)
+			make.left.equalTo(cell.contentView).offset(20)
+		}
+		
+		label.snp_makeConstraints { (make) -> Void in
+			make.centerY.equalTo(spinner)
+			make.left.equalTo(spinner.snp_right).offset(15)
+			make.right.lessThanOrEqualTo(cell.contentView).offset(-tableView.layoutMargins.right)
+		}
+		
+		return cell
+	}
+	
+	private var settingsCell: UITableViewCell {
 		let cell = UITableViewCell()
 		cell.backgroundColor = UIColor(red:0.290,  green:0.565,  blue:0.890, alpha:1)
 		let settingsLabel = UILabel()
