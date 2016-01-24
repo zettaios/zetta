@@ -105,7 +105,9 @@ class DeviceListViewController: UITableViewController {
 		label.font = UIFont.systemFontOfSize(12)
 		label.numberOfLines = 0
 		if let urlString = NSUserDefaults.standardUserDefaults().connectionHistory.first?.absoluteString {
-			label.text = "Waiting for devices to join\n\(urlString)"
+			label.text = "Waiting for devices to join \(urlString)"
+		} else {
+			label.text = "Tap 'Settings' to Add an App Server..."
 		}
 		label.translatesAutoresizingMaskIntoConstraints = false
 		cell.contentView.addSubview(label)
@@ -118,7 +120,7 @@ class DeviceListViewController: UITableViewController {
 		label.snp_makeConstraints { (make) -> Void in
 			make.centerY.equalTo(spinner)
 			make.left.equalTo(spinner.snp_right).offset(15)
-			make.right.lessThanOrEqualTo(cell.contentView).offset(-tableView.layoutMargins.right)
+			make.right.equalTo(cell.contentView).offset(-20)
 		}
 		
 		return cell
@@ -137,6 +139,11 @@ class DeviceListViewController: UITableViewController {
 			make.center.equalTo(cell.contentView)
 		}
 		return cell
+	}
+	
+	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+		//exclude the message cell
+		return !(indexPath.section == 0 && devices.isEmpty)
 	}
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
