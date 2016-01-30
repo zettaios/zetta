@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '066FB607736D582EF1B2867C'
+               BlueprintIdentifier = '3AA8EF5A9C9D050CDFCED887'
                BlueprintName = 'ZettaKit-ZettaKit'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'ZettaKit.bundle'>

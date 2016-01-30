@@ -19,7 +19,7 @@ class ConnectionViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		title = "Connection History"
+		title = "Connect Using"
 			
 		tableView.rowHeight = 65
 		tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: cellIdentifier)
