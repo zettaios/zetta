@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import MessageUI
+import SafariServices
 
 protocol SettingsDelegate: class {
 	func selectedConnectionChanged()
@@ -18,7 +18,6 @@ class SettingsViewController: UITableViewController {
 	weak var delegate: SettingsDelegate?
 	
 	private var previousURL: NSURL?
-	private let supportEmail = "linksupport@apigee.com"
 	
 	convenience init() {
 		self.init(style: .Grouped)
@@ -83,8 +82,8 @@ class SettingsViewController: UITableViewController {
 		} else {
 			let cell = UITableViewCell(style: .Default, reuseIdentifier: nil)
 			let button = UIButton(type: .System)
-			button.setTitle(supportEmail, forState: .Normal)
-			button.addTarget(self, action: "emailSupportButtonTapped", forControlEvents: .TouchUpInside)
+			button.setTitle("Zetta Discuss", forState: .Normal)
+			button.addTarget(self, action: "supportButtonTapped", forControlEvents: .TouchUpInside)
 			button.contentHorizontalAlignment = .Left
 			button.contentEdgeInsets = UIEdgeInsetsMake(0, tableView.layoutMargins.left, 0, tableView.layoutMargins.right)
 			button.translatesAutoresizingMaskIntoConstraints = false
@@ -118,26 +117,10 @@ class SettingsViewController: UITableViewController {
 		presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
 	}
 	
-	@objc private func emailSupportButtonTapped() {
-		guard MFMailComposeViewController.canSendMail() else {
-			if let url = NSURL(string: "mailto:\(supportEmail)") {
-				UIApplication.sharedApplication().openURL(url)
-			}
-			return
-		}
-
-		let mailController = MFMailComposeViewController()
-		mailController.setToRecipients([self.supportEmail])
-		mailController.mailComposeDelegate = self
-		presentViewController(mailController, animated: true, completion: nil)
-	}
-	
-}
-
-extension SettingsViewController: MFMailComposeViewControllerDelegate {
-	
-	func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
-		controller.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+	@objc private func supportButtonTapped() {
+		guard let url = NSURL(string: "https://groups.google.com/forum/#!forum/zetta-discuss") else { return }
+		let controller = SFSafariViewController(URL: url)
+		presentViewController(controller, animated: true, completion: nil)
 	}
 	
 }
