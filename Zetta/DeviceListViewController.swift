@@ -11,7 +11,12 @@ import ZettaKit
 
 class DeviceListViewController: UITableViewController {
 
-	private var devices = [ZIKDevice]()
+	private var devices = [ZIKDevice]() {
+		didSet {
+			print("set")
+		}
+	}
+	private var streams = [ZIKStream]()
 	private let cellIdentifier = "Cell"
 	
     override func viewDidLoad() {
@@ -50,23 +55,37 @@ class DeviceListViewController: UITableViewController {
 				self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
 			})
 			
-			for device in self.devices where device.type == "display" {
-				print("adding stream for \(device)")
-				if let message = device.properties["message"] as? String {
-					print("display message: \(message)")
+			for device in self.devices where device.deviceType == .Display {
+				if let stream = device.stream("message") {
+//					self.streams.append(stream)
+					print("adding stream")
+					stream.signal.subscribeNext({ (streamEntry) -> Void in
+						print("next - \(streamEntry)")
+						}, error: { (_) -> Void in
+							print("error")
+						}, completed: { () -> Void in
+							print("complete")
+					})
+					stream.resume()
+					print(stream.title)
 				}
-				print(device.properties)
-				self.tempStream = device.stream("message")
-				print("resuming stream")
-				self.tempStream?.signal.subscribeNext({ (streamEntry) -> Void in
-					print("next - \(streamEntry)")
-					}, error: { (_) -> Void in
-						print("error")
-					}, completed: { () -> Void in
-						print("complete")
-				})
-								self.tempStream?.resume()
 			}
+			
+//				if let message = device.properties["message"] as? String {
+//					print("display message: \(message)")
+//				}
+//				print(device.properties)
+//				self.tempStream = device.stream("message")
+//				print("resuming stream")
+//				self.tempStream?.signal.subscribeNext({ (streamEntry) -> Void in
+//					print("next - \(streamEntry)")
+//					}, error: { (_) -> Void in
+//						print("error")
+//					}, completed: { () -> Void in
+//						print("complete")
+//				})
+//								self.tempStream?.resume()
+//			}
 		})
 	}
 
@@ -101,11 +120,17 @@ class DeviceListViewController: UITableViewController {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else {
 				return UITableViewCell()
 			}
+			
 			let device = devices[indexPath.row]
+			
 			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
 			cell.deviceImageView.tintColor = UIColor(white: 0.9, alpha: 1)
 			cell.titleLabel.text = device.name ?? "Unnamed Device"
 			cell.subtitleLabel.text = device.state
+			
+			cell.titleLabel.enabled = device.deviceType != .Unknown
+			cell.subtitleLabel.enabled = device.deviceType != .Unknown
+			
 			return cell
 		}
     }
@@ -163,7 +188,12 @@ class DeviceListViewController: UITableViewController {
 	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
 		//exclude the message cell
-		return !(indexPath.section == 0 && devices.isEmpty)
+		if indexPath.section == 0 && devices.isEmpty { return false }
+		
+		//exclude unhandled device types
+		if devices[indexPath.row].deviceType == DeviceType.Unknown { return false }
+		
+		return true
 	}
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
