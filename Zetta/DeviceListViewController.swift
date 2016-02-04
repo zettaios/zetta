@@ -11,12 +11,8 @@ import ZettaKit
 
 class DeviceListViewController: UITableViewController {
 
-	private var devices = [ZIKDevice]() {
-		didSet {
-			print("set")
-		}
-	}
-	private var streams = [ZIKStream]()
+	private var devices = [ZIKDevice]()
+//	private var monitoredStreams = [ZIKStream]()
 	private let cellIdentifier = "Cell"
 	
     override func viewDidLoad() {
@@ -38,8 +34,6 @@ class DeviceListViewController: UITableViewController {
 		}
 	}
 	
-	var tempStream: ZIKStream?
-	
 	//since both the server signal and the devices signal send 'completed' events, this is a 'fetch' rather than a 'monitor'
 	private func fetchDevicesFromURL(url: NSURL) {
 		let rootSignal = ZIKSession.sharedSession().root(url)
@@ -49,45 +43,41 @@ class DeviceListViewController: UITableViewController {
 		devicesSignal.collect().subscribeNext({ [unowned self] (devices) -> Void in
 			if let devices = devices as? [ZIKDevice] {
 				self.devices = devices
+				
+//				for device in self.devices where device.deviceType == .Display {
+//					dispatch_async(dispatch_get_main_queue(),{
+//						if let controller = DisplayScreenViewController(device: device) {
+//							self.navigationController?.pushViewController(controller, animated: false)
+//						}
+//					})
+//					break
+//				}
+				
+//				// TO DO: make this generic. Use a list of known stream types and regardless of device type, monitor them
+//				for device in self.devices where device.deviceType == .Display {
+//					print(device.transitions)
+//					if let messageStream = device.stream("message") {
+//						self.monitoredStreams.append(messageStream)
+//						messageStream.signal.subscribeNext({ (streamEntry) -> Void in
+//							if let streamEntry = streamEntry as? ZIKStreamEntry {
+//								self.handleStreamEntry(streamEntry)
+//							}
+//						})
+//						messageStream.resume()
+//					}
+//				}
 			}
 			
 			dispatch_async(dispatch_get_main_queue(),{
 				self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
 			})
-			
-			for device in self.devices where device.deviceType == .Display {
-				if let stream = device.stream("message") {
-//					self.streams.append(stream)
-					print("adding stream")
-					stream.signal.subscribeNext({ (streamEntry) -> Void in
-						print("next - \(streamEntry)")
-						}, error: { (_) -> Void in
-							print("error")
-						}, completed: { () -> Void in
-							print("complete")
-					})
-					stream.resume()
-					print(stream.title)
-				}
-			}
-			
-//				if let message = device.properties["message"] as? String {
-//					print("display message: \(message)")
-//				}
-//				print(device.properties)
-//				self.tempStream = device.stream("message")
-//				print("resuming stream")
-//				self.tempStream?.signal.subscribeNext({ (streamEntry) -> Void in
-//					print("next - \(streamEntry)")
-//					}, error: { (_) -> Void in
-//						print("error")
-//					}, completed: { () -> Void in
-//						print("complete")
-//				})
-//								self.tempStream?.resume()
-//			}
 		})
 	}
+	
+//	private func handleStreamEntry(streamEntry: ZIKStreamEntry) {
+//		print(streamEntry)
+//		print(devices)
+//	}
 
     // MARK: - table view
 
@@ -190,6 +180,9 @@ class DeviceListViewController: UITableViewController {
 		//exclude the message cell
 		if indexPath.section == 0 && devices.isEmpty { return false }
 		
+		//settings
+		if indexPath.section == 1 { return true }
+		
 		//exclude unhandled device types
 		if devices[indexPath.row].deviceType == DeviceType.Unknown { return false }
 		
@@ -206,11 +199,10 @@ class DeviceListViewController: UITableViewController {
 			presentViewController(nav, animated: true, completion: nil)
 		} else {
 			let device = devices[indexPath.row]
-			print(device.name)
-			if device.type == "display" {
-				print(device.properties["message"])
+			guard device.deviceType != .Unknown else { return }
+			if device.deviceType == .Display, let controller = DisplayScreenViewController(device: device) {
+				self.navigationController?.pushViewController(controller, animated: true)
 			}
-			
 		}
 	}
 }

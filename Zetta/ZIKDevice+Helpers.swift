@@ -19,5 +19,5 @@ extension ZIKDevice {
 	var deviceType: DeviceType {
 		return DeviceType(rawValue: type) ?? .Unknown
 	}
-	
+		
 }

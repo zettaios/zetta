@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		190E2CD31F528248381A253D /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93731F1E0D5A6AA529EDBBCC /* Pods.framework */; };
+		C53855541C63CDFE00C53339 /* DisplayScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53855531C63CDFE00C53339 /* DisplayScreenViewController.swift */; };
+		C53855561C63CE0A00C53339 /* DisplayScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53855551C63CE0A00C53339 /* DisplayScreenView.swift */; };
 		C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C544BE801C4ABAA20072CECD /* AppUtilities.swift */; };
 		C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */; };
 		C560B5451C4996A900E5F1F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C560B5441C4996A900E5F1F9 /* Assets.xcassets */; };
@@ -20,13 +22,15 @@
 		C5B72C621C53F92400E4B68C /* AddConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C611C53F92400E4B68C /* AddConnectionViewController.swift */; };
 		C5B72C641C53F97300E4B68C /* AddConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C631C53F97300E4B68C /* AddConnectionView.swift */; };
 		C5B72C681C53FB8B00E4B68C /* BorderedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C671C53FB8B00E4B68C /* BorderedTextField.swift */; };
-		C5C42C691C62429100164AC1 /* Device+DeviceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C42C681C62429100164AC1 /* Device+DeviceType.swift */; };
+		C5C42C691C62429100164AC1 /* ZIKDevice+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C42C681C62429100164AC1 /* ZIKDevice+Helpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		7ABFB02E682D9D8209158878 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		8713BDDCF40B417C09FA6F21 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		93731F1E0D5A6AA529EDBBCC /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C53855531C63CDFE00C53339 /* DisplayScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayScreenViewController.swift; sourceTree = "<group>"; };
+		C53855551C63CE0A00C53339 /* DisplayScreenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayScreenView.swift; sourceTree = "<group>"; };
 		C544BE801C4ABAA20072CECD /* AppUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppUtilities.swift; sourceTree = "<group>"; };
 		C560B53A1C4996A900E5F1F9 /* Zetta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zetta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -41,7 +45,7 @@
 		C5B72C611C53F92400E4B68C /* AddConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddConnectionViewController.swift; sourceTree = "<group>"; };
 		C5B72C631C53F97300E4B68C /* AddConnectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddConnectionView.swift; sourceTree = "<group>"; };
 		C5B72C671C53FB8B00E4B68C /* BorderedTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderedTextField.swift; sourceTree = "<group>"; };
-		C5C42C681C62429100164AC1 /* Device+DeviceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Device+DeviceType.swift"; sourceTree = "<group>"; };
+		C5C42C681C62429100164AC1 /* ZIKDevice+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ZIKDevice+Helpers.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		C53855571C63CF1D00C53339 /* Display Screen */ = {
+			isa = PBXGroup;
+			children = (
+				C53855531C63CDFE00C53339 /* DisplayScreenViewController.swift */,
+				C53855551C63CE0A00C53339 /* DisplayScreenView.swift */,
+			);
+			name = "Display Screen";
+			sourceTree = "<group>";
+		};
 		C560B5311C4996A900E5F1F9 = {
 			isa = PBXGroup;
 			children = (
@@ -98,8 +111,9 @@
 				C5B72C5B1C53ECFE00E4B68C /* AppDefaults.swift */,
 				C560B55A1C49B41800E5F1F9 /* AppStyles.swift */,
 				C544BE801C4ABAA20072CECD /* AppUtilities.swift */,
-				C5C42C681C62429100164AC1 /* Device+DeviceType.swift */,
+				C5C42C681C62429100164AC1 /* ZIKDevice+Helpers.swift */,
 				C5B72C5E1C53F28400E4B68C /* Device List */,
+				C53855571C63CF1D00C53339 /* Display Screen */,
 				C5B72C5D1C53F27800E4B68C /* Settings */,
 				C560B5441C4996A900E5F1F9 /* Assets.xcassets */,
 				C560B5491C4996A900E5F1F9 /* Info.plist */,
@@ -267,14 +281,16 @@
 				C5B72C5C1C53ECFE00E4B68C /* AppDefaults.swift in Sources */,
 				C560B5571C49B0F900E5F1F9 /* DeviceListViewController.swift in Sources */,
 				C560B55B1C49B41800E5F1F9 /* AppStyles.swift in Sources */,
+				C53855541C63CDFE00C53339 /* DisplayScreenViewController.swift in Sources */,
 				C560B5591C49B14800E5F1F9 /* DeviceCell.swift in Sources */,
 				C5B72C641C53F97300E4B68C /* AddConnectionView.swift in Sources */,
 				C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */,
-				C5C42C691C62429100164AC1 /* Device+DeviceType.swift in Sources */,
+				C5C42C691C62429100164AC1 /* ZIKDevice+Helpers.swift in Sources */,
 				C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */,
 				C5B72C581C53CD3200E4B68C /* SettingsViewController.swift in Sources */,
 				C5B72C621C53F92400E4B68C /* AddConnectionViewController.swift in Sources */,
 				C5B72C601C53F32F00E4B68C /* ConnectionViewController.swift in Sources */,
+				C53855561C63CE0A00C53339 /* DisplayScreenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

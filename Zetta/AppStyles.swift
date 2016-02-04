@@ -26,7 +26,7 @@ extension UIColor {
 	}
 	
 	class func tableViewSeparatorColor() -> UIColor {
-		return UIColor(red:0.784,  green:0.780,  blue:0.800, alpha:1)
+		return UIColor(red:0.863,  green:0.863,  blue:0.878, alpha:1)
 	}
 	
 }
