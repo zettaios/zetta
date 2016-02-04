@@ -12,7 +12,7 @@ import ZettaKit
 class DisplayScreenViewController: UIViewController {
 	
 	private var device: ZIKDevice!
-	private var messageStream: ZIKStream!
+	private var messageStream: ZIKStream?
 
 	init?(device: ZIKDevice) {
 		super.init(nibName: nil, bundle: nil)
@@ -27,13 +27,13 @@ class DisplayScreenViewController: UIViewController {
 		//start monitoring the message stream
 		if let messageStream = device.stream("message") {
 			self.messageStream = messageStream
-			self.messageStream.signal.subscribeNext { [weak self] (streamEntry) -> Void in
+			self.messageStream?.signal.subscribeNext { [weak self] (streamEntry) -> Void in
 				guard let streamEntry = streamEntry as? ZIKStreamEntry else { return }
 				dispatch_async(dispatch_get_main_queue(), { () -> Void in
 					self?.handleStreamEntry(streamEntry)
 				})
 			}
-			self.messageStream.resume()
+			self.messageStream?.resume()
 		}
 	}
 	
@@ -54,6 +54,12 @@ class DisplayScreenViewController: UIViewController {
 
 		title = device.name ?? "Unnamed Device"
 		updateMessage(device.properties["message"] as? String, animated: false)
+	}
+	
+	override func viewWillDisappear(animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		self.messageStream?.stop()
 	}
 	
 	private func updateMessage(message: String?, animated: Bool) {
