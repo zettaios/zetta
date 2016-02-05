@@ -23,6 +23,8 @@
 		C5B72C641C53F97300E4B68C /* AddConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C631C53F97300E4B68C /* AddConnectionView.swift */; };
 		C5B72C681C53FB8B00E4B68C /* BorderedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C671C53FB8B00E4B68C /* BorderedTextField.swift */; };
 		C5C42C691C62429100164AC1 /* ZIKDevice+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C42C681C62429100164AC1 /* ZIKDevice+Helpers.swift */; };
+		C5FF9A5E1C65019400BF14DB /* HueBulbViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5FF9A5D1C65019400BF14DB /* HueBulbViewController.swift */; };
+		C5FF9A601C6501A400BF14DB /* HueBulbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5FF9A5F1C6501A400BF14DB /* HueBulbView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +48,8 @@
 		C5B72C631C53F97300E4B68C /* AddConnectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddConnectionView.swift; sourceTree = "<group>"; };
 		C5B72C671C53FB8B00E4B68C /* BorderedTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderedTextField.swift; sourceTree = "<group>"; };
 		C5C42C681C62429100164AC1 /* ZIKDevice+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ZIKDevice+Helpers.swift"; sourceTree = "<group>"; };
+		C5FF9A5D1C65019400BF14DB /* HueBulbViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HueBulbViewController.swift; sourceTree = "<group>"; };
+		C5FF9A5F1C6501A400BF14DB /* HueBulbView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HueBulbView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +86,8 @@
 			children = (
 				C53855531C63CDFE00C53339 /* DisplayScreenViewController.swift */,
 				C53855551C63CE0A00C53339 /* DisplayScreenView.swift */,
+				C5FF9A5D1C65019400BF14DB /* HueBulbViewController.swift */,
+				C5FF9A5F1C6501A400BF14DB /* HueBulbView.swift */,
 			);
 			name = "Display Screen";
 			sourceTree = "<group>";
@@ -279,6 +285,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5B72C681C53FB8B00E4B68C /* BorderedTextField.swift in Sources */,
+				C5FF9A5E1C65019400BF14DB /* HueBulbViewController.swift in Sources */,
 				C5B72C5C1C53ECFE00E4B68C /* AppDefaults.swift in Sources */,
 				C560B5571C49B0F900E5F1F9 /* DeviceListViewController.swift in Sources */,
 				C560B55B1C49B41800E5F1F9 /* AppStyles.swift in Sources */,
@@ -291,6 +298,7 @@
 				C5B72C581C53CD3200E4B68C /* SettingsViewController.swift in Sources */,
 				C5B72C621C53F92400E4B68C /* AddConnectionViewController.swift in Sources */,
 				C5B72C601C53F32F00E4B68C /* ConnectionViewController.swift in Sources */,
+				C5FF9A601C6501A400BF14DB /* HueBulbView.swift in Sources */,
 				C53855561C63CE0A00C53339 /* DisplayScreenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

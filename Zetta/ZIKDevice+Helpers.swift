@@ -9,7 +9,7 @@
 import Foundation
 
 enum DeviceType: String {
-	case Display = "display", Unknown
+	case Display = "display", HueBulb = "huebulb", Unknown
 }
 
 import ZettaKit

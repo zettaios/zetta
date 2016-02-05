@@ -194,6 +194,8 @@ class DeviceListViewController: UITableViewController {
 			if device.deviceType == .Display, let controller = DisplayScreenViewController(device: device) {
 				controller.delegate = self
 				self.navigationController?.pushViewController(controller, animated: true)
+			} else if device.deviceType == .HueBulb, let controller = HueBulbViewController(device: device) {
+				self.navigationController?.pushViewController(controller, animated: true)
 			}
 		}
 	}
