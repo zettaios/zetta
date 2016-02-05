@@ -9,8 +9,13 @@
 import UIKit
 import ZettaKit
 
+protocol DisplayScreenDelegate: class {
+	func displayScreenController(controller: DisplayScreenViewController, didTransitionDevice device: ZIKDevice)
+}
+
 class DisplayScreenViewController: UIViewController {
 	
+	weak var delegate: DisplayScreenDelegate?
 	private var device: ZIKDevice!
 	private var messageStream: ZIKStream?
 
@@ -94,17 +99,16 @@ class DisplayScreenViewController: UIViewController {
 	// MARK: - changing the message
 	
 	private func changeMessage(message: String) {
-//		mainView.newMessageField.enabled = false
-//		mainView.newMessageField.userInteractionEnabled = false
-		device.transition("change", withArguments: ["message": message], andCompletion: { (error, device) -> Void in
-			print("done")
-			print("error: \(error)")
-			dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
-				self?.mainView.newMessageField.text = nil
-				self?.mainView.newMessageField.userInteractionEnabled = true
-			})
+		self.mainView.newMessageField.text = nil
+		device.transition("change", withArguments: ["message": message], andCompletion: { [weak self] (error, device) -> Void in
+			if let error = error {
+				print(error)
+				return
+			}
 			
-//			self?.mainView.newMessageField.enabled = true
+			if let unwrappedSelf = self {
+				unwrappedSelf.delegate?.displayScreenController(unwrappedSelf, didTransitionDevice: device)
+			}
 		})
 	}
 	

@@ -44,15 +44,6 @@ class DeviceListViewController: UITableViewController {
 			if let devices = devices as? [ZIKDevice] {
 				self.devices = devices
 				
-//				for device in self.devices where device.deviceType == .Display {
-//					dispatch_async(dispatch_get_main_queue(),{
-//						if let controller = DisplayScreenViewController(device: device) {
-//							self.navigationController?.pushViewController(controller, animated: false)
-//						}
-//					})
-//					break
-//				}
-				
 //				// TO DO: make this generic. Use a list of known stream types and regardless of device type, monitor them
 //				for device in self.devices where device.deviceType == .Display {
 //					print(device.transitions)
@@ -201,6 +192,7 @@ class DeviceListViewController: UITableViewController {
 			let device = devices[indexPath.row]
 			guard device.deviceType != .Unknown else { return }
 			if device.deviceType == .Display, let controller = DisplayScreenViewController(device: device) {
+				controller.delegate = self
 				self.navigationController?.pushViewController(controller, animated: true)
 			}
 		}
@@ -214,6 +206,17 @@ extension DeviceListViewController: SettingsDelegate {
 		devices.removeAll()
 		tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
 		fetchDevices()
+	}
+	
+}
+
+extension DeviceListViewController: DisplayScreenDelegate {
+	
+	func displayScreenController(controller: DisplayScreenViewController, didTransitionDevice device: ZIKDevice) {
+		if let deviceIndex = devices.map({ $0.uuid }).indexOf(device.uuid) {
+			devices[deviceIndex] = device
+			tableView.reloadData()
+		}
 	}
 	
 }
