@@ -54,12 +54,21 @@ class DisplayScreenViewController: UIViewController {
 
 		title = device.name ?? "Unnamed Device"
 		updateMessage(device.properties["message"] as? String, animated: false)
+		mainView.newMessageField.delegate = self
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
 		super.viewWillDisappear(animated)
 		
 		self.messageStream?.stop()
+	}
+	
+	// MARK: - stream handling
+	
+	private func handleStreamEntry(streamEntry: ZIKStreamEntry) {
+		if let message = streamEntry.data as? String {
+			updateMessage(message, animated: true)
+		}
 	}
 	
 	private func updateMessage(message: String?, animated: Bool) {
@@ -69,25 +78,44 @@ class DisplayScreenViewController: UIViewController {
 			mainView.messageLabel.text = "Display: None"
 		}
 		
-		//handle size changes gracefully (also adds some polish to a dingleline text change)
+		//handle size changes gracefully (also adds some polish to a single-line text change)
 		if animated {
 			mainView.messageLabel.alpha = 0
 			UIView.animateWithDuration(0.25, animations: { [weak self] () -> Void in
 				self?.mainView.layoutIfNeeded()
-			}, completion: { [weak self] (_) -> Void in
-				UIView.animateWithDuration(0.25, animations: { () -> Void in
-					self?.mainView.messageLabel.alpha = 1
+				}, completion: { [weak self] (_) -> Void in
+					UIView.animateWithDuration(0.25, animations: { () -> Void in
+						self?.mainView.messageLabel.alpha = 1
+					})
 				})
-			})
 		}
 	}
 	
-	// MARK: - stream handling
+	// MARK: - changing the message
 	
-	private func handleStreamEntry(streamEntry: ZIKStreamEntry) {
-		if let message = streamEntry.data as? String {
-			updateMessage(message, animated: true)
-		}
+	private func changeMessage(message: String) {
+//		mainView.newMessageField.enabled = false
+//		mainView.newMessageField.userInteractionEnabled = false
+		device.transition("change", withArguments: ["message": message], andCompletion: { (error, device) -> Void in
+			print("done")
+			print("error: \(error)")
+			dispatch_async(dispatch_get_main_queue(), { [weak self] () -> Void in
+				self?.mainView.newMessageField.text = nil
+				self?.mainView.newMessageField.userInteractionEnabled = true
+			})
+			
+//			self?.mainView.newMessageField.enabled = true
+		})
+	}
+	
+}
+
+extension DisplayScreenViewController: UITextFieldDelegate {
+	
+	func textFieldShouldReturn(textField: UITextField) -> Bool {
+		guard let text = textField.text else { return false }
+		changeMessage(text)
+		return false
 	}
 	
 }
