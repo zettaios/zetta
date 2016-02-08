@@ -40,3 +40,16 @@ extension UIView {
 	}
 	
 }
+
+extension UILabel {
+
+	class func devicePropertyLabel(text text: String?) -> UILabel {
+		let label = UILabel()
+		label.text = text
+		label.font = UIFont.systemFontOfSize(13)
+		label.textColor = UIColor.lightGrayColor()
+		label.textAlignment = .Center
+		return label
+	}
+
+}

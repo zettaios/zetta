@@ -55,6 +55,29 @@ class HueBulbViewController: UIViewController {
 		super.viewDidLoad()
 
 		title = device.name ?? "Unnamed Device"
+
+//		mainView.loopSwitch.enabled = false
+//		mainView.blinkSwitch.enabled = false
+		mainView.brightnessSlider.value = 0.5
+//		mainView.brightnessSlider.enabled = false
+		mainView.colorPicker.colors = [
+			UIColor(red:0.808, green:0.867, blue:0.224, alpha:1),
+			UIColor(red:0.549, green:0.769, blue:0.290, alpha:1),
+			UIColor(red:0.298, green:0.686, blue:0.314, alpha:1),
+			UIColor(red:0.000, green:0.592, blue:0.533, alpha:1),
+			UIColor(red:0.008, green:0.729, blue:0.824, alpha:1),
+			UIColor(red:0.020, green:0.576, blue:0.827, alpha:1),
+			UIColor(red:0.133, green:0.592, blue:0.957, alpha:1)
+		]
+		mainView.colorPicker.delegate = self
 	}
 	
+}
+
+extension HueBulbViewController: ColorPickerDelegate {
+	func colorPicker(colorPicker: ColorPicker, didPickColorAtIndex index: Int) {
+ 		if index < colorPicker.colors.count {
+			print(colorPicker.colors[index])
+		}
+	}
 }

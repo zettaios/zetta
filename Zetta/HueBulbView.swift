@@ -25,35 +25,15 @@ class HueBulbView: UIView {
 		return imageView
 	}()
 	
+	private let loopLabel = UILabel.devicePropertyLabel(text: "Loop")
 	private let loopSwitchPlaceholder = UIView()
 	let loopSwitch = UISwitch()
+	
+	private let blinkLabel = UILabel.devicePropertyLabel(text: "Blink")
 	let blinkSwitchPlaceholder = UIView()
 	let blinkSwitch = UISwitch()
 	
-	private lazy var loopLabel: UILabel = {
-		let label = UILabel()
-		label.text = "Loop"
-		label.font = UIFont.systemFontOfSize(13)
-		label.textColor = UIColor.lightGrayColor()
-		return label
-	}()
-	
-	private lazy var blinkLabel: UILabel = {
-		let label = UILabel()
-		label.text = "Blink"
-		label.font = self.loopLabel.font
-		label.textColor = self.loopLabel.textColor
-		return label
-	}()
-	
-	private lazy var brightnessLabel: UILabel = {
-		let label = UILabel()
-		label.text = "Brightness"
-		label.font = UIFont.systemFontOfSize(13)
-		label.textColor = UIColor.lightGrayColor()
-		label.textAlignment = .Center
-		return label
-	}()
+	private let brightnessLabel = UILabel.devicePropertyLabel(text: "Brightness")
 	
 	lazy var brightnessSlider: UISlider = {
 		let slider = UISlider()
@@ -67,6 +47,9 @@ class HueBulbView: UIView {
 		view.backgroundColor = UIColor(white: 0.975, alpha: 1)
 		return view
 	}()
+	
+	private let colorLabel = UILabel.devicePropertyLabel(text: "Color Picker")
+	let colorPicker = ColorPicker()
 	
 	//stacks
 	
@@ -86,10 +69,17 @@ class HueBulbView: UIView {
 		return stack
 	}()
 	
-	private lazy var mainStack: UIStackView = {
-		let stack = UIStackView(arrangedSubviews: [self.bulbStack, self.brightnessStack])
+	private lazy var colorStack: UIStackView = {
+		let stack = UIStackView(arrangedSubviews: [self.colorLabel, self.colorPicker])
 		stack.axis = .Vertical
-		stack.spacing = 20
+		stack.spacing = 10
+		return stack
+	}()
+	
+	private lazy var mainStack: UIStackView = {
+		let stack = UIStackView(arrangedSubviews: [self.bulbStack, self.brightnessStack, self.colorStack])
+		stack.axis = .Vertical
+		stack.spacing = 40
 		stack.layoutMarginsRelativeArrangement = true
 		stack.layoutMargins = UIEdgeInsets(top: 30, left: 0, bottom: 20, right: 0)
 		return stack
@@ -115,7 +105,7 @@ class HueBulbView: UIView {
 		scrollView.addSubview(mainStack)
 		
 		//uiswitch is not resizeable, so a transform is used
-		let switchScale: CGFloat = 1.5
+		let switchScale: CGFloat = UIScreen.mainScreen().bounds.size.width * 0.004 //equates to 1.5x on an iPhone 6
 		loopSwitch.transform = CGAffineTransformMakeScale(switchScale, switchScale)
 		blinkSwitch.transform = CGAffineTransformMakeScale(switchScale, switchScale)
 
@@ -169,6 +159,10 @@ class HueBulbView: UIView {
 			
 			brightnessBackground.snp_makeConstraints { (make) -> Void in
 				make.edges.equalTo(brightnessStack)
+			}
+			
+			colorPicker.snp_makeConstraints { (make) -> Void in
+				make.height.equalTo(70)
 			}
 			
 			constraintsAdded = true;
