@@ -29,6 +29,14 @@ extension UIColor {
 		return UIColor(red:0.863,  green:0.863,  blue:0.878, alpha:1)
 	}
 	
+	convenience init?(colorValues: [Int]) {
+		guard colorValues.count == 3 else { return nil }
+		let red = CGFloat(colorValues[0])
+		let green = CGFloat(colorValues[1])
+		let blue = CGFloat(colorValues[2])
+		self.init(red: red, green: green, blue: blue, alpha: 1)
+	}
+	
 }
 
 extension UIView {

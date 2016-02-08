@@ -18,7 +18,15 @@ class HueBulbView: UIView {
 		return scrollView
 	}()
 	
-	lazy var lightBulb: UIImageView = {
+	lazy var filledLightBulb: UIImageView = {
+		let imageView = UIImageView()
+		imageView.contentMode = .ScaleAspectFit
+		imageView.image = UIImage(named: "Light Bulb Filled")?.imageWithRenderingMode(.AlwaysTemplate)
+		imageView.tintColor = UIColor.clearColor()
+		return imageView
+	}()
+	
+	private lazy var lightBulb: UIImageView = {
 		let imageView = UIImageView()
 		imageView.contentMode = .ScaleAspectFit
 		imageView.image = UIImage(named: "Light Bulb")
@@ -109,12 +117,13 @@ class HueBulbView: UIView {
 		loopSwitch.transform = CGAffineTransformMakeScale(switchScale, switchScale)
 		blinkSwitch.transform = CGAffineTransformMakeScale(switchScale, switchScale)
 
-		for view in [loopSwitch, loopLabel, blinkSwitch, blinkLabel, brightnessBackground] {
+		for view in [filledLightBulb, loopSwitch, loopLabel, blinkSwitch, blinkLabel, brightnessBackground] {
 			view.translatesAutoresizingMaskIntoConstraints = false
 			mainStack.addSubview(view)
 		}
 		
 		mainStack.sendSubviewToBack(brightnessBackground)
+		mainStack.sendSubviewToBack(filledLightBulb)
 		
 		setNeedsUpdateConstraints()
 	}
@@ -129,8 +138,13 @@ class HueBulbView: UIView {
 				make.edges.width.equalTo(scrollView)
 			}
 			
-			lightBulb.snp_makeConstraints { (make) -> Void in
+			filledLightBulb.snp_makeConstraints { (make) -> Void in
 				make.height.equalTo(scrollView).multipliedBy(0.4)
+			}
+			
+			lightBulb.snp_makeConstraints { (make) -> Void in
+				make.center.equalTo(filledLightBulb)
+				make.size.equalTo(filledLightBulb)
 			}
 			
 			loopSwitchPlaceholder.snp_makeConstraints { (make) -> Void in

@@ -12,6 +12,7 @@ import ZettaKit
 class HueBulbViewController: UIViewController {
 
 	private var device: ZIKDevice!
+	private var colorStream: ZIKStream?
 	
 	init?(device: ZIKDevice) {
 		super.init(nibName: nil, bundle: nil)
@@ -23,20 +24,26 @@ class HueBulbViewController: UIViewController {
 		
 		self.device = device
 		
-		print(device.description)
-		print(device.properties)
+//		print(device.description)
+//		print(device.properties)
+//		print(device.state)
 		
-//		//start monitoring the message stream
-//		if let messageStream = device.stream("message") {
-//			self.messageStream = messageStream
-//			self.messageStream?.signal.subscribeNext { [weak self] (streamEntry) -> Void in
-//				guard let streamEntry = streamEntry as? ZIKStreamEntry else { return }
-//				dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//					self?.handleStreamEntry(streamEntry)
-//				})
-//			}
-//			self.messageStream?.resume()
-//		}
+		//start monitoring the color stream
+		if let colorStream = device.stream("colorValue") {
+			print("ok")
+			self.colorStream = colorStream
+			self.colorStream?.signal.subscribeNext { [weak self] (streamEntry) -> Void in
+				guard let streamEntry = streamEntry as? ZIKStreamEntry else { return }
+				dispatch_async(dispatch_get_main_queue(), { () -> Void in
+					self?.handleStreamEntry(streamEntry)
+				})
+				print("color change")
+				print(streamEntry)
+			}
+			self.colorStream?.resume()
+		} else {
+			print("no such stream")
+		}
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -55,6 +62,10 @@ class HueBulbViewController: UIViewController {
 		super.viewDidLoad()
 
 		title = device.name ?? "Unnamed Device"
+		
+		if let colorValues = device.properties["colorValue"] as? [Int] {
+			updateBulbColor(UIColor(colorValues: colorValues))
+		}
 
 //		mainView.loopSwitch.enabled = false
 //		mainView.blinkSwitch.enabled = false
@@ -70,6 +81,25 @@ class HueBulbViewController: UIViewController {
 			UIColor(red:0.133, green:0.592, blue:0.957, alpha:1)
 		]
 		mainView.colorPicker.delegate = self
+	}
+	
+	override func viewWillDisappear(animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		self.colorStream?.stop()
+	}
+	
+	private func updateBulbColor(color: UIColor?) {
+		mainView.filledLightBulb.tintColor = color ?? .clearColor()
+	}
+	
+	private func handleStreamEntry(streamEntry: ZIKStreamEntry) {
+		print("new: \(streamEntry)")
+		if let colorValues = device.properties["colorValue"] as? [Int] {
+			updateBulbColor(UIColor(colorValues: colorValues))
+		} else {
+			updateBulbColor(nil)
+		}
 	}
 	
 }
