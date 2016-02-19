@@ -12,7 +12,6 @@ import ZettaKit
 class DeviceListViewController: UITableViewController {
 
 	private var devices = [ZIKDevice]()
-//	private var monitoredStreams = [ZIKStream]()
 	private let cellIdentifier = "Cell"
 	
     override func viewDidLoad() {
@@ -41,34 +40,13 @@ class DeviceListViewController: UITableViewController {
 		let devicesSignal = ZIKSession.sharedSession().devices(serverSignal)
 		
 		devicesSignal.collect().subscribeNext({ [unowned self] (devices) -> Void in
-			if let devices = devices as? [ZIKDevice] {
-				self.devices = devices
-				
-//				// TO DO: make this generic. Use a list of known stream types and regardless of device type, monitor them
-//				for device in self.devices where device.deviceType == .Display {
-//					print(device.transitions)
-//					if let messageStream = device.stream("message") {
-//						self.monitoredStreams.append(messageStream)
-//						messageStream.signal.subscribeNext({ (streamEntry) -> Void in
-//							if let streamEntry = streamEntry as? ZIKStreamEntry {
-//								self.handleStreamEntry(streamEntry)
-//							}
-//						})
-//						messageStream.resume()
-//					}
-//				}
-			}
-			
+			guard let devices = devices as? [ZIKDevice] else { return }
+			self.devices = devices
 			dispatch_async(dispatch_get_main_queue(),{
 				self.tableView.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Automatic)
 			})
 		})
 	}
-	
-//	private func handleStreamEntry(streamEntry: ZIKStreamEntry) {
-//		print(streamEntry)
-//		print(devices)
-//	}
 
     // MARK: - table view
 
@@ -164,16 +142,8 @@ class DeviceListViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-		//exclude the message cell
-		if indexPath.section == 0 && devices.isEmpty { return false }
-		
-		//settings
-//		if indexPath.section == 1 { return true }
-		
-		//exclude unhandled device types
-//		if devices[indexPath.row].deviceType == DeviceType.Unknown { return false }
-		
-		return true
+		//exclude the 'no devices' message cell
+		return !devices.isEmpty || indexPath.section == 1
 	}
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -188,27 +158,6 @@ class DeviceListViewController: UITableViewController {
 			let device = devices[indexPath.row]
 			let controller = DeviceViewController(device: device)
 			navigationController?.pushViewController(controller, animated: true)
-			
-//			print("name: \(device.name ?? "unknown")")
-//			print("transitions: \(device.transitions)")
-//			print("properties: \(device.properties)")
-//			print("links: \(device.links)")
-//			for link in device.links {
-//				if let link = link as? ZIKLink {
-//					print(link.description)
-//					print(link.href)
-//					print(link.rel)
-////					print(link.title)
-//				}
-//			}
-			
-//			guard device.deviceType != .Unknown else { return }
-//			if device.deviceType == .Display, let controller = DisplayScreenViewController(device: device) {
-//				controller.delegate = self
-//				self.navigationController?.pushViewController(controller, animated: true)
-//			} else if device.deviceType == .HueBulb, let controller = HueBulbViewController(device: device) {
-//				self.navigationController?.pushViewController(controller, animated: true)
-//			}
 		}
 	}
 }
@@ -224,13 +173,13 @@ extension DeviceListViewController: SettingsDelegate {
 	
 }
 
-extension DeviceListViewController: DisplayScreenDelegate {
-	
-	func displayScreenController(controller: DisplayScreenViewController, didTransitionDevice device: ZIKDevice) {
-		if let deviceIndex = devices.map({ $0.uuid }).indexOf(device.uuid) {
-			devices[deviceIndex] = device
-			tableView.reloadData()
-		}
-	}
-	
-}
+//extension DeviceListViewController: DisplayScreenDelegate {
+//	
+//	func displayScreenController(controller: DisplayScreenViewController, didTransitionDevice device: ZIKDevice) {
+//		if let deviceIndex = devices.map({ $0.uuid }).indexOf(device.uuid) {
+//			devices[deviceIndex] = device
+//			tableView.reloadData()
+//		}
+//	}
+//	
+//}
