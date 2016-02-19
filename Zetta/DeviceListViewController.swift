@@ -105,7 +105,7 @@ class DeviceListViewController: UITableViewController {
 			let device = devices[indexPath.row]
 			
 			cell.deviceImageView.image = UIImage(named: "Device Placeholder")
-			cell.titleLabel.text = device.name ?? "Unnamed Device"
+			cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
 			cell.subtitleLabel.text = device.state
 			
 			return cell

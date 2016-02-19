@@ -41,7 +41,7 @@ class DeviceViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		title = device.name ?? "Unnamed Device"
+		title = (device.name ?? device.type) ?? "Unnamed Device"
 		
 		let header = UIImageView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: tableView.bounds.height * 0.5))
 		header.image = UIImage(named: "Device Placeholder")
