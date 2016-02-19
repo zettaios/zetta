@@ -12,7 +12,10 @@ import ZettaKit
 class DeviceViewController: UITableViewController {
 
 	private let device: ZIKDevice
+	private var monitoredStreams = [ZIKStream]()
 	private var mostRecentStreamValues = [ZIKStream: AnyObject]()
+	private var logsStream: ZIKStream? //so it can be identified and excluded from streams section
+	private var logs = [ZIKLogStreamEntry]()
 	private let noFieldsActionCellIdentifier = "No Fields Action Cell"
 	private let singleFieldActionCellIdentifier = "Single Field Action Cell"
 	
@@ -20,6 +23,8 @@ class DeviceViewController: UITableViewController {
 		self.device = device
 		
 		super.init(nibName: nil, bundle: nil)
+		
+		monitorStreams()
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -50,39 +55,38 @@ class DeviceViewController: UITableViewController {
 	
 	// MARK: - monitoring streams
 	
-	private lazy var monitoredStreams: [ZIKStream] = {
-		guard let links = self.device.links as? [ZIKLink] else { return [ZIKStream]() }
+	private func monitorStreams() {
+		//monitor all streams with rel: monitor. Store the most recent value for each, and all values for the logs stream.
+		guard let links = self.device.links as? [ZIKLink] else { return }
 		
 		let monitoredLinks = links.filter({ (link) -> Bool in
-			if let rels = link.rel as? [String] where rels.contains("monitor") && link.title != "logs" {
+			if let rels = link.rel as? [String] where rels.contains("monitor") {
 				return true
 			}
 			return false
 		})
 		
-		let monitoredStreams = monitoredLinks.map { (link) -> ZIKStream in
-			return ZIKStream(link: link)
+		for link in monitoredLinks {
+			let stream = ZIKStream(link: link)
+			if link.title == "logs" {
+				self.logsStream = stream
+			}
+			self.monitoredStreams.append(stream)
 		}
 		
-		for stream in monitoredStreams {
+		for stream in self.monitoredStreams {
 			stream.signal.subscribeNext({ [weak self] (streamEntry) -> Void in
-				guard let streamEntry = streamEntry as? ZIKStreamEntry else { return }
 				dispatch_async(dispatch_get_main_queue(), { () -> Void in
-					self?.handleStreamEntry(streamEntry, fromStream: stream)
+					if let streamEntry = streamEntry as? ZIKLogStreamEntry {
+						self?.logs.insert(streamEntry, atIndex: 0)
+						self?.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 3)], withRowAnimation: .Automatic)
+					} else if let streamEntry = streamEntry as? ZIKStreamEntry, index = self?.monitoredStreams.indexOf(stream) {
+						self?.mostRecentStreamValues[stream] = streamEntry.data
+						self?.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .None)
+					}
 				})
 			})
 			stream.resume()
-		}
-		
-		return monitoredStreams
-	}()
-	
-	private func handleStreamEntry(streamEntry: ZIKStreamEntry, fromStream stream: ZIKStream) {
-		mostRecentStreamValues[stream] = streamEntry.data
-		if let index = monitoredStreams.indexOf(stream) {
-			tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .None)
-		} else {
-			tableView.reloadData()
 		}
 	}
 	
@@ -104,10 +108,10 @@ class DeviceViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
-		case 0: return monitoredStreams.count
+		case 0: return monitoredStreams.filter({ $0 != logsStream }).count
 		case 1: return device.transitions.count
 		case 2: return device.properties.count
-		case 3: return 1
+		case 3: return logs.count
 		default: return 0
 		}
     }
@@ -120,7 +124,7 @@ class DeviceViewController: UITableViewController {
 		cell.detailTextLabel?.minimumScaleFactor = 0.8
 		
 		if indexPath.section == 0 {
-			let stream = monitoredStreams[indexPath.row]
+			let stream = monitoredStreams.filter({ $0 != logsStream })[indexPath.row]
 			cell.textLabel?.text = stream.title
 			cell.detailTextLabel?.text = mostRecentStreamValues[stream] as? String
 		} else if indexPath.section == 1 {
@@ -135,7 +139,8 @@ class DeviceViewController: UITableViewController {
 				cell.detailTextLabel?.text = value
 			}
 		} else {
-			cell.detailTextLabel?.text = "to follow..."
+			let log = logs[indexPath.row]
+			cell.detailTextLabel?.text = log.description
 		}
 		
         return cell
