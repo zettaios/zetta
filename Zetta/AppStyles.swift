@@ -17,6 +17,10 @@ extension UIFont {
 
 extension UIColor {
 	
+	class func appTintColor() -> UIColor {
+		return UIColor(red:0.980,  green:0.271,  blue:0.125, alpha:1)
+	}
+	
 	class func appDarkGrayColor() -> UIColor {
 		return UIColor(white: 0.290, alpha: 1)
 	}
@@ -60,4 +64,19 @@ extension UILabel {
 		return label
 	}
 
+}
+
+extension UIButton {
+	
+	class func deviceActionButton(title title: String?) -> UIButton {
+		let button = UIButton(type: .System)
+		button.setTitle(title, forState: .Normal)
+		button.titleLabel?.font = UIFont.boldSystemFontOfSize(16)
+		button.backgroundColor = UIColor.appTintColor()
+		button.tintColor = UIColor.whiteColor()
+		button.layer.cornerRadius = 3
+		button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+		return button
+	}
+	
 }

@@ -11,6 +11,7 @@
 		C53855541C63CDFE00C53339 /* DisplayScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53855531C63CDFE00C53339 /* DisplayScreenViewController.swift */; };
 		C53855561C63CE0A00C53339 /* DisplayScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53855551C63CE0A00C53339 /* DisplayScreenView.swift */; };
 		C53C1BDF1C68024B00FEA5C9 /* ColorPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53C1BDE1C68024B00FEA5C9 /* ColorPickerCell.swift */; };
+		C54094EB1C6EC04C00257831 /* DeviceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54094EA1C6EC04C00257831 /* DeviceViewController.swift */; };
 		C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C544BE801C4ABAA20072CECD /* AppUtilities.swift */; };
 		C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */; };
 		C560B5451C4996A900E5F1F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C560B5441C4996A900E5F1F9 /* Assets.xcassets */; };
@@ -18,6 +19,9 @@
 		C560B5591C49B14800E5F1F9 /* DeviceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5581C49B14800E5F1F9 /* DeviceCell.swift */; };
 		C560B55B1C49B41800E5F1F9 /* AppStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B55A1C49B41800E5F1F9 /* AppStyles.swift */; };
 		C565AEFF1C67E840009D5FAC /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C565AEFE1C67E840009D5FAC /* ColorPicker.swift */; };
+		C5AF70E31C75017300C7AD2C /* NoFieldsActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AF70E21C75017300C7AD2C /* NoFieldsActionCell.swift */; };
+		C5AF70E51C750AB200C7AD2C /* SingleFieldActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AF70E41C750AB200C7AD2C /* SingleFieldActionCell.swift */; };
+		C5AF70E71C750DA400C7AD2C /* MultipleFieldsActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AF70E61C750DA400C7AD2C /* MultipleFieldsActionCell.swift */; };
 		C5B72C581C53CD3200E4B68C /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C571C53CD3200E4B68C /* SettingsViewController.swift */; };
 		C5B72C5C1C53ECFE00E4B68C /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C5B1C53ECFE00E4B68C /* AppDefaults.swift */; };
 		C5B72C601C53F32F00E4B68C /* ConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C5F1C53F32F00E4B68C /* ConnectionViewController.swift */; };
@@ -36,6 +40,7 @@
 		C53855531C63CDFE00C53339 /* DisplayScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayScreenViewController.swift; sourceTree = "<group>"; };
 		C53855551C63CE0A00C53339 /* DisplayScreenView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayScreenView.swift; sourceTree = "<group>"; };
 		C53C1BDE1C68024B00FEA5C9 /* ColorPickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPickerCell.swift; sourceTree = "<group>"; };
+		C54094EA1C6EC04C00257831 /* DeviceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceViewController.swift; sourceTree = "<group>"; };
 		C544BE801C4ABAA20072CECD /* AppUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppUtilities.swift; sourceTree = "<group>"; };
 		C560B53A1C4996A900E5F1F9 /* Zetta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zetta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -45,6 +50,9 @@
 		C560B5581C49B14800E5F1F9 /* DeviceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceCell.swift; sourceTree = "<group>"; };
 		C560B55A1C49B41800E5F1F9 /* AppStyles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStyles.swift; sourceTree = "<group>"; };
 		C565AEFE1C67E840009D5FAC /* ColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
+		C5AF70E21C75017300C7AD2C /* NoFieldsActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoFieldsActionCell.swift; sourceTree = "<group>"; };
+		C5AF70E41C750AB200C7AD2C /* SingleFieldActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleFieldActionCell.swift; sourceTree = "<group>"; };
+		C5AF70E61C750DA400C7AD2C /* MultipleFieldsActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultipleFieldsActionCell.swift; sourceTree = "<group>"; };
 		C5B72C571C53CD3200E4B68C /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		C5B72C5B1C53ECFE00E4B68C /* AppDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		C5B72C5F1C53F32F00E4B68C /* ConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectionViewController.swift; sourceTree = "<group>"; };
@@ -94,6 +102,10 @@
 				C5FF9A5F1C6501A400BF14DB /* HueBulbView.swift */,
 				C565AEFE1C67E840009D5FAC /* ColorPicker.swift */,
 				C53C1BDE1C68024B00FEA5C9 /* ColorPickerCell.swift */,
+				C54094EA1C6EC04C00257831 /* DeviceViewController.swift */,
+				C5AF70E21C75017300C7AD2C /* NoFieldsActionCell.swift */,
+				C5AF70E61C750DA400C7AD2C /* MultipleFieldsActionCell.swift */,
+				C5AF70E41C750AB200C7AD2C /* SingleFieldActionCell.swift */,
 			);
 			name = Devices;
 			sourceTree = "<group>";
@@ -299,6 +311,7 @@
 				C560B5591C49B14800E5F1F9 /* DeviceCell.swift in Sources */,
 				C5B72C641C53F97300E4B68C /* AddConnectionView.swift in Sources */,
 				C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */,
+				C5AF70E31C75017300C7AD2C /* NoFieldsActionCell.swift in Sources */,
 				C5C42C691C62429100164AC1 /* ZIKDevice+Helpers.swift in Sources */,
 				C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */,
 				C53C1BDF1C68024B00FEA5C9 /* ColorPickerCell.swift in Sources */,
@@ -307,6 +320,9 @@
 				C565AEFF1C67E840009D5FAC /* ColorPicker.swift in Sources */,
 				C5B72C601C53F32F00E4B68C /* ConnectionViewController.swift in Sources */,
 				C5FF9A601C6501A400BF14DB /* HueBulbView.swift in Sources */,
+				C5AF70E71C750DA400C7AD2C /* MultipleFieldsActionCell.swift in Sources */,
+				C54094EB1C6EC04C00257831 /* DeviceViewController.swift in Sources */,
+				C5AF70E51C750AB200C7AD2C /* SingleFieldActionCell.swift in Sources */,
 				C53855561C63CE0A00C53339 /* DisplayScreenView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

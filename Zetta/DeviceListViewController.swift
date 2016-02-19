@@ -109,8 +109,8 @@ class DeviceListViewController: UITableViewController {
 			cell.titleLabel.text = device.name ?? "Unnamed Device"
 			cell.subtitleLabel.text = device.state
 			
-			cell.titleLabel.enabled = device.deviceType != .Unknown
-			cell.subtitleLabel.enabled = device.deviceType != .Unknown
+//			cell.titleLabel.enabled = device.deviceType != .Unknown
+//			cell.subtitleLabel.enabled = device.deviceType != .Unknown
 			
 			return cell
 		}
@@ -172,10 +172,10 @@ class DeviceListViewController: UITableViewController {
 		if indexPath.section == 0 && devices.isEmpty { return false }
 		
 		//settings
-		if indexPath.section == 1 { return true }
+//		if indexPath.section == 1 { return true }
 		
 		//exclude unhandled device types
-		if devices[indexPath.row].deviceType == DeviceType.Unknown { return false }
+//		if devices[indexPath.row].deviceType == DeviceType.Unknown { return false }
 		
 		return true
 	}
@@ -190,13 +190,29 @@ class DeviceListViewController: UITableViewController {
 			presentViewController(nav, animated: true, completion: nil)
 		} else {
 			let device = devices[indexPath.row]
-			guard device.deviceType != .Unknown else { return }
-			if device.deviceType == .Display, let controller = DisplayScreenViewController(device: device) {
-				controller.delegate = self
-				self.navigationController?.pushViewController(controller, animated: true)
-			} else if device.deviceType == .HueBulb, let controller = HueBulbViewController(device: device) {
-				self.navigationController?.pushViewController(controller, animated: true)
-			}
+			let controller = DeviceViewController(device: device)
+			navigationController?.pushViewController(controller, animated: true)
+			
+//			print("name: \(device.name ?? "unknown")")
+//			print("transitions: \(device.transitions)")
+//			print("properties: \(device.properties)")
+//			print("links: \(device.links)")
+//			for link in device.links {
+//				if let link = link as? ZIKLink {
+//					print(link.description)
+//					print(link.href)
+//					print(link.rel)
+////					print(link.title)
+//				}
+//			}
+			
+//			guard device.deviceType != .Unknown else { return }
+//			if device.deviceType == .Display, let controller = DisplayScreenViewController(device: device) {
+//				controller.delegate = self
+//				self.navigationController?.pushViewController(controller, animated: true)
+//			} else if device.deviceType == .HueBulb, let controller = HueBulbViewController(device: device) {
+//				self.navigationController?.pushViewController(controller, animated: true)
+//			}
 		}
 	}
 }

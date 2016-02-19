@@ -29,6 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	}
 	
 	private func customizeUI() {
+		window?.tintColor = UIColor.appTintColor()
 		UINavigationBar.appearance().translucent = false
 	}
 
