@@ -163,6 +163,7 @@ class DeviceViewController: UITableViewController {
 		if fieldNames.isEmpty {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(noFieldsActionCellIdentifier) as? NoFieldsActionCell else { return UITableViewCell() }
 			cell.titleLabel.text = transition.name
+			cell.delegate = self
 			return cell
 		} else if fieldNames.count == 1 {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(singleFieldActionCellIdentifier) as? SingleFieldActionCell else { return UITableViewCell() }
@@ -170,12 +171,14 @@ class DeviceViewController: UITableViewController {
 			if transition.name != fieldNames.first {
 				cell.goButton.setTitle(transition.name, forState: .Normal)
 			}
+			cell.delegate = self
 			return cell
 		} else {
 			let cell = MultipleFieldsActionCell(fieldNames: fieldNames)
 			if transition.name != fieldNames.first {
 				cell.goButton.setTitle(transition.name, forState: .Normal)
 			}
+			cell.delegate = self
 			return cell
 		}
 	}
@@ -223,6 +226,14 @@ class DeviceViewController: UITableViewController {
 		cell.detailTextLabel?.text = dateFormatter.stringFromDate(date)
 		
 		return cell
+	}
+	
+}
+
+extension DeviceViewController: ActionCellDelegate {
+	
+	func actionCell(cell: UITableViewCell, didSubmitFields fields: [String?]) {
+		print(fields)
 	}
 	
 }

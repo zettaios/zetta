@@ -10,10 +10,15 @@ import UIKit
 
 class MultipleFieldsActionCell: UITableViewCell {
 
+	weak var delegate: ActionCellDelegate?
 	private let textFields: [UITextField]
 	private var constraintsAdded = false
 	
-	let goButton = UIButton.deviceActionButton(title: "Go")
+	lazy var goButton: UIButton = {
+		let button = UIButton.deviceActionButton(title: "Go")
+		button.addTarget(self, action: "buttonTapped", forControlEvents: .TouchUpInside)
+		return button
+	}()
 	
 	private lazy var stack: UIStackView = {
 		var stackedViews: [UIView] = self.textFields
@@ -36,6 +41,10 @@ class MultipleFieldsActionCell: UITableViewCell {
 		})
 		
 		super.init(style: .Default, reuseIdentifier: nil)
+		
+		for textField in self.textFields {
+			textField.delegate = self
+		}
 		
 		stack.translatesAutoresizingMaskIntoConstraints = false
 		contentView.addSubview(stack)
@@ -73,6 +82,20 @@ class MultipleFieldsActionCell: UITableViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
+	}
+	
+	@objc private func buttonTapped() {
+		let strings = textFields.map{ $0.text }
+		delegate?.actionCell(self, didSubmitFields: strings)
+	}
+	
+}
+
+extension MultipleFieldsActionCell: UITextFieldDelegate {
+	
+	func textFieldShouldReturn(textField: UITextField) -> Bool {
+		buttonTapped()
+		return false
 	}
 	
 }

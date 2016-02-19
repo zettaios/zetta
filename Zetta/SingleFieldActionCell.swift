@@ -10,12 +10,14 @@ import UIKit
 
 class SingleFieldActionCell: UITableViewCell {
 
+	weak var delegate: ActionCellDelegate?
 	private var constraintsAdded = false
 	
 	lazy var textField: UITextField =  {
 		let textField = UITextField()
 		textField.font = UIFont.systemFontOfSize(18)
 		textField.returnKeyType = .Go
+		textField.delegate = self
 		return textField
 	}()
 	
@@ -23,6 +25,7 @@ class SingleFieldActionCell: UITableViewCell {
 		let button = UIButton.deviceActionButton(title: "Go")
 		button.setContentHuggingPriority(1000, forAxis: .Horizontal)
 		button.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
+		button.addTarget(self, action: "buttonTapped", forControlEvents: .TouchUpInside)
 		return button
 	}()
 	
@@ -72,6 +75,19 @@ class SingleFieldActionCell: UITableViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
+	}
+	
+	@objc private func buttonTapped() {
+		delegate?.actionCell(self, didSubmitFields: [textField.text])
+	}
+	
+}
+
+extension SingleFieldActionCell: UITextFieldDelegate {
+	
+	func textFieldShouldReturn(textField: UITextField) -> Bool {
+		buttonTapped()
+		return false
 	}
 	
 }

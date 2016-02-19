@@ -8,8 +8,13 @@
 
 import UIKit
 
+protocol ActionCellDelegate: class {
+	func actionCell(cell: UITableViewCell, didSubmitFields fields: [String?])
+}
+
 class NoFieldsActionCell: UITableViewCell {
 
+	weak var delegate: ActionCellDelegate?
 	private var constraintsAdded = false
 	
 	lazy var titleLabel: UILabel = {
@@ -23,6 +28,7 @@ class NoFieldsActionCell: UITableViewCell {
 		let button = UIButton.deviceActionButton(title: "Go")
 		button.setContentHuggingPriority(1000, forAxis: .Horizontal)
 		button.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
+		button.addTarget(self, action: "buttonTapped", forControlEvents: .TouchUpInside)
 		return button
 	}()
 	
@@ -70,4 +76,7 @@ class NoFieldsActionCell: UITableViewCell {
 		
 	}
 	
+	@objc private func buttonTapped() {
+		delegate?.actionCell(self, didSubmitFields: [String?]())
+	}
 }

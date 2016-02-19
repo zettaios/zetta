@@ -86,8 +86,8 @@
 			children = (
 				C54094EA1C6EC04C00257831 /* DeviceViewController.swift */,
 				C5AF70E21C75017300C7AD2C /* NoFieldsActionCell.swift */,
-				C5AF70E61C750DA400C7AD2C /* MultipleFieldsActionCell.swift */,
 				C5AF70E41C750AB200C7AD2C /* SingleFieldActionCell.swift */,
+				C5AF70E61C750DA400C7AD2C /* MultipleFieldsActionCell.swift */,
 			);
 			name = Devices;
 			sourceTree = "<group>";
