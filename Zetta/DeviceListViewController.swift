@@ -104,13 +104,9 @@ class DeviceListViewController: UITableViewController {
 			
 			let device = devices[indexPath.row]
 			
-			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
-			cell.deviceImageView.tintColor = UIColor(white: 0.9, alpha: 1)
+			cell.deviceImageView.image = UIImage(named: "Device Placeholder")
 			cell.titleLabel.text = device.name ?? "Unnamed Device"
 			cell.subtitleLabel.text = device.state
-			
-//			cell.titleLabel.enabled = device.deviceType != .Unknown
-//			cell.subtitleLabel.enabled = device.deviceType != .Unknown
 			
 			return cell
 		}

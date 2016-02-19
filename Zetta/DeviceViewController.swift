@@ -43,6 +43,11 @@ class DeviceViewController: UITableViewController {
 		
 		title = device.name ?? "Unnamed Device"
 		
+		let header = UIImageView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: tableView.bounds.height * 0.5))
+		header.image = UIImage(named: "Device Placeholder")
+		header.contentMode = .ScaleAspectFit
+		tableView.tableHeaderView = header
+		
 		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.estimatedRowHeight = 60
 		tableView.tableFooterView = UIView()
@@ -213,7 +218,7 @@ class DeviceViewController: UITableViewController {
 		cell.detailTextLabel?.textColor = UIColor.appMediumGrayColor()
 		
 		let log = logs[indexPath.row]
-		cell.textLabel?.text = "\(log.transition): <new value not present in ZettaKit>"
+		cell.textLabel?.text = "\(log.transition): <new value not yet present in ZettaKit>"
 		let date = NSDate(timeIntervalSince1970: log.timestamp.doubleValue / 1000)
 		cell.detailTextLabel?.text = dateFormatter.stringFromDate(date)
 		
