@@ -12,11 +12,13 @@ import ZettaKit
 class DeviceViewController: UITableViewController {
 
 	private let device: ZIKDevice
+	private var mostRecentStreamValues = [ZIKStream: AnyObject]()
 	private let noFieldsActionCellIdentifier = "No Fields Action Cell"
 	private let singleFieldActionCellIdentifier = "Single Field Action Cell"
 	
 	init(device: ZIKDevice) {
 		self.device = device
+		
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -37,7 +39,53 @@ class DeviceViewController: UITableViewController {
 		tableView.allowsSelection = false
 		tableView.keyboardDismissMode = .OnDrag
     }
-
+	
+	override func viewWillDisappear(animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		for stream in monitoredStreams {
+			stream.stop()
+		}
+	}
+	
+	// MARK: - monitoring streams
+	
+	private lazy var monitoredStreams: [ZIKStream] = {
+		guard let links = self.device.links as? [ZIKLink] else { return [ZIKStream]() }
+		
+		let monitoredLinks = links.filter({ (link) -> Bool in
+			if let rels = link.rel as? [String] where rels.contains("monitor") && link.title != "logs" {
+				return true
+			}
+			return false
+		})
+		
+		let monitoredStreams = monitoredLinks.map { (link) -> ZIKStream in
+			return ZIKStream(link: link)
+		}
+		
+		for stream in monitoredStreams {
+			stream.signal.subscribeNext({ [weak self] (streamEntry) -> Void in
+				guard let streamEntry = streamEntry as? ZIKStreamEntry else { return }
+				dispatch_async(dispatch_get_main_queue(), { () -> Void in
+					self?.handleStreamEntry(streamEntry, fromStream: stream)
+				})
+			})
+			stream.resume()
+		}
+		
+		return monitoredStreams
+	}()
+	
+	private func handleStreamEntry(streamEntry: ZIKStreamEntry, fromStream stream: ZIKStream) {
+		mostRecentStreamValues[stream] = streamEntry.data
+		if let index = monitoredStreams.indexOf(stream) {
+			tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .None)
+		} else {
+			tableView.reloadData()
+		}
+	}
+	
     // MARK: - table view
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -56,7 +104,7 @@ class DeviceViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
-		case 0: return 1
+		case 0: return monitoredStreams.count
 		case 1: return device.transitions.count
 		case 2: return device.properties.count
 		case 3: return 1
@@ -71,7 +119,11 @@ class DeviceViewController: UITableViewController {
 		cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
 		cell.detailTextLabel?.minimumScaleFactor = 0.8
 		
-		if indexPath.section == 1 {
+		if indexPath.section == 0 {
+			let stream = monitoredStreams[indexPath.row]
+			cell.textLabel?.text = stream.title
+			cell.detailTextLabel?.text = mostRecentStreamValues[stream] as? String
+		} else if indexPath.section == 1 {
 			return actionCellForIndexPath(indexPath)
 		} else if indexPath.section == 2 {
 			guard let properties = device.properties as? [String: AnyObject] else { return cell }

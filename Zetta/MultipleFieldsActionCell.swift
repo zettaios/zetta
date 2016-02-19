@@ -46,7 +46,6 @@ class MultipleFieldsActionCell: UITableViewCell {
 	required init?(coder aDecoder: NSCoder) {
 		fatalError("NSCoding not supported")
 	}
-
 	
 	override func updateConstraints() {
 		if !constraintsAdded {
