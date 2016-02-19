@@ -19,6 +19,13 @@ class DeviceViewController: UITableViewController {
 	private let noFieldsActionCellIdentifier = "No Fields Action Cell"
 	private let singleFieldActionCellIdentifier = "Single Field Action Cell"
 	
+	private lazy var dateFormatter: NSDateFormatter = {
+		let formatter = NSDateFormatter()
+		formatter.dateStyle = .ShortStyle
+		formatter.timeStyle = .MediumStyle
+		return formatter
+	}()
+	
 	init(device: ZIKDevice) {
 		self.device = device
 		
@@ -79,7 +86,8 @@ class DeviceViewController: UITableViewController {
 				dispatch_async(dispatch_get_main_queue(), { () -> Void in
 					if let streamEntry = streamEntry as? ZIKLogStreamEntry {
 						self?.logs.insert(streamEntry, atIndex: 0)
-						self?.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 3)], withRowAnimation: .Automatic)
+						let indexPath = NSIndexPath(forRow: 0, inSection: 3)
+						self?.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
 					} else if let streamEntry = streamEntry as? ZIKStreamEntry, index = self?.monitoredStreams.indexOf(stream) {
 						self?.mostRecentStreamValues[stream] = streamEntry.data
 						self?.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .None)
@@ -117,45 +125,28 @@ class DeviceViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .Value1, reuseIdentifier: nil)
+		switch indexPath.section {
+		case 0: return streamCellForIndexPath(indexPath)
+		case 1: return actionCellForIndexPath(indexPath)
+		case 2: return propertyCellForIndexPath(indexPath)
+		case 3: return logCellForIndexPath(indexPath)
+		default: return UITableViewCell()
+		}
+    }
+	
+	private func streamCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
+		let cell = UITableViewCell(style: .Value1, reuseIdentifier: nil)
 		cell.textLabel?.font = UIFont.systemFontOfSize(17)
+		cell.textLabel?.textColor = UIColor.appDarkGrayColor()
 		cell.detailTextLabel?.font = UIFont.systemFontOfSize(17)
 		cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
 		cell.detailTextLabel?.minimumScaleFactor = 0.8
 		
-		if indexPath.section == 0 {
-			let stream = monitoredStreams.filter({ $0 != logsStream })[indexPath.row]
-			cell.textLabel?.text = stream.title
-			cell.detailTextLabel?.text = mostRecentStreamValues[stream] as? String
-		} else if indexPath.section == 1 {
-			return actionCellForIndexPath(indexPath)
-		} else if indexPath.section == 2 {
-			guard let properties = device.properties as? [String: AnyObject] else { return cell }
-			
-			let key = Array(properties.keys)[indexPath.row]
-			cell.textLabel?.text = key
-			
-			if let value = properties[key] as? String {
-				cell.detailTextLabel?.text = value
-			}
-		} else {
-			let log = logs[indexPath.row]
-			cell.detailTextLabel?.text = log.description
-		}
+		let stream = monitoredStreams.filter({ $0 != logsStream })[indexPath.row]
+		cell.textLabel?.text = stream.title
+		cell.detailTextLabel?.text = mostRecentStreamValues[stream] as? String
 		
-        return cell
-    }
-	
-	private func fieldNamesForTransition(transition: ZIKTransition) -> [String] {
-		var fieldNames = [String]()
-		if let fields = transition.fields as? [[String: AnyObject]] {
-			for field in fields {
-				if let type = field["type"] as? String where type != "hidden", let name = field["name"] as? String {
-					fieldNames.append(name)
-				}
-			}
-		}
-		return fieldNames
+		return cell
 	}
 	
 	private func actionCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
@@ -182,6 +173,51 @@ class DeviceViewController: UITableViewController {
 			}
 			return cell
 		}
+	}
+	
+	private func fieldNamesForTransition(transition: ZIKTransition) -> [String] {
+		var fieldNames = [String]()
+		if let fields = transition.fields as? [[String: AnyObject]] {
+			for field in fields {
+				if let type = field["type"] as? String where type != "hidden", let name = field["name"] as? String {
+					fieldNames.append(name)
+				}
+			}
+		}
+		return fieldNames
+	}
+	
+	private func propertyCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
+		let cell = UITableViewCell(style: .Value1, reuseIdentifier: nil)
+		cell.textLabel?.font = UIFont.systemFontOfSize(17)
+		cell.textLabel?.textColor = UIColor.appDarkGrayColor()
+		cell.detailTextLabel?.font = UIFont.systemFontOfSize(17)
+		cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
+		cell.detailTextLabel?.minimumScaleFactor = 0.8
+		
+		guard let properties = device.properties as? [String: AnyObject] else { return cell }
+		let key = Array(properties.keys)[indexPath.row]
+		cell.textLabel?.text = key
+		if let value = properties[key] as? String {
+			cell.detailTextLabel?.text = value
+		}
+		
+		return cell
+	}
+	
+	private func logCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
+		let cell = UITableViewCell(style: .Subtitle, reuseIdentifier: nil)
+		cell.textLabel?.font = UIFont.systemFontOfSize(15)
+		cell.textLabel?.textColor = UIColor.appDarkGrayColor()
+		cell.detailTextLabel?.font = UIFont.systemFontOfSize(12)
+		cell.detailTextLabel?.textColor = UIColor.appMediumGrayColor()
+		
+		let log = logs[indexPath.row]
+		cell.textLabel?.text = "\(log.transition): <new value not present in ZettaKit>"
+		let date = NSDate(timeIntervalSince1970: log.timestamp.doubleValue / 1000)
+		cell.detailTextLabel?.text = dateFormatter.stringFromDate(date)
+		
+		return cell
 	}
 	
 }
