@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "Device Placeholder copy@1x.png",
+      "filename" : "placeholder copy@1x.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "Device Placeholder copy@2x.png",
+      "filename" : "placeholder copy@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "Device Placeholder.png",
+      "filename" : "placeholder.png",
       "scale" : "3x"
     }
   ],
