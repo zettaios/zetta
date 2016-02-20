@@ -9,8 +9,14 @@
 import UIKit
 import ZettaKit
 
+protocol DeviceDelegate: class {
+	func deviceViewController(controller: DeviceViewController, didTransitionDevice device: ZIKDevice)
+}
+
 class DeviceViewController: UITableViewController {
 
+	weak var delegate: DeviceDelegate?
+	
 	private var device: ZIKDevice
 	private var monitoredStreams = [ZIKStream]()
 	private var mostRecentStreamValues = [ZIKStream: AnyObject]()
@@ -155,7 +161,12 @@ class DeviceViewController: UITableViewController {
 		
 		let stream = monitoredStreams.filter({ $0 != logsStream })[indexPath.row]
 		cell.textLabel?.text = stream.title
-		cell.detailTextLabel?.text = mostRecentStreamValues[stream] as? String
+		if let recentValue = mostRecentStreamValues[stream] as? String {
+			cell.detailTextLabel?.text = recentValue
+		} else {
+			//perhaps there is a matching property to fall back on
+			cell.detailTextLabel?.text = device.properties[stream.title] as? String
+		}
 		
 		return cell
 	}
@@ -271,6 +282,11 @@ extension DeviceViewController: ActionCellDelegate {
 					self?.device = device
 					let range = NSMakeRange(0, 3) //the final section (events) animates the new row iteself
 					self?.tableView.reloadSections(NSIndexSet(indexesInRange: range), withRowAnimation: .None)
+					
+					//the list should also swap out the device for the new version
+					if let unwrappedSelf = self {
+						unwrappedSelf.delegate?.deviceViewController(unwrappedSelf, didTransitionDevice: device)
+					}
 				}
 			})
 		}

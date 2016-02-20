@@ -157,6 +157,7 @@ class DeviceListViewController: UITableViewController {
 		} else {
 			let device = devices[indexPath.row]
 			let controller = DeviceViewController(device: device)
+			controller.delegate = self
 			navigationController?.pushViewController(controller, animated: true)
 		}
 	}
@@ -173,13 +174,13 @@ extension DeviceListViewController: SettingsDelegate {
 	
 }
 
-//extension DeviceListViewController: DisplayScreenDelegate {
-//	
-//	func displayScreenController(controller: DisplayScreenViewController, didTransitionDevice device: ZIKDevice) {
-//		if let deviceIndex = devices.map({ $0.uuid }).indexOf(device.uuid) {
-//			devices[deviceIndex] = device
-//			tableView.reloadData()
-//		}
-//	}
-//	
-//}
+extension DeviceListViewController: DeviceDelegate {
+	
+	func deviceViewController(controller: DeviceViewController, didTransitionDevice device: ZIKDevice) {
+		if let deviceIndex = devices.map({ $0.uuid }).indexOf(device.uuid) {
+			devices[deviceIndex] = device
+			tableView.reloadData()
+		}
+	}
+	
+}
