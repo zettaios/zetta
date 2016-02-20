@@ -35,8 +35,11 @@ class MultipleFieldsActionCell: UITableViewCell {
 		self.textFields = fieldNames.map({ (fieldName) -> UITextField in
 			let textField = UITextField()
 			textField.font = UIFont.systemFontOfSize(18)
+			textField.textColor = UIColor.appDarkGrayColor()
 			textField.placeholder = fieldName.stringByAppendingString("...")
 			textField.returnKeyType = .Go
+			textField.autocapitalizationType = .None
+			textField.autocorrectionType = .No
 			return textField
 		})
 		
@@ -82,6 +85,10 @@ class MultipleFieldsActionCell: UITableViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
+		for textField in textFields {
+			textField.text = nil
+		}
+		delegate = nil
 	}
 	
 	@objc private func buttonTapped() {

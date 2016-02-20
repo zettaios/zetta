@@ -74,6 +74,8 @@ class NoFieldsActionCell: UITableViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
+		titleLabel.text = nil
+		delegate = nil
 	}
 	
 	@objc private func buttonTapped() {

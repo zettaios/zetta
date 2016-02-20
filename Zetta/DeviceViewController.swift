@@ -11,7 +11,7 @@ import ZettaKit
 
 class DeviceViewController: UITableViewController {
 
-	private let device: ZIKDevice
+	private var device: ZIKDevice
 	private var monitoredStreams = [ZIKStream]()
 	private var mostRecentStreamValues = [ZIKStream: AnyObject]()
 	private var logsStream: ZIKStream? //so it can be identified and excluded from streams section
@@ -48,7 +48,6 @@ class DeviceViewController: UITableViewController {
 		header.contentMode = .ScaleAspectFit
 		tableView.tableHeaderView = header
 		
-		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.estimatedRowHeight = 60
 		tableView.tableFooterView = UIView()
 		tableView.registerClass(NoFieldsActionCell.self, forCellReuseIdentifier: noFieldsActionCellIdentifier)
@@ -128,6 +127,13 @@ class DeviceViewController: UITableViewController {
 		default: return 0
 		}
     }
+	
+	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+		switch indexPath.section {
+		case 0, 2: return 60
+		default: return UITableViewAutomaticDimension
+		}
+	}
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		switch indexPath.section {
@@ -204,6 +210,10 @@ class DeviceViewController: UITableViewController {
 		cell.detailTextLabel?.minimumScaleFactor = 0.8
 		
 		guard let properties = device.properties as? [String: AnyObject] else { return cell }
+		
+		print(properties)
+
+		
 		let key = Array(properties.keys)[indexPath.row]
 		cell.textLabel?.text = key
 		if let value = properties[key] as? String {
@@ -221,7 +231,7 @@ class DeviceViewController: UITableViewController {
 		cell.detailTextLabel?.textColor = UIColor.appMediumGrayColor()
 		
 		let log = logs[indexPath.row]
-		cell.textLabel?.text = "\(log.transition): <new value not yet present in ZettaKit>"
+		cell.textLabel?.text = "\(log.transition)"//: <new value not yet present in ZettaKit>"
 		let date = NSDate(timeIntervalSince1970: log.timestamp.doubleValue / 1000)
 		cell.detailTextLabel?.text = dateFormatter.stringFromDate(date)
 		
@@ -233,7 +243,34 @@ class DeviceViewController: UITableViewController {
 extension DeviceViewController: ActionCellDelegate {
 	
 	func actionCell(cell: UITableViewCell, didSubmitFields fields: [String?]) {
-		print(fields)
+		guard let indexPath = tableView.indexPathForCell(cell) where indexPath.row < device.transitions.count else { return }
+		guard let transition = device.transitions[indexPath.row] as? ZIKTransition else { return }
+
+		let fieldNames = fieldNamesForTransition(transition)
+		guard fieldNames.count == fields.count else { return } //something went wrong in setup if these don't match
+		
+		var arguments = [String: String]()
+		for (index, field) in fields.enumerate() {
+			if let field = field {
+				arguments[fieldNames[index]] = field
+			}
+		}
+		
+		device.transition(transition.name, withArguments: arguments) { [weak self] (error, device) -> Void in
+			if let error = error {
+				print(error.localizedDescription)
+				return
+			}
+
+			dispatch_async(dispatch_get_main_queue(), { () -> Void in
+				//a new device is returned, representing the latest state
+				if let device = device {
+					self?.device = device
+					let range = NSMakeRange(0, 3) //the final section (events) animates the new row iteself
+					self?.tableView.reloadSections(NSIndexSet(indexesInRange: range), withRowAnimation: .None)
+				}
+			})
+		}
 	}
 	
 }

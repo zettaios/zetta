@@ -18,6 +18,9 @@ class SingleFieldActionCell: UITableViewCell {
 		textField.font = UIFont.systemFontOfSize(18)
 		textField.returnKeyType = .Go
 		textField.delegate = self
+		textField.textColor = UIColor.appDarkGrayColor()
+		textField.autocapitalizationType = .None
+		textField.autocorrectionType = .No
 		return textField
 	}()
 	
@@ -75,10 +78,14 @@ class SingleFieldActionCell: UITableViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
+		textField.text = nil
+		delegate = nil
 	}
 	
 	@objc private func buttonTapped() {
+		textField.resignFirstResponder()
 		delegate?.actionCell(self, didSubmitFields: [textField.text])
+		textField.text = nil
 	}
 	
 }
