@@ -22,6 +22,8 @@ class DeviceViewController: UITableViewController {
 	private var mostRecentStreamValues = [ZIKStream: AnyObject]()
 	private var logsStream: ZIKStream? //so it can be identified and excluded from streams section
 	private var logs = [ZIKLogStreamEntry]()
+	
+	private let propertyCellIdentifier = "Property Cell"
 	private let noFieldsActionCellIdentifier = "No Fields Action Cell"
 	private let singleFieldActionCellIdentifier = "Single Field Action Cell"
 	
@@ -55,7 +57,9 @@ class DeviceViewController: UITableViewController {
 		tableView.tableHeaderView = header
 		
 		tableView.estimatedRowHeight = 60
+		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.tableFooterView = UIView()
+		tableView .registerClass(PropertyCell.self, forCellReuseIdentifier: propertyCellIdentifier)
 		tableView.registerClass(NoFieldsActionCell.self, forCellReuseIdentifier: noFieldsActionCellIdentifier)
 		tableView.registerClass(SingleFieldActionCell.self, forCellReuseIdentifier: singleFieldActionCellIdentifier)
 		tableView.allowsSelection = false
@@ -134,13 +138,6 @@ class DeviceViewController: UITableViewController {
 		}
     }
 	
-	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-		switch indexPath.section {
-		case 0, 2: return 60
-		default: return UITableViewAutomaticDimension
-		}
-	}
-
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		switch indexPath.section {
 		case 0: return streamCellForIndexPath(indexPath)
@@ -152,20 +149,15 @@ class DeviceViewController: UITableViewController {
     }
 	
 	private func streamCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
-		let cell = UITableViewCell(style: .Value1, reuseIdentifier: nil)
-		cell.textLabel?.font = UIFont.systemFontOfSize(17)
-		cell.textLabel?.textColor = UIColor.appDarkGrayColor()
-		cell.detailTextLabel?.font = UIFont.systemFontOfSize(17)
-		cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
-		cell.detailTextLabel?.minimumScaleFactor = 0.8
+		guard let cell = tableView.dequeueReusableCellWithIdentifier(propertyCellIdentifier) as? PropertyCell else { return UITableViewCell() }
 		
 		let stream = monitoredStreams.filter({ $0 != logsStream })[indexPath.row]
-		cell.textLabel?.text = stream.title
+		cell.titleLabel.text = stream.title
 		if let recentValue = mostRecentStreamValues[stream] as? String {
-			cell.detailTextLabel?.text = recentValue
+			cell.subtitleLabel.text = recentValue
 		} else {
 			//perhaps there is a matching property to fall back on
-			cell.detailTextLabel?.text = device.properties[stream.title] as? String
+			cell.subtitleLabel.text = device.properties[stream.title] as? String
 		}
 		
 		return cell
@@ -213,20 +205,13 @@ class DeviceViewController: UITableViewController {
 	}
 	
 	private func propertyCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
-		let cell = UITableViewCell(style: .Value1, reuseIdentifier: nil)
-		cell.textLabel?.font = UIFont.systemFontOfSize(17)
-		cell.textLabel?.textColor = UIColor.appDarkGrayColor()
-		cell.detailTextLabel?.font = UIFont.systemFontOfSize(17)
-		cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
-		cell.detailTextLabel?.minimumScaleFactor = 0.8
-		cell.accessoryView = nil
-		
+		guard let cell = tableView.dequeueReusableCellWithIdentifier(propertyCellIdentifier) as? PropertyCell else { return UITableViewCell() }
 		guard let properties = device.properties as? [String: AnyObject] else { return cell }
 		
 		let key = Array(properties.keys)[indexPath.row]
-		cell.textLabel?.text = key
+		cell.titleLabel.text = key
 		if let value = properties[key] as? String {
-			cell.detailTextLabel?.text = value
+			cell.subtitleLabel.text = value
 		} else if let value = properties[key] as? [Int] where value.count == 3 {
 			let colorView = UIView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
 			colorView.backgroundColor = UIColor(colorValues: value)
