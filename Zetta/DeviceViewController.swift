@@ -208,16 +208,19 @@ class DeviceViewController: UITableViewController {
 		cell.detailTextLabel?.font = UIFont.systemFontOfSize(17)
 		cell.detailTextLabel?.adjustsFontSizeToFitWidth = true
 		cell.detailTextLabel?.minimumScaleFactor = 0.8
+		cell.accessoryView = nil
 		
 		guard let properties = device.properties as? [String: AnyObject] else { return cell }
-		
-		print(properties)
-
 		
 		let key = Array(properties.keys)[indexPath.row]
 		cell.textLabel?.text = key
 		if let value = properties[key] as? String {
 			cell.detailTextLabel?.text = value
+		} else if let value = properties[key] as? [Int] where value.count == 3 {
+			let colorView = UIView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+			colorView.backgroundColor = UIColor(colorValues: value)
+			colorView.layer.cornerRadius = 3
+			cell.accessoryView = colorView
 		}
 		
 		return cell
