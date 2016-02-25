@@ -23,7 +23,7 @@ class AddConnectionViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		title = "Add Server"
+		title = "Add API"
 		addButton = UIBarButtonItem(title: "Add", style: .Done, target: self, action: "addButtonTapped")
 		addButton?.enabled = false
 		navigationItem.rightBarButtonItem = addButton
