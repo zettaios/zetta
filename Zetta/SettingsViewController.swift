@@ -128,6 +128,29 @@ class SettingsViewController: UITableViewController {
 		}
 	}
 	
+	override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+		return indexPath.section == 0 && indexPath.row != NSUserDefaults.standardUserDefaults().connectionHistory.count
+	}
+	
+	override func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+		let delete = UITableViewRowAction(style: .Default, title: "Delete") { [weak self] (_, _) -> Void in
+			let defaults = NSUserDefaults.standardUserDefaults()
+			defaults.connectionHistory.removeAtIndex(indexPath.row)
+			tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+			
+			if indexPath.row == 0 {
+				//let the delegate know that the current connection was removed
+				self?.delegate?.selectedConnectionChanged()
+				
+				//add the checkmark to the new 'default' connection
+				if !defaults.connectionHistory.isEmpty {
+					tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
+				}
+			}
+		}
+		return [delete]
+	}
+	
 	// MARK: - button actions
 	
 	@objc private func doneButtonTapped() {
