@@ -37,7 +37,7 @@ class SettingsViewController: UITableViewController {
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		//connection might have changes
+		//a new api might be added
 		tableView.reloadData()
 	}
 
@@ -49,7 +49,7 @@ class SettingsViewController: UITableViewController {
 	
 	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		switch section {
-		case 0: return "Connection Settings".uppercaseString
+		case 0: return "API History".uppercaseString
 		case 1: return "Build Version".uppercaseString
 		case 2: return "Support".uppercaseString
 		default: return nil
@@ -57,7 +57,7 @@ class SettingsViewController: UITableViewController {
 	}
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+		return section == 0 ? NSUserDefaults.standardUserDefaults().connectionHistory.count + 1 : 1
     }
 	
 	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -65,22 +65,24 @@ class SettingsViewController: UITableViewController {
 	}
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		let cell = UITableViewCell()
 		if indexPath.section == 0 {
-			let cell = UITableViewCell(style: .Value1, reuseIdentifier: nil)
-			cell.textLabel?.text = "Connect using"
-			cell.detailTextLabel?.lineBreakMode = .ByTruncatingMiddle
-			cell.detailTextLabel?.text = NSUserDefaults.standardUserDefaults().connectionHistory.first?.absoluteString
-			cell.accessoryType = .DisclosureIndicator
-			return cell
+			let connections = NSUserDefaults.standardUserDefaults().connectionHistory
+			if indexPath.row == connections.count {
+				cell.textLabel?.text = "Add an API..."
+				cell.textLabel?.textColor = view.tintColor
+			} else {
+				let connection = NSUserDefaults.standardUserDefaults().connectionHistory[indexPath.row]
+				cell.textLabel?.text = connection.absoluteString
+				cell.textLabel?.lineBreakMode = .ByTruncatingMiddle
+				cell.accessoryType = connection == connections.first ? .Checkmark : .None
+			}
 		} else if indexPath.section == 1 {
-			let cell = UITableViewCell(style: .Default, reuseIdentifier: nil)
 			cell.textLabel?.font = UIFont.systemFontOfSize(15)
 			if let appVersion = NSBundle.mainBundle().infoDictionary?["CFBundleShortVersionString"] as? String, appBuild = NSBundle.mainBundle().infoDictionary?["CFBundleVersion"] as? String {
 				cell.textLabel?.text = "\(appVersion) (\(appBuild))"
 			}
-			return cell
 		} else {
-			let cell = UITableViewCell(style: .Default, reuseIdentifier: nil)
 			let button = UIButton(type: .System)
 			button.setTitle("Zetta Discuss", forState: .Normal)
 			button.addTarget(self, action: "supportButtonTapped", forControlEvents: .TouchUpInside)
@@ -91,8 +93,8 @@ class SettingsViewController: UITableViewController {
 			button.snp_makeConstraints { (make) -> Void in
 				make.edges.equalTo(cell.contentView)
 			}
-			return cell
 		}
+		return cell
     }
 	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -102,8 +104,28 @@ class SettingsViewController: UITableViewController {
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
 		
-		let controller = ConnectionViewController()
-		navigationController?.pushViewController(controller, animated: true)
+		let defaults = NSUserDefaults.standardUserDefaults()
+		if indexPath.row < defaults.connectionHistory.count {
+			if indexPath.row == 0 { return }
+			
+			//update the checkmarks
+			let selectedCell = tableView.cellForRowAtIndexPath(indexPath)
+			selectedCell?.accessoryType = .Checkmark
+			for cell in tableView.visibleCells where cell != selectedCell {
+				cell.accessoryType = .None
+			}
+			
+			//bump the server and the row to the top of the list
+			let selectedConnection = defaults.connectionHistory[indexPath.row]
+			defaults.connectionHistory.removeAtIndex(indexPath.row)
+			defaults.connectionHistory.insert(selectedConnection, atIndex: 0)
+			tableView.moveRowAtIndexPath(indexPath, toIndexPath: NSIndexPath(forRow: 0, inSection: 0))
+			
+		} else {
+			let controller = AddConnectionViewController()
+			let nav = UINavigationController(rootViewController: controller)
+			presentViewController(nav, animated: true, completion: nil)
+		}
 	}
 	
 	// MARK: - button actions
