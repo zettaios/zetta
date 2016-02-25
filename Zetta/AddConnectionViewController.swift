@@ -10,6 +10,8 @@ import UIKit
 
 class AddConnectionViewController: UIViewController {
 
+	weak var delegate: SettingsDelegate?
+	
 	private var addButton: UIBarButtonItem?
 	
 	private var mainView: AddConnectionView {
@@ -53,6 +55,8 @@ class AddConnectionViewController: UIViewController {
 			defaults.connectionHistory.removeAtIndex(existingIndex)
 		}
 		defaults.connectionHistory.insert(newURL, atIndex: 0)
+		
+		delegate?.selectedConnectionChanged()
 		
 		presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
 	}

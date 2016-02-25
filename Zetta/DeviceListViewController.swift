@@ -19,6 +19,7 @@ class DeviceListViewController: UITableViewController {
 		
 		title = "Zetta"
 		
+		tableView.alwaysBounceVertical = false
 		tableView.tableFooterView = UIView()
 		tableView.registerClass(DeviceCell.self, forCellReuseIdentifier: cellIdentifier)
 		
@@ -106,7 +107,7 @@ class DeviceListViewController: UITableViewController {
 			label.text = "Waiting for devices to join \(urlString)..."
 			spinner.startAnimating()
 		} else {
-			label.text = "Tap 'Settings' to select an API..."
+			label.text = "Tap 'Settings' to add an API..."
 			label.textAlignment = .Center
 			spinner.stopAnimating()
 		}
@@ -149,10 +150,17 @@ class DeviceListViewController: UITableViewController {
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
 		
 		if indexPath.section == 1 {
-			let controller = SettingsViewController()
-			controller.delegate = self
-			let nav = UINavigationController(rootViewController: controller)
-			presentViewController(nav, animated: true, completion: nil)
+			if NSUserDefaults.standardUserDefaults().connectionHistory.isEmpty {
+				let controller = AddConnectionViewController()
+				controller.delegate = self
+				let nav = UINavigationController(rootViewController: controller)
+				presentViewController(nav, animated: true, completion: nil)
+			} else {
+				let controller = SettingsViewController()
+				controller.delegate = self
+				let nav = UINavigationController(rootViewController: controller)
+				presentViewController(nav, animated: true, completion: nil)
+			}
 		} else {
 			let device = devices[indexPath.row]
 			let controller = DeviceViewController(device: device)
