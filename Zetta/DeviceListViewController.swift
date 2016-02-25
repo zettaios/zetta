@@ -74,7 +74,7 @@ class DeviceListViewController: UITableViewController {
 		if indexPath.section == 1 {
 			return settingsCell
 		} else if indexPath.section == 0 && devices.isEmpty {
-			return messageCell
+			return messageCell()
 		} else {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else {
 				return UITableViewCell()
@@ -90,37 +90,36 @@ class DeviceListViewController: UITableViewController {
 		}
     }
 	
-	private var messageCell: UITableViewCell {
+	func messageCell() -> UITableViewCell {
 		let cell = UITableViewCell()
 		cell.contentView.backgroundColor = UIColor.whiteColor()
 		
 		let spinner = UIActivityIndicatorView()
 		spinner.color = UIColor.grayColor()
-		spinner.startAnimating()
-		spinner.translatesAutoresizingMaskIntoConstraints = false
-		cell.contentView.addSubview(spinner)
+		spinner.setContentHuggingPriority(1000, forAxis: .Horizontal)
 		
 		let label = UILabel()
 		label.textColor = spinner.color
 		label.font = UIFont.systemFontOfSize(12)
 		label.numberOfLines = 0
 		if let urlString = NSUserDefaults.standardUserDefaults().connectionHistory.first?.absoluteString {
-			label.text = "Waiting for devices to join \(urlString)"
+			label.text = "Waiting for devices to join \(urlString)..."
+			spinner.startAnimating()
 		} else {
-			label.text = "Tap 'Settings' to Add an App Server..."
-		}
-		label.translatesAutoresizingMaskIntoConstraints = false
-		cell.contentView.addSubview(label)
-		
-		spinner.snp_makeConstraints { (make) -> Void in
-			make.centerY.equalTo(cell.contentView)
-			make.left.equalTo(cell.contentView).offset(20)
+			label.text = "Tap 'Settings' to select an API..."
+			label.textAlignment = .Center
+			spinner.stopAnimating()
 		}
 		
-		label.snp_makeConstraints { (make) -> Void in
-			make.centerY.equalTo(spinner)
-			make.left.equalTo(spinner.snp_right).offset(15)
-			make.right.equalTo(cell.contentView).offset(-20)
+		let stack = UIStackView(arrangedSubviews: [spinner, label])
+		stack.axis = .Horizontal
+		stack.spacing = 15
+		stack.layoutMarginsRelativeArrangement = true
+		stack.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+		stack.translatesAutoresizingMaskIntoConstraints = false
+		cell.contentView.addSubview(stack)
+		stack.snp_makeConstraints { (make) -> Void in
+			make.edges.equalTo(cell.contentView)
 		}
 		
 		return cell
