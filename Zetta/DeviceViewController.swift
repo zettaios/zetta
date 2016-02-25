@@ -172,21 +172,18 @@ class DeviceViewController: UITableViewController {
 		if fieldNames.isEmpty {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(noFieldsActionCellIdentifier) as? NoFieldsActionCell else { return UITableViewCell() }
 			cell.titleLabel.text = transition.name
+			cell.goButton.setTitle(transition.name, forState: .Normal)
 			cell.delegate = self
 			return cell
 		} else if fieldNames.count == 1 {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(singleFieldActionCellIdentifier) as? SingleFieldActionCell else { return UITableViewCell() }
 			cell.textField.placeholder = fieldNames.first?.stringByAppendingString("...")
-			if transition.name != fieldNames.first {
-				cell.goButton.setTitle(transition.name, forState: .Normal)
-			}
+			cell.goButton.setTitle(transition.name, forState: .Normal)
 			cell.delegate = self
 			return cell
 		} else {
 			let cell = MultipleFieldsActionCell(fieldNames: fieldNames)
-			if transition.name != fieldNames.first {
-				cell.goButton.setTitle(transition.name, forState: .Normal)
-			}
+			cell.goButton.setTitle(transition.name, forState: .Normal)
 			cell.delegate = self
 			return cell
 		}
