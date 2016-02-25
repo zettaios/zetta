@@ -88,7 +88,7 @@ class DeviceViewController: UITableViewController {
 		})
 		
 		for link in monitoredLinks {
-			let stream = ZIKStream(link: link)
+			let stream = ZIKStream(link: link, andIsMultiplex: false)
 			if link.title == "logs" {
 				self.logsStream = stream
 			}
@@ -131,7 +131,7 @@ class DeviceViewController: UITableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0: return monitoredStreams.filter({ $0 != logsStream }).count
-		case 1: return device.transitions.count
+		case 1: return device.transitions?.count ?? 0
 		case 2: return device.properties.count
 		case 3: return logs.count
 		default: return 0
@@ -239,8 +239,8 @@ class DeviceViewController: UITableViewController {
 extension DeviceViewController: ActionCellDelegate {
 	
 	func actionCell(cell: UITableViewCell, didSubmitFields fields: [String?]) {
-		guard let indexPath = tableView.indexPathForCell(cell) where indexPath.row < device.transitions.count else { return }
-		guard let transition = device.transitions[indexPath.row] as? ZIKTransition else { return }
+		guard let indexPath = tableView.indexPathForCell(cell) where indexPath.row < device.transitions?.count else { return }
+		guard let transition = device.transitions?[indexPath.row] as? ZIKTransition else { return }
 
 		let fieldNames = fieldNamesForTransition(transition)
 		guard fieldNames.count == fields.count else { return } //something went wrong in setup if these don't match
