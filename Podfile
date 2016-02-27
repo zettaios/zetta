@@ -3,4 +3,5 @@ platform :ios, '9.0'
 
 pod 'SnapKit'
 pod 'Reveal-iOS-SDK', :configurations => ['Debug']
-pod 'ZettaKit', '0.0.5'#:git => 'https://github.com/zettajs/ZettaKit.git', :commit => '47ae8eb38a648ab65d21cac313e5e9a9c317fe89'
+#pod 'ZettaKit', '0.0.5'
+pod 'ZettaKit', :git => 'https://github.com/benpackard/ZettaKit.git', :commit => '0306b3ba983357ea40e43c80e9dce73c483fd5f4'

@@ -9,20 +9,30 @@ PODS:
   - Reveal-iOS-SDK (1.6.2)
   - SnapKit (0.18.0)
   - SocketRocket (0.4)
-  - ZettaKit (0.0.5):
+  - ZettaKit (0.0.6):
     - ReactiveCocoa (= 2.4.7)
     - SocketRocket (= 0.4)
 
 DEPENDENCIES:
   - Reveal-iOS-SDK
   - SnapKit
-  - ZettaKit (= 0.0.5)
+  - ZettaKit (from `https://github.com/benpackard/ZettaKit.git`, commit `0306b3ba983357ea40e43c80e9dce73c483fd5f4`)
+
+EXTERNAL SOURCES:
+  ZettaKit:
+    :commit: 0306b3ba983357ea40e43c80e9dce73c483fd5f4
+    :git: https://github.com/benpackard/ZettaKit.git
+
+CHECKOUT OPTIONS:
+  ZettaKit:
+    :commit: 0306b3ba983357ea40e43c80e9dce73c483fd5f4
+    :git: https://github.com/benpackard/ZettaKit.git
 
 SPEC CHECKSUMS:
   ReactiveCocoa: eb38dee0a0e698f73a9b25e5c1faea2bb4c79240
   Reveal-iOS-SDK: e2250b3c155bcfac53ae223ddc1f76d08f206c33
   SnapKit: e1f090a6d47b1dd4bd89b73f72b6746a7835ef3c
   SocketRocket: 01443933b7bc362621325f4607b80b4286a99707
-  ZettaKit: c1de1de4d63452785270ebce4675f20fa452c721
+  ZettaKit: 2d42d48f59fc8a7fad86f1ff0156d159cb10dd39
 
 COCOAPODS: 0.39.0

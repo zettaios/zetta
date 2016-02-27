@@ -221,13 +221,23 @@ class DeviceViewController: UITableViewController {
 	
 	private func logCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
 		let cell = UITableViewCell(style: .Subtitle, reuseIdentifier: nil)
-		cell.textLabel?.font = UIFont.systemFontOfSize(15)
+		cell.textLabel?.font = UIFont.systemFontOfSize(16)
 		cell.textLabel?.textColor = UIColor.appDarkGrayColor()
+		cell.textLabel?.numberOfLines = 0
 		cell.detailTextLabel?.font = UIFont.systemFontOfSize(12)
 		cell.detailTextLabel?.textColor = UIColor.appMediumGrayColor()
 		
 		let log = logs[indexPath.row]
-		cell.textLabel?.text = "\(log.transition)"//: <new value not yet present in ZettaKit>"
+		let valueStrings = log.inputs.flatMap { (input) -> String? in
+			if let name = input["name"] as? String, value = input["value"] as? String {
+				return "\(name): \(value)"
+			}
+			return nil
+		}
+		let inputString = valueStrings.joinWithSeparator(", ")
+		let logString = [log.transition, inputString.nonEmptyTrimmed()].flatMap({ $0 }).joinWithSeparator(" - ")
+		cell.textLabel?.text = logString
+		
 		let date = NSDate(timeIntervalSince1970: log.timestamp.doubleValue / 1000)
 		cell.detailTextLabel?.text = dateFormatter.stringFromDate(date)
 		
