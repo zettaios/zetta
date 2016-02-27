@@ -17,6 +17,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		NSUserDefaults.standardUserDefaults().registerAppDefaults()
 		
+		var configureError: NSError?
+		GGLContext.sharedInstance().configureWithError(&configureError)
+		assert(configureError == nil, "Error configuring Google services: \(configureError)")
+		GAI.sharedInstance().trackUncaughtExceptions = true
+		
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
 		let controller = DeviceListViewController()
 		let nav = UINavigationController(rootViewController: controller)

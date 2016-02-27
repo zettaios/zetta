@@ -51,6 +51,11 @@ class DeviceViewController: UITableViewController {
 		
 		title = (device.name ?? device.type) ?? "Unnamed Device"
 		
+		let tracker = GAI.sharedInstance().defaultTracker
+		tracker.set(kGAIScreenName, value: title)
+		let builder = GAIDictionaryBuilder.createScreenView()
+		tracker.send(builder.build() as [NSObject : AnyObject])
+		
 		let header = UIImageView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: tableView.bounds.height * 0.5))
 		header.image = UIImage(named: "Device Placeholder")
 		header.contentMode = .ScaleAspectFit
