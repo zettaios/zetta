@@ -48,7 +48,7 @@ class DeviceViewController: UITableViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-		
+				
 		title = (device.name ?? device.type) ?? "Unnamed Device"
 		
 		let tracker = GAI.sharedInstance().defaultTracker
@@ -64,7 +64,7 @@ class DeviceViewController: UITableViewController {
 		tableView.estimatedRowHeight = 60
 		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.tableFooterView = UIView()
-		tableView .registerClass(PropertyCell.self, forCellReuseIdentifier: propertyCellIdentifier)
+		tableView.registerClass(PropertyCell.self, forCellReuseIdentifier: propertyCellIdentifier)
 		tableView.registerClass(NoFieldsActionCell.self, forCellReuseIdentifier: noFieldsActionCellIdentifier)
 		tableView.registerClass(SingleFieldActionCell.self, forCellReuseIdentifier: singleFieldActionCellIdentifier)
 		tableView.allowsSelection = false
@@ -105,12 +105,11 @@ class DeviceViewController: UITableViewController {
 				dispatch_async(dispatch_get_main_queue(), { () -> Void in
 					if let streamEntry = streamEntry as? ZIKLogStreamEntry {
 						self?.logs.insert(streamEntry, atIndex: 0)
-						let indexPath = NSIndexPath(forRow: 0, inSection: 3)
-						self?.tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
-					} else if let streamEntry = streamEntry as? ZIKStreamEntry, index = self?.monitoredStreams.indexOf(stream) {
+					} else if let streamEntry = streamEntry as? ZIKStreamEntry {
+						print("new streamed data for \(streamEntry.topic): \(streamEntry.data)")
 						self?.mostRecentStreamValues[stream] = streamEntry.data
-						self?.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .None)
 					}
+					self?.tableView.reloadData()
 				})
 			})
 			stream.resume()
@@ -160,9 +159,11 @@ class DeviceViewController: UITableViewController {
 		cell.titleLabel.text = stream.title
 		if let recentValue = mostRecentStreamValues[stream] as? String {
 			cell.subtitleLabel.text = recentValue
+			print("most recent streamed value for \(stream.title) is \(recentValue)")
 		} else {
 			//perhaps there is a matching property to fall back on
 			cell.subtitleLabel.text = device.properties[stream.title] as? String
+			print("no recent streamed value for \(stream.title), using matching property: \(cell.subtitleLabel.text)")
 		}
 		
 		return cell
@@ -272,20 +273,19 @@ extension DeviceViewController: ActionCellDelegate {
 				print(error.localizedDescription)
 				return
 			}
-
-			dispatch_async(dispatch_get_main_queue(), { () -> Void in
-				//a new device is returned, representing the latest state
-				if let device = device {
+			
+			//a new device is returned, representing the latest state
+			if let device = device {
+				dispatch_async(dispatch_get_main_queue(), { () -> Void in
 					self?.device = device
-					let range = NSMakeRange(0, 3) //the final section (events) animates the new row iteself
-					self?.tableView.reloadSections(NSIndexSet(indexesInRange: range), withRowAnimation: .None)
+					self?.tableView.reloadData()
 					
 					//the list should also swap out the device for the new version
 					if let unwrappedSelf = self {
 						unwrappedSelf.delegate?.deviceViewController(unwrappedSelf, didTransitionDevice: device)
 					}
-				}
-			})
+				})
+			}
 		}
 	}
 	
