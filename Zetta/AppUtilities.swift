@@ -26,8 +26,12 @@ extension String {
 
 import ZettaKit
 
+//extension ZIKServer {
+//	func
+//}
+
 extension ZIKDevice {
-	func iconURL() -> NSURL? {
+	var iconURL: NSURL? {
 		guard let style = properties["style"] as? [String: AnyObject] else { return nil }
 		if let stateImage = style["stateImage"] as? String {
 			return NSURL(string: stateImage)

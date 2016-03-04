@@ -140,7 +140,7 @@ class DeviceListViewController: UITableViewController {
 			cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
 			cell.subtitleLabel.text = device.state
 			
-			if let iconURL = device.iconURL() {
+			if let iconURL = device.iconURL {
 				cell.deviceImageView.pin_setImageFromURL(iconURL)
 				cell.deviceImageView.alpha = 0.75
 			} else {
@@ -151,7 +151,7 @@ class DeviceListViewController: UITableViewController {
 			return cell
 		}
     }
-	
+		
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
 		//exclude the 'no devices' message cell
 		return !serverDevices[indexPath.section].devices.isEmpty

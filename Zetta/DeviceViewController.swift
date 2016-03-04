@@ -15,6 +15,7 @@ protocol DeviceDelegate: class {
 
 class DeviceViewController: UITableViewController {
 
+	var brandColor: UIColor?
 	weak var delegate: DeviceDelegate?
 	
 	private var device: ZIKDevice
@@ -54,6 +55,8 @@ class DeviceViewController: UITableViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		print(brandColor)
 		
 		title = (device.name ?? device.type) ?? "Unnamed Device"
 		
@@ -98,7 +101,7 @@ class DeviceViewController: UITableViewController {
 	}
 	
 	private func updateHeader() {
-		if let iconURL = device.iconURL() {
+		if let iconURL = device.iconURL {
 			iconImageView.alpha = 0.8
 			iconImageView.pin_setImageFromURL(iconURL)
 		} else {
@@ -133,6 +136,7 @@ class DeviceViewController: UITableViewController {
 					if let streamEntry = streamEntry as? ZIKLogStreamEntry {
 						self?.device.refreshWithLogEntry(streamEntry)
 						self?.logs.insert(streamEntry, atIndex: 0)
+						self?.updateHeader()
 					} else if let streamEntry = streamEntry as? ZIKStreamEntry {
 						self?.mostRecentStreamValues[stream] = streamEntry.data
 					}
