@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AddConnectionViewController: UIViewController {
+class AddConnectionViewController: UIViewController, UITextFieldDelegate {
 
 	weak var delegate: SettingsDelegate?
 	
@@ -31,6 +31,7 @@ class AddConnectionViewController: UIViewController {
 		navigationItem.rightBarButtonItem = addButton
 		navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTapped")
 		
+		mainView.urlField.delegate = self
 		mainView.urlField.addTarget(self, action: "textFieldChanged", forControlEvents: .EditingChanged)
 		mainView.urlField.becomeFirstResponder()
 	}
@@ -73,6 +74,11 @@ class AddConnectionViewController: UIViewController {
 		} else {
 			addButton?.enabled = false
 		}
+	}
+	
+	func textFieldShouldReturn(textField: UITextField) -> Bool {
+		addButtonTapped()
+		return false
 	}
 	
 }

@@ -21,6 +21,7 @@ class AddConnectionView: UIView {
 		urlField.textField.autocapitalizationType = .None
 		urlField.textField.autocorrectionType = .No
 		urlField.textField.keyboardType = .URL
+		urlField.textField.returnKeyType = .Go
 		return urlField
 	}()
 	

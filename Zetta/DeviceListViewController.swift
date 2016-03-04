@@ -81,7 +81,10 @@ class DeviceListViewController: UITableViewController {
 					
 					dispatch_async(dispatch_get_main_queue(), { [weak self] in
 						self?.serverDevices.append((server: server, devices: devices))
+						self?.serverDevices.sortInPlace({ $0.devices.count > $1.devices.count })
+						
 						self?.updateMessageView()
+						
 						if let index = self?.serverDevices.map({ $0.server }).indexOf(server) {
 							self?.tableView.insertSections(NSIndexSet(index: index), withRowAnimation: .Fade)
 						} else {
