@@ -109,7 +109,7 @@ class DeviceViewController: UITableViewController {
 	// MARK: - monitoring streams
 	
 	private func monitorStreams() {
-		//monitor all streams with rel: monitor. Store the most recent value for each, and all values for the logs stream.
+		//monitor all streams with rel: monitor. When a log entry is received, use it to refresh the device. Store the most recent value for each stream, and all values for the logs stream.
 		guard let links = self.device.links as? [ZIKLink] else { return }
 		
 		let monitoredLinks = links.filter({ (link) -> Bool in
@@ -131,9 +131,9 @@ class DeviceViewController: UITableViewController {
 			stream.signal.subscribeNext({ [weak self] (streamEntry) -> Void in
 				dispatch_async(dispatch_get_main_queue(), { () -> Void in
 					if let streamEntry = streamEntry as? ZIKLogStreamEntry {
+						self?.device.refreshWithLogEntry(streamEntry)
 						self?.logs.insert(streamEntry, atIndex: 0)
 					} else if let streamEntry = streamEntry as? ZIKStreamEntry {
-						print("new streamed data for \(streamEntry.topic): \(streamEntry.data)")
 						self?.mostRecentStreamValues[stream] = streamEntry.data
 					}
 					self?.tableView.reloadData()
@@ -186,11 +186,9 @@ class DeviceViewController: UITableViewController {
 		cell.titleLabel.text = stream.title
 		if let recentValue = mostRecentStreamValues[stream] as? String {
 			cell.subtitleLabel.text = recentValue
-			print("most recent streamed value for \(stream.title) is \(recentValue)")
 		} else {
 			//perhaps there is a matching property to fall back on
 			cell.subtitleLabel.text = device.properties[stream.title] as? String
-			print("no recent streamed value for \(stream.title), using matching property: \(cell.subtitleLabel.text)")
 		}
 		
 		return cell
