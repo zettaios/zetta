@@ -26,9 +26,16 @@ extension String {
 
 import ZettaKit
 
-//extension ZIKServer {
-//	func
-//}
+extension ZIKServer {
+	var brandColor: UIColor? {
+		guard let style = properties["style"] as? [String: AnyObject] else { return nil }
+		guard let brandColors = style["brandColors"] as? [String: AnyObject] else { return nil }
+		guard let primary = brandColors["primary"] as? [String: AnyObject] else { return nil }
+		guard let decimal = primary["decimal"] as? [String: AnyObject] else { return nil }
+		guard let red = decimal["red"] as? CGFloat, green = decimal["green"] as? CGFloat, blue = decimal["blue"] as? CGFloat else { return nil }
+		return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
+	}
+}
 
 extension ZIKDevice {
 	var iconURL: NSURL? {

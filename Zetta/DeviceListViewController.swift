@@ -40,6 +40,12 @@ class DeviceListViewController: UITableViewController {
 		refresh()
     }
 	
+	override func viewWillAppear(animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		navigationController?.navigationBar.tintColor = UIColor.appTintColor()
+	}
+	
 	private func addMessageLabel() {
 		messageLabel.translatesAutoresizingMaskIntoConstraints = false
 		tableView.addSubview(messageLabel)
@@ -151,7 +157,7 @@ class DeviceListViewController: UITableViewController {
 			return cell
 		}
     }
-		
+	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
 		//exclude the 'no devices' message cell
 		return !serverDevices[indexPath.section].devices.isEmpty
@@ -160,10 +166,14 @@ class DeviceListViewController: UITableViewController {
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
 
-		let devices = serverDevices[indexPath.section].devices
-		let device = devices[indexPath.row]
+		let server = serverDevices[indexPath.section].server
+		let device = serverDevices[indexPath.section].devices[indexPath.row]
 		let controller = DeviceViewController(device: device)
+		print(UIColor.greenColor())
+		print(server.brandColor)
+		controller.view.tintColor = server.brandColor
 //		controller.delegate = self
+		navigationController?.navigationBar.tintColor = server.brandColor
 		navigationController?.pushViewController(controller, animated: true)
 	}
 	

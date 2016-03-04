@@ -15,7 +15,7 @@ protocol DeviceDelegate: class {
 
 class DeviceViewController: UITableViewController {
 
-	var brandColor: UIColor?
+//	var brandColor: UIColor?
 	weak var delegate: DeviceDelegate?
 	
 	private var device: ZIKDevice
@@ -56,8 +56,8 @@ class DeviceViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		print(brandColor)
-		
+//		view.tintColor = brandColor
+
 		title = (device.name ?? device.type) ?? "Unnamed Device"
 		
 		submitAnalytics()
@@ -208,6 +208,8 @@ class DeviceViewController: UITableViewController {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(noFieldsActionCellIdentifier) as? NoFieldsActionCell else { return UITableViewCell() }
 			cell.titleLabel.text = transition.name
 			cell.goButton.setTitle(transition.name, forState: .Normal)
+//			print("setting to \(self.view.tintColor)")
+//			cell.goButton.backgroundColor = view.tintColor
 			cell.delegate = self
 			return cell
 		} else if fieldNames.count == 1 {

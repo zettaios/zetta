@@ -81,4 +81,10 @@ class NoFieldsActionCell: UITableViewCell {
 	@objc private func buttonTapped() {
 		delegate?.actionCell(self, didSubmitFields: [String?]())
 	}
+	
+	override func tintColorDidChange() {
+		super.tintColorDidChange()
+		
+		goButton.backgroundColor = tintColor
+	}
 }
