@@ -142,7 +142,7 @@ class DeviceListViewController: UITableViewController {
 			
 			if let iconURL = device.iconURL() {
 				cell.deviceImageView.pin_setImageFromURL(iconURL)
-				cell.deviceImageView.alpha = 0.5
+				cell.deviceImageView.alpha = 0.75
 			} else {
 				cell.deviceImageView.image = UIImage(named: "Device Placeholder")
 				cell.deviceImageView.alpha = 1

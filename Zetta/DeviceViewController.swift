@@ -27,6 +27,12 @@ class DeviceViewController: UITableViewController {
 	private let noFieldsActionCellIdentifier = "No Fields Action Cell"
 	private let singleFieldActionCellIdentifier = "Single Field Action Cell"
 	
+	lazy var iconImageView: UIImageView = {
+		let imageView = UIImageView()
+		imageView.contentMode = .ScaleAspectFit
+		return imageView
+	}()
+	
 	private lazy var dateFormatter: NSDateFormatter = {
 		let formatter = NSDateFormatter()
 		formatter.dateStyle = .ShortStyle
@@ -51,15 +57,10 @@ class DeviceViewController: UITableViewController {
 		
 		title = (device.name ?? device.type) ?? "Unnamed Device"
 		
-		let tracker = GAI.sharedInstance().defaultTracker
-		tracker.set(kGAIScreenName, value: title)
-		let builder = GAIDictionaryBuilder.createScreenView()
-		tracker.send(builder.build() as [NSObject : AnyObject])
+		submitAnalytics()
 		
-		let header = UIImageView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: tableView.bounds.height * 0.5))
-		header.image = UIImage(named: "Device Placeholder")
-		header.contentMode = .ScaleAspectFit
-		tableView.tableHeaderView = header
+		addHeader()
+		updateHeader()
 		
 		tableView.estimatedRowHeight = 60
 		tableView.rowHeight = UITableViewAutomaticDimension
@@ -76,6 +77,32 @@ class DeviceViewController: UITableViewController {
 		
 		for stream in monitoredStreams {
 			stream.stop()
+		}
+	}
+	
+	private func submitAnalytics() {
+		let tracker = GAI.sharedInstance().defaultTracker
+		tracker.set(kGAIScreenName, value: title)
+		let builder = GAIDictionaryBuilder.createScreenView()
+		tracker.send(builder.build() as [NSObject : AnyObject])
+	}
+	
+	private func addHeader() {
+		let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: tableView.bounds.height * 0.5))
+		iconImageView.translatesAutoresizingMaskIntoConstraints = false
+		header.addSubview(iconImageView)
+		iconImageView.snp_makeConstraints { (make) -> Void in
+			make.edges.equalTo(header).inset(40)
+		}
+		tableView.tableHeaderView = header
+	}
+	
+	private func updateHeader() {
+		if let iconURL = device.iconURL() {
+			iconImageView.alpha = 0.8
+			iconImageView.pin_setImageFromURL(iconURL)
+		} else {
+			iconImageView.image = UIImage(named: "Device Placeholder")
 		}
 	}
 	
