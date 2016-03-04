@@ -8,11 +8,21 @@
 
 import UIKit
 import ZettaKit
+import PINRemoteImage
 
 class DeviceListViewController: UITableViewController {
 
 	private var serverDevices = [(server: ZIKServer, devices:[ZIKDevice])]()
 	private let cellIdentifier = "Cell"
+	
+	lazy var messageLabel: UILabel = {
+		let label = UILabel()
+		label.textColor = UIColor.grayColor()
+		label.font = UIFont.systemFontOfSize(12)
+		label.numberOfLines = 0
+		label.textAlignment = .Center
+		return label
+	}()
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,20 +34,36 @@ class DeviceListViewController: UITableViewController {
 		tableView.tableFooterView = UIView()
 		tableView.registerClass(DeviceCell.self, forCellReuseIdentifier: cellIdentifier)
 		
+		addMessageLabel()
+		updateMessageView()
+		
 		refresh()
     }
+	
+	private func addMessageLabel() {
+		messageLabel.translatesAutoresizingMaskIntoConstraints = false
+		tableView.addSubview(messageLabel)
+		messageLabel.snp_makeConstraints { (make) -> Void in
+			make.centerX.equalTo(tableView)
+			make.centerY.equalTo(tableView).multipliedBy(0.6)
+			make.width.equalTo(tableView).multipliedBy(0.8)
+		}
+	}
 	
 	// MARK: - data
 	
 	private func refresh() {
 		if let url = NSUserDefaults.standardUserDefaults().connectionHistory.first {
 			refreshServersFromURL(url)
+		} else {
+			updateMessageView()
 		}
 	}
 	
 	private func refreshServersFromURL(url: NSURL) {
 		serverDevices.removeAll()
 		tableView.reloadData()
+		updateMessageView()
 		
 		let rootSignal = ZIKSession.sharedSession().root(url)
 		let serverSignal = ZIKSession.sharedSession().servers(rootSignal)
@@ -50,11 +76,12 @@ class DeviceListViewController: UITableViewController {
 					return filteredServer.name == server.name
 				})
 				
-				ZIKSession.sharedSession().devices(filteredServerSignal).collect().subscribeNext({ [weak self] (devices) -> Void in
+				ZIKSession.sharedSession().devices(filteredServerSignal).collect().subscribeNext({ (devices) -> Void in
 					guard let devices = devices as? [ZIKDevice] else { return }
-					self?.serverDevices.append((server: server, devices: devices))
 					
-					dispatch_async(dispatch_get_main_queue(),{
+					dispatch_async(dispatch_get_main_queue(), { [weak self] in
+						self?.serverDevices.append((server: server, devices: devices))
+						self?.updateMessageView()
 						if let index = self?.serverDevices.map({ $0.server }).indexOf(server) {
 							self?.tableView.insertSections(NSIndexSet(index: index), withRowAnimation: .Fade)
 						} else {
@@ -64,6 +91,17 @@ class DeviceListViewController: UITableViewController {
 				})
 			}
 		}
+	}
+	
+	// MARK: - message view
+	
+	private func updateMessageView() {
+		if let urlString = NSUserDefaults.standardUserDefaults().connectionHistory.first?.absoluteString {
+			messageLabel.text = "Waiting for devices to join \(urlString)..."
+		} else {
+			messageLabel.text = "Tap the Settings icon in the toolbar to add an API."
+		}
+		messageLabel.hidden = !serverDevices.isEmpty
 	}
 	
     // MARK: - table view
@@ -95,53 +133,27 @@ class DeviceListViewController: UITableViewController {
 		} else {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
 			let device = devices[indexPath.row]
-			cell.deviceImageView.image = UIImage(named: "Device Placeholder")
+			
 			cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
 			cell.subtitleLabel.text = device.state
+			
+			if let iconURL = device.iconURL() {
+				cell.deviceImageView.pin_setImageFromURL(iconURL)
+				cell.deviceImageView.alpha = 0.5
+			} else {
+				cell.deviceImageView.image = UIImage(named: "Device Placeholder")
+				cell.deviceImageView.alpha = 1
+			}
+			
 			return cell
 		}
     }
 	
-//	func messageCell() -> UITableViewCell {
-//		let cell = UITableViewCell()
-//		cell.contentView.backgroundColor = UIColor.whiteColor()
-//		
-//		let spinner = UIActivityIndicatorView()
-//		spinner.color = UIColor.grayColor()
-//		spinner.setContentHuggingPriority(1000, forAxis: .Horizontal)
-//		
-//		let label = UILabel()
-//		label.textColor = spinner.color
-//		label.font = UIFont.systemFontOfSize(12)
-//		label.numberOfLines = 0
-//		if let urlString = NSUserDefaults.standardUserDefaults().connectionHistory.first?.absoluteString {
-//			label.text = "Waiting for devices to join \(urlString)..."
-//			spinner.startAnimating()
-//		} else {
-//			label.text = "Tap 'Settings' to add an API..."
-//			label.textAlignment = .Center
-//			spinner.stopAnimating()
-//		}
-//		
-//		let stack = UIStackView(arrangedSubviews: [spinner, label])
-//		stack.axis = .Horizontal
-//		stack.spacing = 15
-//		stack.layoutMarginsRelativeArrangement = true
-//		stack.layoutMargins = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
-//		stack.translatesAutoresizingMaskIntoConstraints = false
-//		cell.contentView.addSubview(stack)
-//		stack.snp_makeConstraints { (make) -> Void in
-//			make.edges.equalTo(cell.contentView)
-//		}
-//		
-//		return cell
-//	}
-	
-//	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-//		//exclude the 'no devices' message cell
-//		return !devices.isEmpty || indexPath.section == 1
-//	}
-//	
+	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+		//exclude the 'no devices' message cell
+		return !serverDevices[indexPath.section].devices.isEmpty
+	}
+
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
 

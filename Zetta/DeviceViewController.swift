@@ -48,7 +48,7 @@ class DeviceViewController: UITableViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-				
+		
 		title = (device.name ?? device.type) ?? "Unnamed Device"
 		
 		let tracker = GAI.sharedInstance().defaultTracker

@@ -57,7 +57,7 @@ class DeviceCell: UITableViewCell {
 		if !constraintsAdded {
 			deviceImageView.snp_makeConstraints { (make) -> Void in
 				make.left.equalTo(contentView).offset(20)
-				make.top.bottom.equalTo(contentView).inset(12)
+				make.top.bottom.equalTo(contentView).inset(16)
 				make.width.equalTo(deviceImageView.snp_height)
 			}
 			
@@ -82,6 +82,8 @@ class DeviceCell: UITableViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
+		deviceImageView.pin_cancelImageDownload() //prevent late loading
+		deviceImageView.image = nil
 	}
 	
 }
