@@ -305,6 +305,7 @@ extension DeviceViewController: ActionCellDelegate {
 			if let device = device {
 				dispatch_async(dispatch_get_main_queue(), { () -> Void in
 					self?.device = device
+					self?.updateHeader()
 					self?.tableView.reloadData()
 					
 					//the list should also swap out the device for the new version
