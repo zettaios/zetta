@@ -162,8 +162,13 @@ class DeviceListViewController: UITableViewController {
         return serverDevices.count
     }
 	
-	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		return serverDevices[section].server.name
+	override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		return 28
+	}
+
+	override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		let server = serverDevices[section].server
+		return DeviceListHeader(title: server.name, color: server.brandColor)
 	}
 	
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -25,6 +25,7 @@
 		C5B72C621C53F92400E4B68C /* AddConnectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C611C53F92400E4B68C /* AddConnectionViewController.swift */; };
 		C5B72C641C53F97300E4B68C /* AddConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C631C53F97300E4B68C /* AddConnectionView.swift */; };
 		C5B72C681C53FB8B00E4B68C /* BorderedTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5B72C671C53FB8B00E4B68C /* BorderedTextField.swift */; };
+		C5CFB05B1C8A62D400C208EF /* DeviceListHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5CFB05A1C8A62D400C208EF /* DeviceListHeader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,7 @@
 		C5B72C611C53F92400E4B68C /* AddConnectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddConnectionViewController.swift; sourceTree = "<group>"; };
 		C5B72C631C53F97300E4B68C /* AddConnectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddConnectionView.swift; sourceTree = "<group>"; };
 		C5B72C671C53FB8B00E4B68C /* BorderedTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BorderedTextField.swift; sourceTree = "<group>"; };
+		C5CFB05A1C8A62D400C208EF /* DeviceListHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceListHeader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */,
+				C5CFB05A1C8A62D400C208EF /* DeviceListHeader.swift */,
 				C560B5581C49B14800E5F1F9 /* DeviceCell.swift */,
 			);
 			name = "Device List";
@@ -293,6 +296,7 @@
 				C560B55B1C49B41800E5F1F9 /* AppStyles.swift in Sources */,
 				C560B5591C49B14800E5F1F9 /* DeviceCell.swift in Sources */,
 				C5B72C641C53F97300E4B68C /* AddConnectionView.swift in Sources */,
+				C5CFB05B1C8A62D400C208EF /* DeviceListHeader.swift in Sources */,
 				C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */,
 				C5AF70E31C75017300C7AD2C /* NoFieldsActionCell.swift in Sources */,
 				C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */,
