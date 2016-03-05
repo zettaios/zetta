@@ -89,6 +89,10 @@ class DeviceListViewController: UITableViewController {
 						self?.serverDevices.append((server: server, devices: devices))
 						self?.serverDevices.sortInPlace({ $0.devices.count > $1.devices.count })
 						
+						for device in devices {
+							self?.monitorStateStreamForDevice(device)
+						}
+						
 						self?.updateMessageView()
 						
 						if let index = self?.serverDevices.map({ $0.server }).indexOf(server) {
@@ -100,6 +104,45 @@ class DeviceListViewController: UITableViewController {
 				})
 			}
 		}
+	}
+	
+	// MARK: - monitoring streams
+	
+	private func monitorStateStreamForDevice(device: ZIKDevice) {
+		//monitor all streams with rel: monitor. When a log entry is received, use it to refresh the device.
+		guard let links = device.links as? [ZIKLink] else { return }
+		let monitoredLinks = links.filter({ (link) -> Bool in
+			if let rels = link.rel as? [String] where rels.contains("monitor") {
+				return true
+			}
+			return false
+		})
+
+		for link in monitoredLinks {
+			let stream = ZIKStream(link: link, andIsMultiplex: false)
+			stream.signal.subscribeNext({ [weak self] (streamEntry) -> Void in
+				guard let streamEntry = streamEntry as? ZIKLogStreamEntry else { return }
+				let topicComponents = streamEntry.topic.componentsSeparatedByString("/")
+				guard topicComponents.count >= 2 else { return }
+				let deviceUUID = topicComponents[1]
+				if let (device, indexPath) = self?.deviceForUUID(deviceUUID) {
+					device.refreshWithLogEntry(streamEntry)
+					self?.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+				}
+			})
+			stream.resume()
+		}
+	}
+	
+	private func deviceForUUID(uuid: String) -> (device: ZIKDevice, indexPath: NSIndexPath)? {
+		for (serverIndex, serverDevice) in serverDevices.enumerate() {
+			for (deviceIndex, device) in serverDevice.devices.enumerate() {
+				if device.uuid == uuid {
+					return (device: device, indexPath: NSIndexPath(forRow: deviceIndex, inSection: serverIndex))
+				}
+			}
+		}
+		return nil
 	}
 	
 	// MARK: - message view
@@ -169,10 +212,7 @@ class DeviceListViewController: UITableViewController {
 		let server = serverDevices[indexPath.section].server
 		let device = serverDevices[indexPath.section].devices[indexPath.row]
 		let controller = DeviceViewController(device: device)
-		print(UIColor.greenColor())
-		print(server.brandColor)
 		controller.view.tintColor = server.brandColor
-//		controller.delegate = self
 		navigationController?.navigationBar.tintColor = server.brandColor
 		navigationController?.pushViewController(controller, animated: true)
 	}
@@ -199,14 +239,3 @@ extension DeviceListViewController: SettingsDelegate {
 		refresh()
 	}
 }
-
-//extension DeviceListViewController: DeviceDelegate {
-//	
-//	func deviceViewController(controller: DeviceViewController, didTransitionDevice device: ZIKDevice) {
-//		if let deviceIndex = devices.map({ $0.uuid }).indexOf(device.uuid) {
-//			devices[deviceIndex] = device
-//			tableView.reloadData()
-//		}
-//	}
-//	
-//}

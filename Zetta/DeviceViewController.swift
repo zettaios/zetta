@@ -9,15 +9,8 @@
 import UIKit
 import ZettaKit
 
-protocol DeviceDelegate: class {
-	func deviceViewController(controller: DeviceViewController, didTransitionDevice device: ZIKDevice)
-}
-
 class DeviceViewController: UITableViewController {
 
-//	var brandColor: UIColor?
-	weak var delegate: DeviceDelegate?
-	
 	private var device: ZIKDevice
 	private var monitoredStreams = [ZIKStream]()
 	private var mostRecentStreamValues = [ZIKStream: AnyObject]()
@@ -208,8 +201,6 @@ class DeviceViewController: UITableViewController {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(noFieldsActionCellIdentifier) as? NoFieldsActionCell else { return UITableViewCell() }
 			cell.titleLabel.text = transition.name
 			cell.goButton.setTitle(transition.name, forState: .Normal)
-//			print("setting to \(self.view.tintColor)")
-//			cell.goButton.backgroundColor = view.tintColor
 			cell.delegate = self
 			return cell
 		} else if fieldNames.count == 1 {
@@ -311,11 +302,6 @@ extension DeviceViewController: ActionCellDelegate {
 					self?.device = device
 					self?.updateHeader()
 					self?.tableView.reloadData()
-					
-					//the list should also swap out the device for the new version
-					if let unwrappedSelf = self {
-						unwrappedSelf.delegate?.deviceViewController(unwrappedSelf, didTransitionDevice: device)
-					}
 				})
 			}
 		}
