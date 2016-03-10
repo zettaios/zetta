@@ -14,7 +14,7 @@ class PropertyCell: UITableViewCell {
 	
 	lazy var titleLabel: UILabel = {
 		let label = UILabel()
-		label.textColor = UIColor.appDarkGrayColor()
+		label.textColor = UIColor.appMediumGrayColor()
 		label.font = UIFont.systemFontOfSize(18)
 		label.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
 		return label
@@ -22,7 +22,7 @@ class PropertyCell: UITableViewCell {
 	
 	lazy var subtitleLabel: UILabel = {
 		let label = UILabel()
-		label.textColor = UIColor.appMediumGrayColor()
+		label.textColor = UIColor.appDarkGrayColor()
 		label.font = UIFont.systemFontOfSize(18)
 		label.textAlignment = .Right
 		label.adjustsFontSizeToFitWidth = true

@@ -19,7 +19,7 @@ class NoFieldsActionCell: UITableViewCell {
 	
 	lazy var titleLabel: UILabel = {
 		let label = UILabel()
-		label.textColor = UIColor.appDarkGrayColor()
+		label.textColor = UIColor.appMediumGrayColor()
 		label.font = UIFont.systemFontOfSize(18)
 		return label
 	}()
