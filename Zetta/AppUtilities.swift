@@ -29,7 +29,7 @@ import ZettaKit
 extension ZIKServer {
 	var brandColor: UIColor? {
 		guard let style = properties["style"] as? [String: AnyObject] else { return nil }
-		guard let brandColors = style["brandColors"] as? [String: AnyObject] else { return nil }
+		guard let brandColors = style["colors"] as? [String: AnyObject] else { return nil }
 		guard let primary = brandColors["primary"] as? [String: AnyObject] else { return nil }
 		guard let decimal = primary["decimal"] as? [String: AnyObject] else { return nil }
 		guard let red = decimal["red"] as? CGFloat, green = decimal["green"] as? CGFloat, blue = decimal["blue"] as? CGFloat else { return nil }

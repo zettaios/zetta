@@ -168,7 +168,7 @@ class DeviceListViewController: UITableViewController {
 
 	override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let server = serverDevices[section].server
-		return DeviceListHeader(title: server.name, color: server.brandColor)
+		return DeviceListHeader(title: server.name, color: server.brandColor ?? UIColor.appDefaultDeviceTintColor())
 	}
 	
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -197,7 +197,7 @@ class DeviceListViewController: UITableViewController {
 			if let iconURL = device.iconURL {
 				cell.deviceImageView.pin_setImageFromURL(iconURL, completion: { [weak self] (result) -> Void in
 					cell.deviceImageView.image = result.image?.imageWithRenderingMode(.AlwaysTemplate)
-					cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.brandColor ?? UIColor.blackColor()
+					cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.brandColor ?? UIColor.appDefaultDeviceTintColor()
 				})
 			} else {
 				cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysOriginal)
@@ -218,8 +218,8 @@ class DeviceListViewController: UITableViewController {
 		let server = serverDevices[indexPath.section].server
 		let device = serverDevices[indexPath.section].devices[indexPath.row]
 		let controller = DeviceViewController(device: device)
-		controller.view.tintColor = server.brandColor ?? UIColor.blackColor()
-		navigationController?.navigationBar.tintColor = server.brandColor ?? UIColor.blackColor()
+		controller.view.tintColor = server.brandColor ?? UIColor.appDefaultDeviceTintColor()
+		navigationController?.navigationBar.tintColor = server.brandColor ?? UIColor.appDefaultDeviceTintColor()
 		navigationController?.pushViewController(controller, animated: true)
 	}
 	
