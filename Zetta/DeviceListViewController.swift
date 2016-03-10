@@ -217,8 +217,8 @@ class DeviceListViewController: UITableViewController {
 		let server = serverDevices[indexPath.section].server
 		let device = serverDevices[indexPath.section].devices[indexPath.row]
 		let controller = DeviceViewController(device: device)
-		controller.view.tintColor = server.brandColor
-		navigationController?.navigationBar.tintColor = server.brandColor
+		controller.view.tintColor = server.brandColor ?? UIColor.blackColor()
+		navigationController?.navigationBar.tintColor = server.brandColor ?? UIColor.blackColor()
 		navigationController?.pushViewController(controller, animated: true)
 	}
 	
