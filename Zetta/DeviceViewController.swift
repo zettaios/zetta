@@ -93,10 +93,11 @@ class DeviceViewController: UITableViewController {
 	
 	private func updateHeader() {
 		if let iconURL = device.iconURL {
-			iconImageView.alpha = 0.8
-			iconImageView.pin_setImageFromURL(iconURL)
+			iconImageView.pin_setImageFromURL(iconURL, completion: { [weak self] (result) -> Void in
+				self?.iconImageView.image = result.image?.imageWithRenderingMode(.AlwaysTemplate)
+			})
 		} else {
-			iconImageView.image = UIImage(named: "Device Placeholder")
+			iconImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysOriginal)
 		}
 	}
 	
