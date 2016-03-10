@@ -18,15 +18,15 @@ class DeviceCell: UITableViewCell {
 
 	lazy var titleLabel: UILabel = {
 		let titleLabel = UILabel()
-		titleLabel.textColor = UIColor.appDarkGrayColor()
-		titleLabel.font = UIFont.systemFontOfSize(16)
+		titleLabel.textColor = UIColor.appMediumGrayColor()
+		titleLabel.font = UIFont.systemFontOfSize(13)
 		return titleLabel
 	}()
 	
 	lazy var subtitleLabel: UILabel = {
 		let subtitleLabel = UILabel()
-		subtitleLabel.textColor = UIColor.appMediumGrayColor()
-		subtitleLabel.font = UIFont.systemFontOfSize(13)
+		subtitleLabel.textColor = UIColor.appDarkGrayColor()
+		subtitleLabel.font = UIFont.systemFontOfSize(16)
 		return subtitleLabel
 	}()
 	
@@ -64,11 +64,11 @@ class DeviceCell: UITableViewCell {
 			titleLabel.snp_makeConstraints { (make) -> Void in
 				make.left.equalTo(deviceImageView.snp_right).offset(20)
 				make.right.lessThanOrEqualTo(contentView).offset(-20)
-				make.bottom.equalTo(contentView.snp_centerY)
+				make.bottom.equalTo(subtitleLabel.snp_top).offset(-4)
 			}
 			
 			subtitleLabel.snp_makeConstraints { (make) -> Void in
-				make.top.equalTo(titleLabel.snp_bottom).offset(4)
+				make.top.equalTo(contentView.snp_centerY)
 				make.left.equalTo(titleLabel)
 				make.right.lessThanOrEqualTo(contentView).offset(-20)
 			}
