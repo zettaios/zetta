@@ -49,8 +49,6 @@ class DeviceViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-//		view.tintColor = brandColor
-
 		title = (device.name ?? device.type) ?? "Unnamed Device"
 		
 		submitAnalytics()

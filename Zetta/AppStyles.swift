@@ -18,7 +18,7 @@ extension UIFont {
 extension UIColor {
 	
 	class func appTintColor() -> UIColor {
-		return UIColor(red:0.980,  green:0.271,  blue:0.125, alpha:1)
+		return UIColor(red:0,  green:0.5,  blue:1, alpha:1)
 	}
 	
 	class func appDarkGrayColor() -> UIColor {

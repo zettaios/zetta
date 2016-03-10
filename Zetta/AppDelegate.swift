@@ -38,6 +38,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		UINavigationBar.appearance().translucent = false
 	}
 
-
 }
 
