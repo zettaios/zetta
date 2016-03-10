@@ -197,12 +197,10 @@ class DeviceListViewController: UITableViewController {
 			if let iconURL = device.iconURL {
 				cell.deviceImageView.pin_setImageFromURL(iconURL, completion: { [weak self] (result) -> Void in
 					cell.deviceImageView.image = result.image?.imageWithRenderingMode(.AlwaysTemplate)
-					if let server = self?.serverDevices[indexPath.section].server {
-						cell.deviceImageView.tintColor = server.brandColor
-					}
+					cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.brandColor ?? UIColor.blackColor()
 				})
 			} else {
-				cell.deviceImageView.image = UIImage(named: "Device Placeholder")
+				cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysOriginal)
 			}
 			
 			return cell
