@@ -195,11 +195,14 @@ class DeviceListViewController: UITableViewController {
 			cell.subtitleLabel.text = device.state
 			
 			if let iconURL = device.iconURL {
-				cell.deviceImageView.pin_setImageFromURL(iconURL)
-				cell.deviceImageView.alpha = 0.75
+				cell.deviceImageView.pin_setImageFromURL(iconURL, completion: { [weak self] (result) -> Void in
+					cell.deviceImageView.image = result.image?.imageWithRenderingMode(.AlwaysTemplate)
+					if let server = self?.serverDevices[indexPath.section].server {
+						cell.deviceImageView.tintColor = server.brandColor
+					}
+				})
 			} else {
 				cell.deviceImageView.image = UIImage(named: "Device Placeholder")
-				cell.deviceImageView.alpha = 1
 			}
 			
 			return cell
