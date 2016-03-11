@@ -191,17 +191,17 @@ class DeviceListViewController: UITableViewController {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
 			let device = devices[indexPath.row]
 			
-			cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
-			cell.subtitleLabel.text = device.state
-			
 			if let iconURL = device.iconURL {
 				cell.deviceImageView.pin_setImageFromURL(iconURL, completion: { [weak self] (result) -> Void in
 					cell.deviceImageView.image = result.image?.imageWithRenderingMode(.AlwaysTemplate)
 					cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.brandColor ?? UIColor.appDefaultDeviceTintColor()
-				})
+					})
 			} else {
 				cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysOriginal)
 			}
+			
+			cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
+			cell.subtitleLabel.text = device.state
 			
 			return cell
 		}

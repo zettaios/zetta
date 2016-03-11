@@ -88,6 +88,12 @@ class SingleFieldActionCell: UITableViewCell {
 		textField.text = nil
 	}
 	
+	override func tintColorDidChange() {
+		super.tintColorDidChange()
+		
+		goButton.backgroundColor = tintColor
+	}
+	
 }
 
 extension SingleFieldActionCell: UITextFieldDelegate {

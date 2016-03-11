@@ -96,6 +96,12 @@ class MultipleFieldsActionCell: UITableViewCell {
 		delegate?.actionCell(self, didSubmitFields: strings)
 	}
 	
+	override func tintColorDidChange() {
+		super.tintColorDidChange()
+		
+		goButton.backgroundColor = tintColor
+	}
+	
 }
 
 extension MultipleFieldsActionCell: UITextFieldDelegate {
