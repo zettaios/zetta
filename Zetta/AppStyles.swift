@@ -16,7 +16,6 @@ extension UIFont {
 }
 
 extension UIColor {
-	
 	class func appTintColor() -> UIColor {
 		return UIColor(red:0,  green:0.5,  blue:1, alpha:1)
 	}
@@ -44,21 +43,17 @@ extension UIColor {
 		let blue = CGFloat(colorValues[2])
 		self.init(red: red, green: green, blue: blue, alpha: 1)
 	}
-	
 }
 
 extension UIView {
-	
 	class func hairline() -> UIView {
 		let line = UIView()
 		line.backgroundColor = UIColor.tableViewSeparatorColor()
 		return line
 	}
-	
 }
 
 extension UILabel {
-
 	class func devicePropertyLabel(text text: String?) -> UILabel {
 		let label = UILabel()
 		label.text = text
@@ -67,11 +62,9 @@ extension UILabel {
 		label.textAlignment = .Center
 		return label
 	}
-
 }
 
 extension UIButton {
-	
 	class func deviceActionButton(title title: String?) -> UIButton {
 		let button = UIButton(type: .System)
 		button.setTitle(title, forState: .Normal)
@@ -82,5 +75,14 @@ extension UIButton {
 		button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
 		return button
 	}
-	
+}
+
+extension UITableViewCell {
+	class func emptyCell(message message: String?) -> UITableViewCell {
+		let cell = UITableViewCell()
+		cell.textLabel?.textColor = UIColor.grayColor()
+		cell.textLabel?.font = UIFont.italicSystemFontOfSize(12)
+		cell.textLabel?.text = message
+		return cell
+	}
 }

@@ -182,11 +182,7 @@ class DeviceListViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let devices = serverDevices[indexPath.section].devices
 		if devices.isEmpty {
-			let cell = UITableViewCell()
-			cell.textLabel?.textColor = UIColor.grayColor()
-			cell.textLabel?.font = UIFont.italicSystemFontOfSize(12)
-			cell.textLabel?.text = "No devices are online for this server."
-			return cell
+			return UITableViewCell.emptyCell(message: "No devices online for this server.")
 		} else {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
 			let device = devices[indexPath.row]

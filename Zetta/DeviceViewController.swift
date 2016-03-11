@@ -139,6 +139,10 @@ class DeviceViewController: UITableViewController {
 		}
 	}
 	
+	private var nonLogStreams: [ZIKStream] {
+		return monitoredStreams.filter({ $0 != logsStream })
+	}
+	
     // MARK: - table view
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -157,27 +161,27 @@ class DeviceViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
-		case 0: return monitoredStreams.filter({ $0 != logsStream }).count
-		case 1: return device.transitions?.count ?? 0
-		case 2: return device.properties.count
-		case 3: return logs.count
+		case 0: return max(nonLogStreams.count, 1)
+		case 1: return max(device.transitions?.count ?? 0, 1)
+		case 2: return max(device.properties.count, 1)
+		case 3: return max(logs.count, 1)
 		default: return 0
 		}
     }
 	
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		switch indexPath.section {
-		case 0: return streamCellForIndexPath(indexPath)
-		case 1: return actionCellForIndexPath(indexPath)
-		case 2: return propertyCellForIndexPath(indexPath)
-		case 3: return logCellForIndexPath(indexPath)
+		case 0: return nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
+		case 1: return device.transitions?.isEmpty != false ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
+		case 2: return device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
+		case 3: return logs.isEmpty ? UITableViewCell.emptyCell(message: "No logs for this device.") : logCellForIndexPath(indexPath)
 		default: return UITableViewCell()
 		}
     }
 	
 	private func streamCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(propertyCellIdentifier) as? PropertyCell else { return UITableViewCell() }
-		let stream = monitoredStreams.filter({ $0 != logsStream })[indexPath.row]
+		let stream = nonLogStreams[indexPath.row]
 		cell.titleLabel.text = stream.title
 		
 		if let recentValue = mostRecentStreamValues[stream] as? String {
