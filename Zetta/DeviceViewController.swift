@@ -177,14 +177,19 @@ class DeviceViewController: UITableViewController {
 	
 	private func streamCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(propertyCellIdentifier) as? PropertyCell else { return UITableViewCell() }
-		
 		let stream = monitoredStreams.filter({ $0 != logsStream })[indexPath.row]
 		cell.titleLabel.text = stream.title
+		
 		if let recentValue = mostRecentStreamValues[stream] as? String {
 			cell.subtitleLabel.text = recentValue
+			cell.subtitleLabel.font = UIFont.systemFontOfSize(18)
+		} else if let recentValue = mostRecentStreamValues[stream] as? Float {
+			cell.subtitleLabel.text = String(format: "%.5f", recentValue)
+			cell.subtitleLabel.font = UIFont.monospacedDigitSystemFontOfSize(18, weight: UIFontWeightRegular)
 		} else {
 			//perhaps there is a matching property to fall back on
 			cell.subtitleLabel.text = device.properties[stream.title] as? String
+			cell.subtitleLabel.font = UIFont.systemFontOfSize(18)
 		}
 		
 		return cell
