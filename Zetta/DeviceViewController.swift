@@ -171,11 +171,16 @@ class DeviceViewController: UITableViewController {
 	
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		switch indexPath.section {
-		case 0: return nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
-		case 1: return device.transitions?.isEmpty != false ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
-		case 2: return device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
-		case 3: return logs.isEmpty ? UITableViewCell.emptyCell(message: "No logs for this device.") : logCellForIndexPath(indexPath)
-		default: return UITableViewCell()
+		case 0:
+			return nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
+		case 1:
+			return device.transitions?.isEmpty != false ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
+		case 2:
+			return device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
+		case 3:
+			return logs.isEmpty ? UITableViewCell.emptyCell(message: "No logs for this device.") : logCellForIndexPath(indexPath)
+		default:
+			return UITableViewCell()
 		}
     }
 	
