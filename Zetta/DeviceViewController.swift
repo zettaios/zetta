@@ -42,6 +42,7 @@ class DeviceViewController: UITableViewController {
         super.viewDidLoad()
 		
 		title = (device.name ?? device.type) ?? "Unnamed Device"
+		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
 		
 		submitAnalytics()
 		

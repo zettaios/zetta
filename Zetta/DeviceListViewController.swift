@@ -29,6 +29,7 @@ class DeviceListViewController: UITableViewController {
 		
 		title = "Zetta"
 		navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Gear Small"), style: .Plain, target: self, action: "settingsButtonTapped")
+		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
 		
 		tableView.alwaysBounceVertical = false
 		tableView.tableFooterView = UIView()

@@ -30,7 +30,7 @@ class SettingsViewController: UITableViewController {
 		
 		title = "Settings"
 		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonTapped")
-		
+
 		tableView.backgroundColor = UIColor.groupTableViewBackgroundColor()
     }
 	
