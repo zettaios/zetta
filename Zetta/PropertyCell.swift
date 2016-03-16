@@ -50,7 +50,6 @@ class PropertyCell: UITableViewCell {
 			titleLabel.snp_makeConstraints { (make) -> Void in
 				make.left.equalTo(contentView).offset(16)
 				make.top.bottom.equalTo(contentView)
-				make.height.greaterThanOrEqualTo(60)
 			}
 			
 			subtitleLabel.snp_makeConstraints { (make) -> Void in

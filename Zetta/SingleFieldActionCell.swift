@@ -60,12 +60,7 @@ class SingleFieldActionCell: UITableViewCell {
 				make.edges.equalTo(contentView)
 			}
 			
-			textField.snp_makeConstraints { (make) -> Void in
-				make.height.greaterThanOrEqualTo(38)
-			}
-			
 			goButton.snp_makeConstraints { (make) -> Void in
-				make.height.greaterThanOrEqualTo(38)
 				make.width.greaterThanOrEqualTo(goButton.snp_height).multipliedBy(1.5)
 			}
 			

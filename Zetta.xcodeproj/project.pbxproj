@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		190E2CD31F528248381A253D /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93731F1E0D5A6AA529EDBBCC /* Pods.framework */; };
+		C53840231C99E8D000F30B2C /* EventsLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53840221C99E8D000F30B2C /* EventsLogViewController.swift */; };
+		C53840251C99EA7D00F30B2C /* EventLogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53840241C99EA7D00F30B2C /* EventLogCell.swift */; };
 		C54094EB1C6EC04C00257831 /* DeviceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54094EA1C6EC04C00257831 /* DeviceViewController.swift */; };
 		C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C544BE801C4ABAA20072CECD /* AppUtilities.swift */; };
 		C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */; };
@@ -32,6 +34,8 @@
 		7ABFB02E682D9D8209158878 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		8713BDDCF40B417C09FA6F21 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		93731F1E0D5A6AA529EDBBCC /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C53840221C99E8D000F30B2C /* EventsLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsLogViewController.swift; sourceTree = "<group>"; };
+		C53840241C99EA7D00F30B2C /* EventLogCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventLogCell.swift; sourceTree = "<group>"; };
 		C54094EA1C6EC04C00257831 /* DeviceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceViewController.swift; sourceTree = "<group>"; };
 		C544BE801C4ABAA20072CECD /* AppUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppUtilities.swift; sourceTree = "<group>"; };
 		C560B53A1C4996A900E5F1F9 /* Zetta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zetta.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,6 +88,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		C53840261C99ECE500F30B2C /* Logs */ = {
+			isa = PBXGroup;
+			children = (
+				C53840221C99E8D000F30B2C /* EventsLogViewController.swift */,
+				C53840241C99EA7D00F30B2C /* EventLogCell.swift */,
+			);
+			name = Logs;
+			sourceTree = "<group>";
+		};
 		C53855571C63CF1D00C53339 /* Device */ = {
 			isa = PBXGroup;
 			children = (
@@ -123,6 +136,7 @@
 				C544BE801C4ABAA20072CECD /* AppUtilities.swift */,
 				C5B72C5E1C53F28400E4B68C /* Device List */,
 				C53855571C63CF1D00C53339 /* Device */,
+				C53840261C99ECE500F30B2C /* Logs */,
 				C5B72C5D1C53F27800E4B68C /* Settings */,
 				C560B5441C4996A900E5F1F9 /* Assets.xcassets */,
 				C560B5491C4996A900E5F1F9 /* Info.plist */,
@@ -303,9 +317,11 @@
 				C5B72C581C53CD3200E4B68C /* SettingsViewController.swift in Sources */,
 				C5B72C621C53F92400E4B68C /* AddConnectionViewController.swift in Sources */,
 				C5AF70ED1C780EA400C7AD2C /* PropertyCell.swift in Sources */,
+				C53840251C99EA7D00F30B2C /* EventLogCell.swift in Sources */,
 				C5AF70E71C750DA400C7AD2C /* MultipleFieldsActionCell.swift in Sources */,
 				C54094EB1C6EC04C00257831 /* DeviceViewController.swift in Sources */,
 				C5AF70E51C750AB200C7AD2C /* SingleFieldActionCell.swift in Sources */,
+				C53840231C99E8D000F30B2C /* EventsLogViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

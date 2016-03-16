@@ -61,7 +61,6 @@ class NoFieldsActionCell: UITableViewCell {
 			}
 			
 			goButton.snp_makeConstraints { (make) -> Void in
-				make.height.greaterThanOrEqualTo(38)
 				make.width.greaterThanOrEqualTo(goButton.snp_height).multipliedBy(1.5)
 			}
 			

@@ -20,6 +20,7 @@ class DeviceViewController: UITableViewController {
 	private let propertyCellIdentifier = "Property Cell"
 	private let noFieldsActionCellIdentifier = "No Fields Action Cell"
 	private let singleFieldActionCellIdentifier = "Single Field Action Cell"
+	private let logsCellIdentifier = "Logs Cell"
 	
 	lazy var iconImageView: UIImageView = {
 		let imageView = UIImageView()
@@ -27,18 +28,9 @@ class DeviceViewController: UITableViewController {
 		return imageView
 	}()
 	
-	private lazy var dateFormatter: NSDateFormatter = {
-		let formatter = NSDateFormatter()
-		formatter.dateStyle = .ShortStyle
-		formatter.timeStyle = .MediumStyle
-		return formatter
-	}()
-	
 	init(device: ZIKDevice) {
 		self.device = device
-		
 		super.init(nibName: nil, bundle: nil)
-		
 		monitorStreams()
 	}
 	
@@ -56,23 +48,14 @@ class DeviceViewController: UITableViewController {
 		addHeader()
 		updateHeader()
 		
-		tableView.estimatedRowHeight = 60
-		tableView.rowHeight = UITableViewAutomaticDimension
+		tableView.rowHeight = 60
 		tableView.tableFooterView = UIView()
 		tableView.registerClass(PropertyCell.self, forCellReuseIdentifier: propertyCellIdentifier)
 		tableView.registerClass(NoFieldsActionCell.self, forCellReuseIdentifier: noFieldsActionCellIdentifier)
 		tableView.registerClass(SingleFieldActionCell.self, forCellReuseIdentifier: singleFieldActionCellIdentifier)
-		tableView.allowsSelection = false
+		tableView.registerClass(PropertyCell.self, forCellReuseIdentifier: logsCellIdentifier)
 		tableView.keyboardDismissMode = .OnDrag
     }
-	
-	override func viewWillDisappear(animated: Bool) {
-		super.viewWillDisappear(animated)
-		
-		for stream in monitoredStreams {
-			stream.stop()
-		}
-	}
 	
 	private func submitAnalytics() {
 		let tracker = GAI.sharedInstance().defaultTracker
@@ -134,8 +117,6 @@ class DeviceViewController: UITableViewController {
 			if link.title == "logs" {
 				self.logsStream = stream
 			}
-			print("monitor \(stream)")
-
 			self.monitoredStreams.append(stream)
 		}
 		
@@ -181,7 +162,7 @@ class DeviceViewController: UITableViewController {
 		case 0: return max(nonLogStreams.count, 1)
 		case 1: return max(device.transitions?.count ?? 0, 1)
 		case 2: return max(device.properties.count, 1)
-		case 3: return max(logs.count, 1)
+		case 3: return 1
 		default: return 0
 		}
     }
@@ -195,7 +176,7 @@ class DeviceViewController: UITableViewController {
 		case 2:
 			return device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
 		case 3:
-			return logs.isEmpty ? UITableViewCell.emptyCell(message: "No logs for this device.") : logCellForIndexPath(indexPath)
+			return logCell()
 		default:
 			return UITableViewCell()
 		}
@@ -277,35 +258,26 @@ class DeviceViewController: UITableViewController {
 		return cell
 	}
 	
-	private func logCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
-		let cell = UITableViewCell(style: .Subtitle, reuseIdentifier: nil)
-		cell.textLabel?.font = UIFont.systemFontOfSize(16)
-		cell.textLabel?.textColor = UIColor.appDarkGrayColor()
-		cell.textLabel?.numberOfLines = 0
-		cell.detailTextLabel?.font = UIFont.systemFontOfSize(12)
-		cell.detailTextLabel?.textColor = UIColor.appMediumGrayColor()
-		
-		let log = logs[indexPath.row]
-		let valueStrings = log.inputs.flatMap { (input) -> String? in
-			if let name = input["name"] as? String, value = input["value"] as? String {
-				return "\(name): \(value)"
-			}
-			return nil
-		}
-		let inputString = valueStrings.joinWithSeparator(", ")
-		let logString = [log.transition, inputString.nonEmptyTrimmed()].flatMap({ $0 }).joinWithSeparator(" - ")
-		cell.textLabel?.text = logString
-		
-		let date = NSDate(timeIntervalSince1970: log.timestamp.doubleValue / 1000)
-		cell.detailTextLabel?.text = dateFormatter.stringFromDate(date)
-		
+	private func logCell() -> UITableViewCell {
+		guard let cell = tableView.dequeueReusableCellWithIdentifier(logsCellIdentifier) as? PropertyCell else { return UITableViewCell() }
+		cell.accessoryType = logs.isEmpty ? .None : .DisclosureIndicator
+		cell.titleLabel.text = "View Events (\(self.logs.count))"
 		return cell
 	}
 	
+	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+		return indexPath.section == 3
+	}
+	
+	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+		tableView.deselectRowAtIndexPath(indexPath, animated: true)
+		
+		let controller = EventsLogViewController(eventLogs: logs)
+		navigationController?.pushViewController(controller, animated: true)
+	}
 }
 
 extension DeviceViewController: ActionCellDelegate {
-	
 	func actionCell(cell: UITableViewCell, didSubmitFields fields: [String?]) {
 		guard let indexPath = tableView.indexPathForCell(cell) where indexPath.row < device.transitions?.count else { return }
 		guard let transition = device.transitions?[indexPath.row] as? ZIKTransition else { return }
@@ -336,5 +308,4 @@ extension DeviceViewController: ActionCellDelegate {
 			}
 		}
 	}
-	
 }

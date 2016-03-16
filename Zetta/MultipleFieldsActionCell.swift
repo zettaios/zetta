@@ -65,14 +65,7 @@ class MultipleFieldsActionCell: UITableViewCell {
 				make.edges.equalTo(contentView)
 			}
 			
-			for textField in textFields {
-				textField.snp_makeConstraints { (make) -> Void in
-					make.height.greaterThanOrEqualTo(38)
-				}
-			}
-			
 			goButton.snp_makeConstraints { (make) -> Void in
-				make.height.greaterThanOrEqualTo(38)
 				make.width.greaterThanOrEqualTo(goButton.snp_height).multipliedBy(1.5)
 			}
 			
