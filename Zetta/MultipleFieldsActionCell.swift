@@ -93,6 +93,7 @@ class MultipleFieldsActionCell: UITableViewCell {
 		super.tintColorDidChange()
 		
 		goButton.backgroundColor = tintColor
+		goButton.tintColor = tintColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
 	}
 	
 }

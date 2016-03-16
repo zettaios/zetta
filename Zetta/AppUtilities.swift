@@ -24,6 +24,18 @@ extension String {
 	}
 }
 
+extension UIColor
+{
+	var isLight: Bool {
+		let components = CGColorGetComponents(self.CGColor)
+		let red = components[0] * 299
+		let green = components[1] * 587
+		let blue = components[2] * 114
+		let brightness = [red, green, blue].reduce(0, combine: +)
+		return brightness/1000 >= 0.5
+	}
+}
+
 import ZettaKit
 
 extension ZIKServer {

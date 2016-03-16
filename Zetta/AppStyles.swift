@@ -21,7 +21,7 @@ extension UIColor {
 	}
 	
 	class func appDefaultDeviceTintColor() -> UIColor {
-		return UIColor.blackColor()
+		return UIColor(red: 0, green: 0, blue: 0, alpha: 1) //can't use .blackColor since we need the components to determine light vs dark
 	}
 	
 	class func appDarkGrayColor() -> UIColor {
