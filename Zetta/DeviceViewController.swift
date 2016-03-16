@@ -11,6 +11,12 @@ import ZettaKit
 
 class DeviceViewController: UITableViewController {
 
+	var backgroundColor: UIColor = UIColor.whiteColor() {
+		didSet {
+			tableView.tableHeaderView?.backgroundColor = backgroundColor
+		}
+	}
+	
 	private var device: ZIKDevice
 	private var monitoredStreams = [ZIKStream]()
 	private var mostRecentStreamValues = [ZIKStream: AnyObject]()
@@ -82,6 +88,8 @@ class DeviceViewController: UITableViewController {
 	}()
 	
 	private func updateHeader() {
+		
+		
 		//remove the existing image immediately to avoid displaying an incorrect state icon, especially on slow networks or if the image resource is large
 		iconImageView.image = nil
 		if let iconURL = device.iconURL {

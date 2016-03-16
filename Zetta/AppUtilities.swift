@@ -34,6 +34,13 @@ extension UIColor
 		let brightness = [red, green, blue].reduce(0, combine: +)
 		return brightness/1000 >= 0.5
 	}
+	
+	private class func colorFromStyleDictionary(styleDictionary: [String: AnyObject], propertyName: String) -> UIColor? {
+		guard let backgroundColor = styleDictionary[propertyName] as? [String: AnyObject] else { return nil }
+		guard let decimal = backgroundColor["decimal"] as? [String: AnyObject] else { return nil }
+		guard let red = decimal["red"] as? CGFloat, green = decimal["green"] as? CGFloat, blue = decimal["blue"] as? CGFloat else { return nil }
+		return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
+	}
 }
 
 import ZettaKit
@@ -41,10 +48,12 @@ import ZettaKit
 extension ZIKServer {
 	var foregroundColor: UIColor? {
 		guard let style = properties["style"] as? [String: AnyObject] else { return nil }
-		guard let backgroundColor = style["foregroundColor"] as? [String: AnyObject] else { return nil }
-		guard let decimal = backgroundColor["decimal"] as? [String: AnyObject] else { return nil }
-		guard let red = decimal["red"] as? CGFloat, green = decimal["green"] as? CGFloat, blue = decimal["blue"] as? CGFloat else { return nil }
-		return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
+		return UIColor.colorFromStyleDictionary(style, propertyName: "foregroundColor")
+	}
+	
+	var backgroundColor: UIColor? {
+		guard let style = properties["style"] as? [String: AnyObject] else { return nil }
+		return UIColor.colorFromStyleDictionary(style, propertyName: "backgroundColor")
 	}
 }
 
