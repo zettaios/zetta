@@ -69,7 +69,7 @@ class SettingsViewController: UITableViewController {
 		if indexPath.section == 0 {
 			let connections = NSUserDefaults.standardUserDefaults().connectionHistory
 			if indexPath.row == connections.count {
-				cell.textLabel?.text = "Add an API..."
+				cell.textLabel?.text = "Add API..."
 				cell.textLabel?.textColor = view.tintColor
 			} else {
 				let connection = NSUserDefaults.standardUserDefaults().connectionHistory[indexPath.row]
