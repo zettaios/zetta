@@ -185,23 +185,36 @@ class DeviceListViewController: UITableViewController {
 			return UITableViewCell.emptyCell(message: "No devices online for this server.")
 		} else {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
+			
 			let device = devices[indexPath.row]
+			cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
+			cell.subtitleLabel.text = device.state
 			
 			if let iconURL = device.iconURL {
-				cell.deviceImageView.pin_setImageFromURL(iconURL, completion: { [weak self] (result) -> Void in
-					cell.deviceImageView.image = result.image?.imageWithRenderingMode(.AlwaysTemplate)
-					cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.brandColor ?? UIColor.appDefaultDeviceTintColor()
+				let task = nonCachingSession.dataTaskWithURL(iconURL) { (data, response, error) -> Void in
+					dispatch_async(dispatch_get_main_queue(), { [weak self] in
+						guard let imageData = data where error == nil, let image = UIImage(data: imageData) else {
+							print("Unable to download image")
+							return
+						}
+						cell.deviceImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
+						cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.brandColor ?? UIColor.appDefaultDeviceTintColor()
 					})
+				}
+				task.resume()
 			} else {
 				cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysOriginal)
 			}
 			
-			cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
-			cell.subtitleLabel.text = device.state
-			
 			return cell
 		}
     }
+	
+	private lazy var nonCachingSession: NSURLSession = {
+		let config = NSURLSessionConfiguration.defaultSessionConfiguration()
+		config.requestCachePolicy = .ReloadIgnoringLocalCacheData
+		return NSURLSession(configuration: config)
+	}()
 	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
 		//exclude the 'no devices' message cell

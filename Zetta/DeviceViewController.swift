@@ -91,18 +91,17 @@ class DeviceViewController: UITableViewController {
 		tableView.tableHeaderView = header
 	}
 
-	private lazy var session: NSURLSession = {
+	private lazy var nonCachingSession: NSURLSession = {
 		let config = NSURLSessionConfiguration.defaultSessionConfiguration()
 		config.requestCachePolicy = .ReloadIgnoringLocalCacheData
 		return NSURLSession(configuration: config)
 	}()
 	
-	
 	private func updateHeader() {
 		//remove the existing image immediately to avoid displaying an incorrect state icon, especially on slow networks or if the image resource is large
 		iconImageView.image = nil
 		if let iconURL = device.iconURL {
-			let task = session.dataTaskWithURL(iconURL) { (data, response, error) -> Void in
+			let task = nonCachingSession.dataTaskWithURL(iconURL) { (data, response, error) -> Void in
 				dispatch_async(dispatch_get_main_queue(), { [weak self] in
 					guard let imageData = data where error == nil, let image = UIImage(data: imageData) else {
 						print("Unable to download image")
