@@ -90,7 +90,7 @@ class DeviceListViewController: UITableViewController {
 						self?.serverDevices.sortInPlace({ $0.devices.count > $1.devices.count })
 						
 						for device in devices {
-							self?.monitorStateStreamForDevice(device)
+							self?.monitorDevice(device)
 						}
 						
 						self?.updateMessageView()
@@ -108,7 +108,7 @@ class DeviceListViewController: UITableViewController {
 	
 	// MARK: - monitoring streams
 	
-	private func monitorStateStreamForDevice(device: ZIKDevice) {
+	private func monitorDevice(device: ZIKDevice) {
 		//monitor all streams with rel: monitor. When a log entry is received, use it to refresh the device.
 		guard let links = device.links as? [ZIKLink] else { return }
 		let monitoredLinks = links.filter({ (link) -> Bool in
