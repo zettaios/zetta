@@ -10,9 +10,16 @@ import UIKit
 import ZettaKit
 
 class DeviceViewController: UITableViewController {
-
+	var foregroundColor: UIColor = UIColor.whiteColor() {
+		didSet {
+			view.tintColor = foregroundColor
+//			navigationController?.navigationBar.tintColor = foregroundColor ?? UIColor.appDefaultDeviceTintColor()
+		}
+	}
+	
 	var backgroundColor: UIColor = UIColor.whiteColor() {
 		didSet {
+			tableView.backgroundColor = backgroundColor
 			tableView.tableHeaderView?.backgroundColor = backgroundColor
 		}
 	}
@@ -63,6 +70,11 @@ class DeviceViewController: UITableViewController {
 		tableView.registerClass(PropertyCell.self, forCellReuseIdentifier: logsCellIdentifier)
 		tableView.keyboardDismissMode = .OnDrag
     }
+	
+	override func viewWillAppear(animated: Bool) {
+		super.viewWillAppear(true)
+//		navigationController?.setNavigationBarHidden(true, animated: true)
+	}
 	
 	private func submitAnalytics() {
 		let tracker = GAI.sharedInstance().defaultTracker
