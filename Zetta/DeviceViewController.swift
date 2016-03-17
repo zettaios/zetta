@@ -55,6 +55,7 @@ class DeviceViewController: UITableViewController {
         super.viewDidLoad()
 		
 		title = (device.name ?? device.type) ?? "Unnamed Device"
+		navigationController?.navigationBar.barStyle = UIBarStyle.BlackTranslucent
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
 		
 		submitAnalytics()
@@ -81,6 +82,8 @@ class DeviceViewController: UITableViewController {
 				self?.navigationController?.navigationBar.barTintColor = self?.backgroundColor
 			}
 		}
+		
+		navigationController?.navigationBar.barStyle = backgroundColor.isLight ? .Default : .Black
 	}
 	
 	private func submitAnalytics() {
@@ -292,7 +295,7 @@ class DeviceViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-		return indexPath.section == 3
+		return indexPath.section == 3 && !logs.isEmpty
 	}
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

@@ -51,6 +51,7 @@ class DeviceListViewController: UITableViewController {
 		}
 		
 		navigationController?.navigationBar.tintColor = UIColor.appTintColor()
+		navigationController?.navigationBar.barStyle = .Default
 	}
 	
 	private func addMessageLabel() {
