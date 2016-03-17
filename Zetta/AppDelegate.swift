@@ -25,6 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window = UIWindow(frame: UIScreen.mainScreen().bounds)
 		let controller = DeviceListViewController()
 		let nav = UINavigationController(rootViewController: controller)
+		nav.navigationBar.setBackgroundImage(UIImage(), forBarPosition: .Any, barMetrics: .Default)
+		nav.navigationBar.shadowImage = UIImage()
 		window?.rootViewController = nav
 		window?.makeKeyAndVisible()
 		
