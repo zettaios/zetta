@@ -191,36 +191,44 @@ class DeviceListViewController: UITableViewController {
 		let server = serverDevices[indexPath.section].server
 		let devices = serverDevices[indexPath.section].devices
 		
-		if devices.isEmpty {
-			return UITableViewCell.emptyCell(message: "No devices online for this server.")
-		} else {
-			guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
-			cell.backgroundColor = server.backgroundColor
-			
-			let device = devices[indexPath.row]
-			cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
-			cell.subtitleLabel.text = device.state
-			
-			if let iconURL = device.iconURL {
-				let task = nonCachingSession.dataTaskWithURL(iconURL) { (data, response, error) -> Void in
-					guard let imageData = data where error == nil, let image = UIImage(data: imageData) else {
-						print("Unable to download image")
-						return
-					}
-					guard tableView.indexPathsForVisibleRows?.contains(indexPath) == true else { return }
-					dispatch_async(dispatch_get_main_queue(), { [weak self] in
-						cell.deviceImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
-						cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
-					})
+		if devices.isEmpty { return UITableViewCell.emptyCell(message: "No devices online for this server.") }
+		
+		guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
+//		cell.contentView.backgroundColor = server.backgroundColor
+//		cell.backgroundColor = server.backgroundColor
+		
+		let device = devices[indexPath.row]
+		cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
+		cell.subtitleLabel.text = device.state
+		
+		if let iconURL = device.iconURL {
+			let task = nonCachingSession.dataTaskWithURL(iconURL) { (data, response, error) -> Void in
+				guard let imageData = data where error == nil, let image = UIImage(data: imageData) else {
+					print("Unable to download image")
+					return
 				}
-				task.resume()
-			} else {
-				cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
-				cell.deviceImageView.tintColor = UIColor(white: 0.5, alpha: cell.backgroundColor?.isLight == false ? 0.6 : 0.3)
+				guard tableView.indexPathsForVisibleRows?.contains(indexPath) == true else { return }
+				dispatch_async(dispatch_get_main_queue(), { [weak self] in
+					cell.deviceImageView.backgroundColor = server.backgroundColor
+					cell.deviceImageView.layer.cornerRadius = 3
+					cell.deviceImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
+					cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
+				})
 			}
-			
-			return cell
+			task.resume()
+		} else {
+			cell.deviceImageView.backgroundColor = UIColor.whiteColor()
+			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
+			cell.deviceImageView.tintColor = UIColor(white: 0.5, alpha: server.backgroundColor?.isLight == false ? 0.6 : 0.3)
 		}
+		
+//		cell.backgroundColor = UIColor.whiteColor()
+//		let selectedBackgroundView = UIView()
+//		selectedBackgroundView.backgroundColor = server.backgroundColor?.colorWithAlphaComponent(0.8)
+//		selectedBackgroundView.backgroundColor = UIColor(white: 0.5, alpha: 0.1)
+//		cell.selectedBackgroundView = selectedBackgroundView
+		
+		return cell
     }
 	
 	private lazy var nonCachingSession: NSURLSession = {

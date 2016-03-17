@@ -48,7 +48,7 @@ class DeviceCell: UITableViewCell {
 			contentView.addSubview(view)
 		}
 		
-		self.accessoryType = .DisclosureIndicator
+		accessoryType = .DisclosureIndicator
 		
 		setNeedsUpdateConstraints()
 	}
