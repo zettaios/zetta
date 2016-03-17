@@ -188,7 +188,9 @@ class DeviceListViewController: UITableViewController {
 	}
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		let server = serverDevices[indexPath.section].server
 		let devices = serverDevices[indexPath.section].devices
+		
 		if devices.isEmpty {
 			return UITableViewCell.emptyCell(message: "No devices online for this server.")
 		} else {
@@ -197,6 +199,8 @@ class DeviceListViewController: UITableViewController {
 			let device = devices[indexPath.row]
 			cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
 			cell.subtitleLabel.text = device.state
+			
+//			cell.deviceImageView.backgroundColor = server.backgroundColor
 			
 			if let iconURL = device.iconURL {
 				let task = nonCachingSession.dataTaskWithURL(iconURL) { (data, response, error) -> Void in

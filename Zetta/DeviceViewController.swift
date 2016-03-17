@@ -221,13 +221,14 @@ class DeviceViewController: UITableViewController {
 
 	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
 		cell.backgroundColor = backgroundColor
+		let appropriateColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
 		if let cell = cell as? PropertyCell {
-			cell.subtitleLabel.textColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
+			cell.subtitleLabel.textColor = appropriateColor
 		} else if let cell = cell as? SingleFieldActionCell {
-			cell.textField.textColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
+			cell.textField.textColor = appropriateColor
 		} else if let cell = cell as? MultipleFieldsActionCell {
 			for field in cell.textFields {
-				field.textColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
+				field.textColor = appropriateColor
 			}
 		}
 	}
@@ -267,7 +268,9 @@ class DeviceViewController: UITableViewController {
 			return cell
 		} else if fieldNames.count == 1 {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(singleFieldActionCellIdentifier) as? SingleFieldActionCell else { return UITableViewCell() }
-			cell.textField.placeholder = fieldNames.first?.stringByAppendingString("...")
+			if let placeholder = fieldNames.first?.stringByAppendingString("...") {
+				cell.textField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSForegroundColorAttributeName: UIColor.appMediumGrayColor()])
+			}
 			cell.goButton.setTitle(transition.name, forState: .Normal)
 			cell.delegate = self
 			return cell

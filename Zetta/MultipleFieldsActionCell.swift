@@ -36,7 +36,7 @@ class MultipleFieldsActionCell: UITableViewCell {
 			let textField = UITextField()
 			textField.font = UIFont.systemFontOfSize(18)
 			textField.textColor = UIColor.appDarkGrayColor()
-			textField.placeholder = fieldName.stringByAppendingString("...")
+			textField.attributedPlaceholder = NSAttributedString(string: fieldName.stringByAppendingString("..."), attributes: [NSForegroundColorAttributeName: UIColor.appMediumGrayColor()])
 			textField.returnKeyType = .Go
 			textField.autocapitalizationType = .None
 			textField.autocorrectionType = .No
