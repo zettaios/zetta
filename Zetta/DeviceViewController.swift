@@ -190,7 +190,7 @@ class DeviceViewController: UITableViewController {
 
 	override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
 		if let header = view as? UITableViewHeaderFooterView {
-			header.textLabel?.textColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
+			header.textLabel?.textColor = backgroundColor.isLight ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 		}
 	}
 	
@@ -221,7 +221,7 @@ class DeviceViewController: UITableViewController {
 
 	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
 		cell.backgroundColor = backgroundColor
-		let appropriateColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
+		let appropriateColor = backgroundColor.isLight ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 		if let cell = cell as? PropertyCell {
 			cell.subtitleLabel.textColor = appropriateColor
 		} else if let cell = cell as? SingleFieldActionCell {
@@ -327,6 +327,7 @@ class DeviceViewController: UITableViewController {
 		tableView.deselectRowAtIndexPath(indexPath, animated: true)
 		
 		let controller = EventsLogViewController(eventLogs: logs)
+		controller.backgroundColor = backgroundColor
 		navigationController?.pushViewController(controller, animated: true)
 	}
 }

@@ -10,6 +10,13 @@ import UIKit
 import ZettaKit
 
 class EventsLogViewController: UITableViewController {
+	var backgroundColor: UIColor = UIColor.whiteColor() {
+		didSet {
+			tableView.backgroundColor = backgroundColor
+			tableView.reloadData()
+		}
+	}
+	
 	private let eventLogs: [ZIKLogStreamEntry]
 	private let cellIdentifier = "Cell"
 	
@@ -52,6 +59,9 @@ class EventsLogViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? EventLogCell else { return UITableViewCell() }
+		cell.backgroundColor = backgroundColor
+		let appropriateColor = backgroundColor.isLight ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+		cell.titleLabel.textColor = appropriateColor
 		
 		let log = eventLogs[indexPath.row]
 		let valueStrings = log.inputs.flatMap { (input) -> String? in
