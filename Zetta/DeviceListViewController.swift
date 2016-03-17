@@ -44,6 +44,12 @@ class DeviceListViewController: UITableViewController {
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
 		
+		if navigationController?.navigationBar.barTintColor != UIColor.whiteColor() {
+			UIView.animateWithDuration(0.3) { [weak self] () -> Void in
+				self?.navigationController?.navigationBar.barTintColor = UIColor.whiteColor()
+			}
+		}
+		
 		navigationController?.navigationBar.tintColor = UIColor.appTintColor()
 	}
 	

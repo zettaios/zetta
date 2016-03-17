@@ -39,6 +39,11 @@ class EventsLogViewController: UITableViewController {
 		tableView.allowsSelection = false
 		tableView.registerClass(EventLogCell.self, forCellReuseIdentifier: cellIdentifier)
     }
+	
+	override func viewWillAppear(animated: Bool) {
+		super.viewWillAppear(true)
+		navigationController?.setNavigationBarHidden(false, animated: true)
+	}
 
     // MARK: - table view
 

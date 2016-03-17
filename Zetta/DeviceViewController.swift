@@ -13,7 +13,7 @@ class DeviceViewController: UITableViewController {
 	var foregroundColor: UIColor = UIColor.whiteColor() {
 		didSet {
 			view.tintColor = foregroundColor
-//			navigationController?.navigationBar.tintColor = foregroundColor ?? UIColor.appDefaultDeviceTintColor()
+			navigationController?.navigationBar.tintColor = foregroundColor
 		}
 	}
 	
@@ -73,7 +73,14 @@ class DeviceViewController: UITableViewController {
 	
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(true)
-//		navigationController?.setNavigationBarHidden(true, animated: true)
+		
+		navigationController?.navigationBar.tintColor = foregroundColor
+		
+		if navigationController?.navigationBar.barTintColor != backgroundColor {
+			UIView.animateWithDuration(0.3) { [weak self] () -> Void in
+				self?.navigationController?.navigationBar.barTintColor = self?.backgroundColor
+			}
+		}
 	}
 	
 	private func submitAnalytics() {
@@ -100,8 +107,6 @@ class DeviceViewController: UITableViewController {
 	}()
 	
 	private func updateHeader() {
-		
-		
 		//remove the existing image immediately to avoid displaying an incorrect state icon, especially on slow networks or if the image resource is large
 		iconImageView.image = nil
 		if let iconURL = device.iconURL {
