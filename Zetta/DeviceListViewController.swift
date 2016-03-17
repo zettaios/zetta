@@ -204,11 +204,12 @@ class DeviceListViewController: UITableViewController {
 			
 			if let iconURL = device.iconURL {
 				let task = nonCachingSession.dataTaskWithURL(iconURL) { (data, response, error) -> Void in
+					guard let imageData = data where error == nil, let image = UIImage(data: imageData) else {
+						print("Unable to download image")
+						return
+					}
+					guard tableView.indexPathsForVisibleRows?.contains(indexPath) == true else { return }
 					dispatch_async(dispatch_get_main_queue(), { [weak self] in
-						guard let imageData = data where error == nil, let image = UIImage(data: imageData) else {
-							print("Unable to download image")
-							return
-						}
 						cell.deviceImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
 						cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 					})
