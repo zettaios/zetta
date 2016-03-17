@@ -14,6 +14,7 @@ class DeviceViewController: UITableViewController {
 		didSet {
 			view.tintColor = foregroundColor
 			navigationController?.navigationBar.tintColor = foregroundColor
+			tableView.reloadData()
 		}
 	}
 	
@@ -21,6 +22,7 @@ class DeviceViewController: UITableViewController {
 		didSet {
 			tableView.backgroundColor = backgroundColor
 			tableView.tableHeaderView?.backgroundColor = backgroundColor
+			tableView.reloadData()
 		}
 	}
 	
@@ -186,6 +188,12 @@ class DeviceViewController: UITableViewController {
 		}
 	}
 
+	override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+		if let header = view as? UITableViewHeaderFooterView {
+			header.textLabel?.textColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
+		}
+	}
+	
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0: return max(nonLogStreams.count, 1)
@@ -210,10 +218,24 @@ class DeviceViewController: UITableViewController {
 			return UITableViewCell()
 		}
     }
+
+	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+		cell.backgroundColor = backgroundColor
+		if let cell = cell as? PropertyCell {
+			cell.subtitleLabel.textColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
+		} else if let cell = cell as? SingleFieldActionCell {
+			cell.textField.textColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
+		} else if let cell = cell as? MultipleFieldsActionCell {
+			for field in cell.textFields {
+				field.textColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
+			}
+		}
+	}
 	
 	private func streamCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(propertyCellIdentifier) as? PropertyCell else { return UITableViewCell() }
 		let stream = nonLogStreams[indexPath.row]
+		
 		cell.titleLabel.text = stream.title
 		
 		if let recentValue = mostRecentStreamValues[stream] as? String {

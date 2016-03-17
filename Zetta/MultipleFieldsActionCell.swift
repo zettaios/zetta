@@ -11,7 +11,7 @@ import UIKit
 class MultipleFieldsActionCell: UITableViewCell {
 
 	weak var delegate: ActionCellDelegate?
-	private let textFields: [UITextField]
+	let textFields: [UITextField]
 	private var constraintsAdded = false
 	
 	lazy var goButton: UIButton = {
