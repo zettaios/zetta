@@ -181,22 +181,6 @@ class DeviceViewController: UITableViewController {
 		return monitoredStreams.filter({ $0 != logsStream })
 	}
 	
-	// MAKR: - style helpers
-	
-//	private enum DisplayStyle: String {
-//		case None = "none", Billboard = "billboard", Inline = "inline"
-//	}
-	
-//	private func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
-//		print("checking style for \(transition)")
-//		guard let style = device.properties["style"] else {
-//			return
-//			print("nope")
-//		}
-//		
-//		return .Inline
-//	}
-	
     // MARK: - table view
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {

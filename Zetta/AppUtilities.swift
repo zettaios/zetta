@@ -72,7 +72,11 @@ extension ZIKDevice {
 	}
 
 	func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
-		
-		return .Inline
+		let defaultStyle: DisplayStyle = .Inline
+		guard let actionStyles = JSON(properties)["style"]["actions"].array else { return defaultStyle }
+		let matchingActionStyles = actionStyles.filter({ $0["action"].string == transition.name })
+		if matchingActionStyles.count > 1 { print("Warning: multiple styles specidifed for action'\(transition.name)'. The first style will be used.") }
+		guard let displayString = matchingActionStyles.first?["display"].string else { return defaultStyle }
+		return DisplayStyle(rawValue: displayString) ?? defaultStyle
 	}
 }
