@@ -8,7 +8,6 @@
 
 import UIKit
 import ZettaKit
-import PINRemoteImage
 
 class DeviceListViewController: UITableViewController {
 

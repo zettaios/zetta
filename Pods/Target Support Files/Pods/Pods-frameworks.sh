@@ -87,11 +87,13 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods/ReactiveCocoa.framework"
   install_framework "Pods/SnapKit.framework"
   install_framework "Pods/SocketRocket.framework"
+  install_framework "Pods/SwiftyJSON.framework"
   install_framework "Pods/ZettaKit.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods/ReactiveCocoa.framework"
   install_framework "Pods/SnapKit.framework"
   install_framework "Pods/SocketRocket.framework"
+  install_framework "Pods/SwiftyJSON.framework"
   install_framework "Pods/ZettaKit.framework"
 fi

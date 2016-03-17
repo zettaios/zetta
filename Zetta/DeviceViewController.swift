@@ -96,6 +96,8 @@ class DeviceViewController: UITableViewController {
 		tracker.send(builder.build() as [NSObject : AnyObject])
 	}
 	
+	// MARK: - header
+	
 	private func addHeader() {
 		let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: tableView.bounds.height * 0.5))
 		iconImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -169,9 +171,31 @@ class DeviceViewController: UITableViewController {
 		}
 	}
 	
+	private var nonHiddenTransitions: [ZIKTransition] {
+		guard let transitions = device.transitions as? [ZIKTransition] else { return [ZIKTransition]() }
+		return transitions.filter({ device.displayStyleForTranstion($0) != .None })
+	
+	}
+	
 	private var nonLogStreams: [ZIKStream] {
 		return monitoredStreams.filter({ $0 != logsStream })
 	}
+	
+	// MAKR: - style helpers
+	
+//	private enum DisplayStyle: String {
+//		case None = "none", Billboard = "billboard", Inline = "inline"
+//	}
+	
+//	private func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
+//		print("checking style for \(transition)")
+//		guard let style = device.properties["style"] else {
+//			return
+//			print("nope")
+//		}
+//		
+//		return .Inline
+//	}
 	
     // MARK: - table view
 
@@ -198,7 +222,7 @@ class DeviceViewController: UITableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0: return max(nonLogStreams.count, 1)
-		case 1: return max(device.transitions?.count ?? 0, 1)
+		case 1: return max(nonHiddenTransitions.count, 1)
 		case 2: return max(device.properties.count, 1)
 		case 3: return 1
 		default: return 0
@@ -210,7 +234,7 @@ class DeviceViewController: UITableViewController {
 		case 0:
 			return nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
 		case 1:
-			return device.transitions?.isEmpty != false ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
+			return nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
 		case 2:
 			return device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
 		case 3:
@@ -256,9 +280,10 @@ class DeviceViewController: UITableViewController {
 	}
 	
 	private func actionCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
-		guard let transitions = device.transitions as? [ZIKTransition] else { return UITableViewCell() }
+//		let transition
+//		guard let transitions = device.transitions as? [ZIKTransition] else { return UITableViewCell() }
 
-		let transition = transitions[indexPath.row]
+		let transition = nonHiddenTransitions[indexPath.row]
 		let fieldNames = fieldNamesForTransition(transition)
 		
 		if fieldNames.isEmpty {

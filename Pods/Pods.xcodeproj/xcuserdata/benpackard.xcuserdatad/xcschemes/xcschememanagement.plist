@@ -24,6 +24,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SwiftyJSON.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>ZettaKit-ZettaKit.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -37,32 +42,37 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>12EBBBBCCDD8B8974C8E2CC49BA5BE6D</key>
+		<key>21E1D4A056C46BDBEF1472F54776894B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>2400C3994FB7666933D15C6FFB09AA81</key>
+		<key>470CDBD4A6040B71F7C7F70F194E517E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>31276E3B5E970121F5EFA64E4B22A1B4</key>
+		<key>6B4FFF57E0CA87A68CBAF6ECDC7A6D45</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4ABCA54533B23C76A06BCC4608A8F3DF</key>
+		<key>8D69B16D2343337E8F1FB80BEC91B4A6</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>4D80D90E279414AFFC44C1C447EB1CB8</key>
+		<key>B716775C741779834986862548B2647E</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>6F83CB85C6F35B7F1E75A22962E08C24</key>
+		<key>C0D3868749BA69C1487BF6C0E364FBE7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D5F58CB26CDE61912B1CA03522731454</key>
 		<dict>
 			<key>primary</key>
 			<true/>

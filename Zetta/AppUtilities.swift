@@ -35,11 +35,9 @@ extension UIColor
 		return brightness/1000 >= 0.5
 	}
 	
-	private class func colorFromStyleDictionary(styleDictionary: [String: AnyObject], propertyName: String) -> UIColor? {
-		guard let backgroundColor = styleDictionary[propertyName] as? [String: AnyObject] else { return nil }
-		guard let decimal = backgroundColor["decimal"] as? [String: AnyObject] else { return nil }
-		guard let red = decimal["red"] as? CGFloat, green = decimal["green"] as? CGFloat, blue = decimal["blue"] as? CGFloat else { return nil }
-		return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
+	private class func colorFromDecimalJSON(json: JSON) -> UIColor? {
+		guard let red = json["red"].float, green = json["green"].float, blue = json["blue"].float else { return nil }
+		return UIColor(red: CGFloat(red)/255, green: CGFloat(green)/255, blue: CGFloat(blue)/255, alpha: 1)
 	}
 }
 
@@ -47,24 +45,34 @@ import ZettaKit
 
 extension ZIKServer {
 	var foregroundColor: UIColor? {
-		guard let style = properties["style"] as? [String: AnyObject] else { return nil }
-		return UIColor.colorFromStyleDictionary(style, propertyName: "foregroundColor")
+		let decimal = JSON(properties)["style"]["foregroundColor"]["decimal"]
+		return UIColor.colorFromDecimalJSON(decimal)
 	}
 	
 	var backgroundColor: UIColor? {
-		guard let style = properties["style"] as? [String: AnyObject] else { return nil }
-		return UIColor.colorFromStyleDictionary(style, propertyName: "backgroundColor")
+		let decimal = JSON(properties)["style"]["backgroundColor"]["decimal"]
+		return UIColor.colorFromDecimalJSON(decimal)
 	}
 }
 
+import SwiftyJSON
+
 extension ZIKDevice {
 	var iconURL: NSURL? {
-		guard let style = properties["style"] as? [String: AnyObject] else { return nil }
-		if let stateImage = style["stateImage"] as? String {
-			return NSURL(string: stateImage)
-		} else if let typeImage = style["typeImage"] as? String {
-			return NSURL(string: typeImage)
+		if let stateImage = JSON(properties)["style"]["stateImage"].URL {
+			return stateImage
+		} else if let typeImage = JSON(properties)["style"]["typeImage"].URL {
+			return typeImage
 		}
 		return nil
+	}
+
+	enum DisplayStyle: String {
+		case None = "none", Billboard = "billboard", Inline = "inline"
+	}
+
+	func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
+		
+		return .Inline
 	}
 }
