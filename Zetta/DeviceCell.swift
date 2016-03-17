@@ -83,7 +83,7 @@ class DeviceCell: UITableViewCell {
 		super.prepareForReuse()
 		
 		deviceImageView.tintColor = UIColor.appDefaultDeviceTintColor()
-		deviceImageView.pin_cancelImageDownload() //prevent late loading
+//		deviceImageView.pin_cancelImageDownload() //prevent late loading
 		deviceImageView.image = nil
 	}
 	

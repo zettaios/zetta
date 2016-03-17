@@ -195,12 +195,11 @@ class DeviceListViewController: UITableViewController {
 			return UITableViewCell.emptyCell(message: "No devices online for this server.")
 		} else {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
+//			cell.backgroundColor = server.backgroundColor
 			
 			let device = devices[indexPath.row]
 			cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
 			cell.subtitleLabel.text = device.state
-			
-//			cell.deviceImageView.backgroundColor = server.backgroundColor
 			
 			if let iconURL = device.iconURL {
 				let task = nonCachingSession.dataTaskWithURL(iconURL) { (data, response, error) -> Void in

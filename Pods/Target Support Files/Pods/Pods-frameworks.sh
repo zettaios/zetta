@@ -84,18 +84,12 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "Pods/FLAnimatedImage.framework"
-  install_framework "Pods/PINCache.framework"
-  install_framework "Pods/PINRemoteImage.framework"
   install_framework "Pods/ReactiveCocoa.framework"
   install_framework "Pods/SnapKit.framework"
   install_framework "Pods/SocketRocket.framework"
   install_framework "Pods/ZettaKit.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "Pods/FLAnimatedImage.framework"
-  install_framework "Pods/PINCache.framework"
-  install_framework "Pods/PINRemoteImage.framework"
   install_framework "Pods/ReactiveCocoa.framework"
   install_framework "Pods/SnapKit.framework"
   install_framework "Pods/SocketRocket.framework"
