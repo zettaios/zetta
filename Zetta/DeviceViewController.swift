@@ -22,6 +22,7 @@ class DeviceViewController: UITableViewController {
 		didSet {
 			tableView.backgroundColor = backgroundColor
 			tableView.tableHeaderView?.backgroundColor = backgroundColor
+			tableView.indicatorStyle = backgroundColor.isLight ? .Black : .White
 			tableView.reloadData()
 		}
 	}
