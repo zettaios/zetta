@@ -308,8 +308,11 @@ class DeviceViewController: UITableViewController {
 			cell.mainLabel.text = recentValue
 			cell.mainLabel.font = UIFont.systemFontOfSize(cell.defaultFontSize)
 		} else if let recentValue = mostRecentStreamValues[billboard.stream] as? Float {
-			cell.mainLabel.text = String(format: "%.5f", recentValue)
 			cell.mainLabel.font = UIFont.monospacedDigitSystemFontOfSize(cell.defaultFontSize, weight: UIFontWeightRegular)
+			if let digits = billboard.significantDigits {
+				cell.mainLabel.text = String(format: "%.\(digits)f", recentValue)
+			}
+
 		} else {
 			// TO DO: - drop this? Or is it needed for inital state? If so, handle ints too
 			//perhaps there is a matching property to fall back on
