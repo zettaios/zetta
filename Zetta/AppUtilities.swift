@@ -67,16 +67,43 @@ extension ZIKDevice {
 		return nil
 	}
 
-	enum DisplayStyle: String {
-		case None = "none", Billboard = "billboard", Inline = "inline"
-	}
+	
+	
+//	enum DisplayStyle: String {
+//		case None = "none", Billboard = "billboard", Inline = "inline"
+//	}
+//
+//	func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
+//		let defaultStyle: DisplayStyle = .Inline
+//		guard let actionStyles = JSON(properties)["style"]["actions"].array else { return defaultStyle }
+//		let matchingActionStyles = actionStyles.filter({ $0["action"].string == transition.name })
+//		if matchingActionStyles.count > 1 { print("Warning: multiple styles specidifed for action'\(transition.name)'. The first style will be used.") }
+//		guard let displayString = matchingActionStyles.first?["display"].string else { return defaultStyle }
+//		return DisplayStyle(rawValue: displayString) ?? defaultStyle
+//	}
 
-	func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
-		let defaultStyle: DisplayStyle = .Inline
-		guard let actionStyles = JSON(properties)["style"]["actions"].array else { return defaultStyle }
-		let matchingActionStyles = actionStyles.filter({ $0["action"].string == transition.name })
-		if matchingActionStyles.count > 1 { print("Warning: multiple styles specidifed for action'\(transition.name)'. The first style will be used.") }
-		guard let displayString = matchingActionStyles.first?["display"].string else { return defaultStyle }
-		return DisplayStyle(rawValue: displayString) ?? defaultStyle
-	}
+//	struct Billboard {
+//		let name, title, subtitle: String
+//
+//		init(name: String, title: String, subtitle: String) {
+//			self.name = name
+//			self.title = title
+//			self.subtitle = subtitle
+//		}
+//	}
+//	
+//	var billboards: [[String: AnyObject]] {
+//		// TO DO: - check that there is a matching stream and attach it
+//		//find properties in the style object with display type `billboard`. Make sure there is a corresponding stream of the same name. Build a `Billboard` object for the property.
+//		guard let propertyStyles = JSON(properties)["style"]["properties"].array else { return [[String: AnyObject]]() }
+//		let billboardObjects = propertyStyles.filter({ $0["display"].string == "billboard" })
+//		for object in billboardObjects  {
+//			guard let name = object["name"].string, title = "" else { continue }
+//			
+//		}
+//		
+//		
+//		return [[String: AnyObject]]()
+//	}
+
 }

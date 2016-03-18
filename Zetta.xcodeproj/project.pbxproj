@@ -10,6 +10,7 @@
 		190E2CD31F528248381A253D /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93731F1E0D5A6AA529EDBBCC /* Pods.framework */; };
 		C53840231C99E8D000F30B2C /* EventsLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53840221C99E8D000F30B2C /* EventsLogViewController.swift */; };
 		C53840251C99EA7D00F30B2C /* EventLogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53840241C99EA7D00F30B2C /* EventLogCell.swift */; };
+		C53F0B5A1C9C4A0000E5354D /* BillboardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F0B591C9C4A0000E5354D /* BillboardCell.swift */; };
 		C54094EB1C6EC04C00257831 /* DeviceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54094EA1C6EC04C00257831 /* DeviceViewController.swift */; };
 		C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C544BE801C4ABAA20072CECD /* AppUtilities.swift */; };
 		C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */; };
@@ -36,6 +37,7 @@
 		93731F1E0D5A6AA529EDBBCC /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C53840221C99E8D000F30B2C /* EventsLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsLogViewController.swift; sourceTree = "<group>"; };
 		C53840241C99EA7D00F30B2C /* EventLogCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventLogCell.swift; sourceTree = "<group>"; };
+		C53F0B591C9C4A0000E5354D /* BillboardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BillboardCell.swift; sourceTree = "<group>"; };
 		C54094EA1C6EC04C00257831 /* DeviceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceViewController.swift; sourceTree = "<group>"; };
 		C544BE801C4ABAA20072CECD /* AppUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppUtilities.swift; sourceTree = "<group>"; };
 		C560B53A1C4996A900E5F1F9 /* Zetta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zetta.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +107,7 @@
 				C5AF70E21C75017300C7AD2C /* NoFieldsActionCell.swift */,
 				C5AF70E41C750AB200C7AD2C /* SingleFieldActionCell.swift */,
 				C5AF70E61C750DA400C7AD2C /* MultipleFieldsActionCell.swift */,
+				C53F0B591C9C4A0000E5354D /* BillboardCell.swift */,
 			);
 			name = Device;
 			sourceTree = "<group>";
@@ -313,6 +316,7 @@
 				C5CFB05B1C8A62D400C208EF /* DeviceListHeader.swift in Sources */,
 				C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */,
 				C5AF70E31C75017300C7AD2C /* NoFieldsActionCell.swift in Sources */,
+				C53F0B5A1C9C4A0000E5354D /* BillboardCell.swift in Sources */,
 				C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */,
 				C5B72C581C53CD3200E4B68C /* SettingsViewController.swift in Sources */,
 				C5B72C621C53F92400E4B68C /* AddConnectionViewController.swift in Sources */,

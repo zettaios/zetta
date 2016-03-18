@@ -8,9 +8,10 @@
 
 import UIKit
 import ZettaKit
+import SwiftyJSON
 
 class DeviceViewController: UITableViewController {
-	var foregroundColor: UIColor = UIColor.whiteColor() {
+	var foregroundColor: UIColor = UIColor.blackColor() {
 		didSet {
 			view.tintColor = foregroundColor
 			navigationController?.navigationBar.tintColor = foregroundColor
@@ -33,6 +34,7 @@ class DeviceViewController: UITableViewController {
 	private var logsStream: ZIKStream? //so it can be identified and excluded from streams section
 	private var logs = [ZIKLogStreamEntry]()
 	
+	private let billboardCellIdentifier = "Billboard Cell"
 	private let propertyCellIdentifier = "Property Cell"
 	private let noFieldsActionCellIdentifier = "No Fields Action Cell"
 	private let singleFieldActionCellIdentifier = "Single Field Action Cell"
@@ -66,8 +68,8 @@ class DeviceViewController: UITableViewController {
 		addHeader()
 		updateHeader()
 		
-		tableView.rowHeight = 60
 		tableView.tableFooterView = UIView()
+		tableView.registerClass(BillboardCell.self, forCellReuseIdentifier: billboardCellIdentifier)
 		tableView.registerClass(PropertyCell.self, forCellReuseIdentifier: propertyCellIdentifier)
 		tableView.registerClass(NoFieldsActionCell.self, forCellReuseIdentifier: noFieldsActionCellIdentifier)
 		tableView.registerClass(SingleFieldActionCell.self, forCellReuseIdentifier: singleFieldActionCellIdentifier)
@@ -78,15 +80,13 @@ class DeviceViewController: UITableViewController {
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(true)
 		
+		navigationController?.navigationBar.barStyle = backgroundColor.isLight ? .Default : .Black
 		navigationController?.navigationBar.tintColor = foregroundColor
-		
 		if navigationController?.navigationBar.barTintColor != backgroundColor {
 			UIView.animateWithDuration(0.3) { [weak self] () -> Void in
 				self?.navigationController?.navigationBar.barTintColor = self?.backgroundColor
 			}
 		}
-		
-		navigationController?.navigationBar.barStyle = backgroundColor.isLight ? .Default : .Black
 	}
 	
 	private func submitAnalytics() {
@@ -99,7 +99,7 @@ class DeviceViewController: UITableViewController {
 	// MARK: - header
 	
 	private func addHeader() {
-		let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: tableView.bounds.height * 0.5))
+		let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: tableView.bounds.width))
 		iconImageView.translatesAutoresizingMaskIntoConstraints = false
 		header.addSubview(iconImageView)
 		iconImageView.snp_makeConstraints { (make) -> Void in
@@ -136,24 +136,24 @@ class DeviceViewController: UITableViewController {
 	// MARK: - monitoring streams
 	
 	private func monitorStreams() {
-		//monitor all streams with rel: monitor. When a log entry is received, use it to refresh the device. Store the most recent value for each stream, and all values for the logs stream.
+		//only monitor streams with `rel: monitor`
 		guard let links = self.device.links as? [ZIKLink] else { return }
-		
 		let monitoredLinks = links.filter({ (link) -> Bool in
 			if let rels = link.rel as? [String] where rels.contains("monitor") {
 				return true
 			}
 			return false
 		})
-		
+
 		for link in monitoredLinks {
 			let stream = ZIKStream(link: link, andIsMultiplex: false)
-			if link.title == "logs" {
+			if link.title == "logs" { //we want to be able to identify the logs stream later
 				self.logsStream = stream
 			}
 			self.monitoredStreams.append(stream)
 		}
 		
+		//when a log entry is received, use it to refresh the device. Store the most recent value for each stream, and all values for the logs stream.
 		for stream in self.monitoredStreams {
 			stream.signal.subscribeNext({ [weak self] (streamEntry) -> Void in
 				dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -164,6 +164,8 @@ class DeviceViewController: UITableViewController {
 					} else if let streamEntry = streamEntry as? ZIKStreamEntry {
 						self?.mostRecentStreamValues[stream] = streamEntry.data
 					}
+
+					//TO DO: - only reload where necessary (including billboards)
 					self?.tableView.reloadData()
 				})
 			})
@@ -171,10 +173,33 @@ class DeviceViewController: UITableViewController {
 		}
 	}
 	
+	// data helpers
+	
+	private enum DisplayStyle: String {
+		case None = "none", Billboard = "billboard", Inline = "inline"
+	}
+	
+	private func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
+		let defaultStyle: DisplayStyle = .Inline
+		guard let actionStyles = JSON(device.properties)["style"]["actions"].array else { return defaultStyle }
+		let matchingActionStyles = actionStyles.filter({ $0["action"].string == transition.name })
+		if matchingActionStyles.count > 1 { print("Warning: multiple styles specidifed for action'\(transition.name)'. The first style will be used.") }
+		guard let displayString = matchingActionStyles.first?["display"].string else { return defaultStyle }
+		return DisplayStyle(rawValue: displayString) ?? defaultStyle
+	}
+	
 	private var nonHiddenTransitions: [ZIKTransition] {
 		guard let transitions = device.transitions as? [ZIKTransition] else { return [ZIKTransition]() }
-		return transitions.filter({ device.displayStyleForTranstion($0) != .None })
+		return transitions.filter({ displayStyleForTranstion($0) != .None })
+	}
 	
+	private var billboardStreams: [ZIKStream] {
+		//find the streams who appear in the style object with `display:billboard`
+		let styleProperties = JSON(device.properties)["style"]["properties"].array
+		let billboardStyleProperties = styleProperties?.filter({ $0["display"].string == "billboard" })
+		let billboardStreamNames = billboardStyleProperties?.flatMap({ $0["property"].string }) ?? [String]()
+		let billboardStreams = nonLogStreams.filter({ billboardStreamNames.contains($0.title) })
+		return billboardStreams
 	}
 	
 	private var nonLogStreams: [ZIKStream] {
@@ -184,15 +209,16 @@ class DeviceViewController: UITableViewController {
     // MARK: - table view
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
 	
 	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		switch section {
-		case 0: return "Streams"
-		case 1: return "Actions"
-		case 2: return "Properties"
-		case 3: return "Events"
+		case 0: return nil
+		case 1: return "Streams"
+		case 2: return "Actions"
+		case 3: return "Properties"
+		case 4: return "Events"
 		default: return nil
 		}
 	}
@@ -203,12 +229,17 @@ class DeviceViewController: UITableViewController {
 		}
 	}
 	
+	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+		return indexPath.section == 0 ? tableView.bounds.width : 60
+	}
+	
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
-		case 0: return max(nonLogStreams.count, 1)
-		case 1: return max(nonHiddenTransitions.count, 1)
-		case 2: return max(device.properties.count, 1)
-		case 3: return 1
+		case 0: return billboardStreams.count
+		case 1: return max(nonLogStreams.count, 1)
+		case 2: return max(nonHiddenTransitions.count, 1)
+		case 3: return max(device.properties.count, 1)
+		case 4: return 1
 		default: return 0
 		}
     }
@@ -216,12 +247,14 @@ class DeviceViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		switch indexPath.section {
 		case 0:
-			return nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
+			return billboardCellForIndexPath(indexPath)
 		case 1:
-			return nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
+			return nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
 		case 2:
-			return device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
+			return nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
 		case 3:
+			return device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
+		case 4:
 			return logCell()
 		default:
 			return UITableViewCell()
@@ -242,8 +275,34 @@ class DeviceViewController: UITableViewController {
 		}
 	}
 	
+	private func billboardCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
+		guard let cell = tableView.dequeueReusableCellWithIdentifier(billboardCellIdentifier) as? BillboardCell else { return UITableViewCell() }
+		cell.tintColor = foregroundColor
+		
+		let stream = billboardStreams[indexPath.row]
+		
+		cell.overLabel.text = stream.title
+		cell.underLabel.text = "(units)"
+	
+		if let recentValue = mostRecentStreamValues[stream] as? String {
+			cell.mainLabel.text = recentValue
+			cell.mainLabel.font = UIFont.systemFontOfSize(cell.defaultFontSize)
+		} else if let recentValue = mostRecentStreamValues[stream] as? Float {
+			cell.mainLabel.text = String(format: "%.5f", recentValue)
+			cell.mainLabel.font = UIFont.monospacedDigitSystemFontOfSize(cell.defaultFontSize, weight: UIFontWeightRegular)
+		} else {
+			// TO DO: - drop this? Or is it needed for inital state? If so, handle ints too
+			//perhaps there is a matching property to fall back on
+			cell.mainLabel.text = device.properties[stream.title] as? String
+			cell.mainLabel.font = UIFont.systemFontOfSize(cell.defaultFontSize)
+		}
+		
+		return cell
+	}
+	
 	private func streamCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(propertyCellIdentifier) as? PropertyCell else { return UITableViewCell() }
+		
 		let stream = nonLogStreams[indexPath.row]
 		
 		cell.titleLabel.text = stream.title
@@ -252,9 +311,10 @@ class DeviceViewController: UITableViewController {
 			cell.subtitleLabel.text = recentValue
 			cell.subtitleLabel.font = UIFont.systemFontOfSize(18)
 		} else if let recentValue = mostRecentStreamValues[stream] as? Float {
-			cell.subtitleLabel.text = String(format: "%.5f", recentValue)
+			cell.subtitleLabel.text = String(format: "%.9f", recentValue)
 			cell.subtitleLabel.font = UIFont.monospacedDigitSystemFontOfSize(18, weight: UIFontWeightRegular)
 		} else {
+			// TO DO: - drop this? Or is it needed for inital state? If so, handle ints too
 			//perhaps there is a matching property to fall back on
 			cell.subtitleLabel.text = device.properties[stream.title] as? String
 			cell.subtitleLabel.font = UIFont.systemFontOfSize(18)
@@ -264,9 +324,6 @@ class DeviceViewController: UITableViewController {
 	}
 	
 	private func actionCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
-//		let transition
-//		guard let transitions = device.transitions as? [ZIKTransition] else { return UITableViewCell() }
-
 		let transition = nonHiddenTransitions[indexPath.row]
 		let fieldNames = fieldNamesForTransition(transition)
 		
@@ -330,7 +387,7 @@ class DeviceViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-		return indexPath.section == 3 && !logs.isEmpty
+		return indexPath.section == 4 && !logs.isEmpty
 	}
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
