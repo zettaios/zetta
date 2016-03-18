@@ -183,7 +183,7 @@ class DeviceViewController: UITableViewController {
 		let defaultStyle: DisplayStyle = .Inline
 		guard let actionStyles = JSON(device.properties)["style"]["actions"].array else { return defaultStyle }
 		let matchingActionStyles = actionStyles.filter({ $0["action"].string == transition.name })
-		if matchingActionStyles.count > 1 { print("Warning: multiple styles specidifed for action'\(transition.name)'. The first style will be used.") }
+		if matchingActionStyles.count > 1 { print("Warning: multiple styles specified for action'\(transition.name)'. The first style will be used.") }
 		guard let displayString = matchingActionStyles.first?["display"].string else { return defaultStyle }
 		return DisplayStyle(rawValue: displayString) ?? defaultStyle
 	}
@@ -193,13 +193,33 @@ class DeviceViewController: UITableViewController {
 		return transitions.filter({ displayStyleForTranstion($0) != .None })
 	}
 	
-	private var billboardStreams: [ZIKStream] {
-		//find the streams who appear in the style object with `display:billboard`
+	private struct BillboardStream {
+		let stream: ZIKStream
+		let symbol: String?
+		let significantDigits: Int?
+		
+		init(stream: ZIKStream, symbol: String?, significantDigits: Int?) {
+			self.stream = stream
+			self.symbol = symbol
+			self.significantDigits = significantDigits
+		}
+	}
+	
+	private var billboardStreams: [BillboardStream] {
+		//find the streams who appear in the style object with `display:billboard` and use them to build a Billboard object
 		let styleProperties = JSON(device.properties)["style"]["properties"].array
-		let billboardStyleProperties = styleProperties?.filter({ $0["display"].string == "billboard" })
-		let billboardStreamNames = billboardStyleProperties?.flatMap({ $0["property"].string }) ?? [String]()
-		let billboardStreams = nonLogStreams.filter({ billboardStreamNames.contains($0.title) })
-		return billboardStreams
+		let billboardStyleProperties = styleProperties?.filter({ $0["display"].string == "billboard" }) ?? [JSON]()
+		var results = [BillboardStream]()
+		for style in billboardStyleProperties {
+			let property = style["property"].string
+			let matchingStreams = nonLogStreams.filter({ $0.title == property })
+			if matchingStreams.count > 1 { print("Warning: multiple streams found for billboarded property '\(property)'. The first stream will be used.") }
+			guard let stream = matchingStreams.first else { continue }
+			let symbol = style["symbol"].string
+			let significantDigits = style["significantDigits"].int
+			results.append(BillboardStream.init(stream: stream, symbol: symbol, significantDigits: significantDigits))
+		}
+		return results
 	}
 	
 	private var nonLogStreams: [ZIKStream] {
@@ -279,21 +299,21 @@ class DeviceViewController: UITableViewController {
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(billboardCellIdentifier) as? BillboardCell else { return UITableViewCell() }
 		cell.tintColor = foregroundColor
 		
-		let stream = billboardStreams[indexPath.row]
+		let billboard = billboardStreams[indexPath.row]
 		
-		cell.overLabel.text = stream.title
-		cell.underLabel.text = "(units)"
+		cell.overLabel.text = billboard.stream.title
+		cell.underLabel.text = billboard.symbol
 	
-		if let recentValue = mostRecentStreamValues[stream] as? String {
+		if let recentValue = mostRecentStreamValues[billboard.stream] as? String {
 			cell.mainLabel.text = recentValue
 			cell.mainLabel.font = UIFont.systemFontOfSize(cell.defaultFontSize)
-		} else if let recentValue = mostRecentStreamValues[stream] as? Float {
+		} else if let recentValue = mostRecentStreamValues[billboard.stream] as? Float {
 			cell.mainLabel.text = String(format: "%.5f", recentValue)
 			cell.mainLabel.font = UIFont.monospacedDigitSystemFontOfSize(cell.defaultFontSize, weight: UIFontWeightRegular)
 		} else {
 			// TO DO: - drop this? Or is it needed for inital state? If so, handle ints too
 			//perhaps there is a matching property to fall back on
-			cell.mainLabel.text = device.properties[stream.title] as? String
+			cell.mainLabel.text = device.properties[billboard.stream.title] as? String
 			cell.mainLabel.font = UIFont.systemFontOfSize(cell.defaultFontSize)
 		}
 		

@@ -32,7 +32,7 @@ class BillboardCell: UITableViewCell {
 	
 	lazy var underLabel: UILabel = {
 		let label = UILabel()
-		label.font = UIFont.systemFontOfSize(18)
+		label.font = UIFont.boldSystemFontOfSize(24)
 		label.textAlignment = .Center
 		label.textColor = self.tintColor
 		return label
@@ -42,8 +42,6 @@ class BillboardCell: UITableViewCell {
 		let stack = UIStackView(arrangedSubviews: [self.overLabel, self.mainLabel, self.underLabel])
 		stack.axis = .Vertical
 		stack.spacing = 10
-//		stack.layoutMarginsRelativeArrangement = true
-//		stack.layoutMargins = UIEdgeInsets(top: 40, left: 40, bottom: 40, right: 40)
 		return stack
 	}()
 	
@@ -63,7 +61,6 @@ class BillboardCell: UITableViewCell {
 	override func updateConstraints() {
 		if !constraintsAdded {
 			stack.snp_makeConstraints { (make) -> Void in
-//				make.edges.equalTo(contentView)
 				make.center.equalTo(contentView)
 				make.left.right.equalTo(contentView).inset(40)
 				make.top.greaterThanOrEqualTo(contentView).offset(40)
