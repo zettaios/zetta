@@ -303,21 +303,17 @@ class DeviceViewController: UITableViewController {
 		
 		cell.overLabel.text = billboard.stream.title
 		cell.underLabel.text = billboard.symbol
-	
-		if let recentValue = mostRecentStreamValues[billboard.stream] as? String {
-			cell.mainLabel.text = recentValue
-			cell.mainLabel.font = UIFont.systemFontOfSize(cell.defaultFontSize)
-		} else if let recentValue = mostRecentStreamValues[billboard.stream] as? Float {
+		
+		let value = mostRecentStreamValues[billboard.stream] ?? device.properties[billboard.stream.title] //perhaps there is a matching property to fall back on initial state
+		if let value = value as? String {
+			cell.mainLabel.text = value
+		} else if let value = value as? Float {
 			cell.mainLabel.font = UIFont.monospacedDigitSystemFontOfSize(cell.defaultFontSize, weight: UIFontWeightRegular)
 			if let digits = billboard.significantDigits {
-				cell.mainLabel.text = String(format: "%.\(digits)f", recentValue)
+				cell.mainLabel.text = String(format: "%.\(digits)f", value)
+			} else {
+				cell.mainLabel.text = String(value)
 			}
-
-		} else {
-			// TO DO: - drop this? Or is it needed for inital state? If so, handle ints too
-			//perhaps there is a matching property to fall back on
-			cell.mainLabel.text = device.properties[billboard.stream.title] as? String
-			cell.mainLabel.font = UIFont.systemFontOfSize(cell.defaultFontSize)
 		}
 		
 		return cell
@@ -330,17 +326,12 @@ class DeviceViewController: UITableViewController {
 		
 		cell.titleLabel.text = stream.title
 		
-		if let recentValue = mostRecentStreamValues[stream] as? String {
-			cell.subtitleLabel.text = recentValue
-			cell.subtitleLabel.font = UIFont.systemFontOfSize(18)
-		} else if let recentValue = mostRecentStreamValues[stream] as? Float {
-			cell.subtitleLabel.text = String(format: "%.9f", recentValue)
-			cell.subtitleLabel.font = UIFont.monospacedDigitSystemFontOfSize(18, weight: UIFontWeightRegular)
-		} else {
-			// TO DO: - drop this? Or is it needed for inital state? If so, handle ints too
-			//perhaps there is a matching property to fall back on
-			cell.subtitleLabel.text = device.properties[stream.title] as? String
-			cell.subtitleLabel.font = UIFont.systemFontOfSize(18)
+		if let value = mostRecentStreamValues[stream] ?? device.properties[stream.title] { //perhaps there is a matching property to fall back on initial state
+			cell.subtitleLabel.text = String(value)
+			if value is Float || value is Int || value is Double {
+				cell.subtitleLabel.font = UIFont.monospacedDigitSystemFontOfSize(18, weight: UIFontWeightRegular)
+			}
+			
 		}
 		
 		return cell

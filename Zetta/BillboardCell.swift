@@ -76,6 +76,10 @@ class BillboardCell: UITableViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
+		overLabel.text = nil
+		mainLabel.text = nil
+		underLabel.text = nil
+		mainLabel.font = UIFont.systemFontOfSize(defaultFontSize)
 	}
 	
 	override func tintColorDidChange() {

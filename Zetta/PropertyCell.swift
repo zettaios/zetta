@@ -70,6 +70,7 @@ class PropertyCell: UITableViewCell {
 		titleLabel.text = nil
 		subtitleLabel.text = nil
 		accessoryView = nil
+		titleLabel.font = UIFont.systemFontOfSize(18)
 	}
 	
 }
