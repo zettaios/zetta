@@ -40,12 +40,6 @@ class DeviceViewController: UITableViewController {
 	private let singleFieldActionCellIdentifier = "Single Field Action Cell"
 	private let logsCellIdentifier = "Logs Cell"
 	
-	lazy var iconImageView: UIImageView = {
-		let imageView = UIImageView()
-		imageView.contentMode = .ScaleAspectFit
-		return imageView
-	}()
-	
 	init(device: ZIKDevice) {
 		self.device = device
 		super.init(nibName: nil, bundle: nil)
@@ -64,9 +58,6 @@ class DeviceViewController: UITableViewController {
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
 		
 		submitAnalytics()
-		
-		addHeader()
-		updateHeader()
 		
 		tableView.tableFooterView = UIView()
 		tableView.registerClass(BillboardCell.self, forCellReuseIdentifier: billboardCellIdentifier)
@@ -96,43 +87,6 @@ class DeviceViewController: UITableViewController {
 		tracker.send(builder.build() as [NSObject : AnyObject])
 	}
 	
-	// MARK: - header
-	
-	private func addHeader() {
-		let header = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: tableView.bounds.width))
-		iconImageView.translatesAutoresizingMaskIntoConstraints = false
-		header.addSubview(iconImageView)
-		iconImageView.snp_makeConstraints { (make) -> Void in
-			make.edges.equalTo(header).inset(40)
-		}
-		tableView.tableHeaderView = header
-	}
-
-	private lazy var nonCachingSession: NSURLSession = {
-		let config = NSURLSessionConfiguration.defaultSessionConfiguration()
-		config.requestCachePolicy = .ReloadIgnoringLocalCacheData
-		return NSURLSession(configuration: config)
-	}()
-	
-	private func updateHeader() {
-		//remove the existing image immediately to avoid displaying an incorrect state icon, especially on slow networks or if the image resource is large
-		iconImageView.image = nil
-		if let iconURL = device.iconURL {
-			let task = nonCachingSession.dataTaskWithURL(iconURL) { (data, response, error) -> Void in
-				dispatch_async(dispatch_get_main_queue(), { [weak self] in
-					guard let imageData = data where error == nil, let image = UIImage(data: imageData) else {
-						print("Unable to download image")
-						return
-					}
-					self?.iconImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
-				})
-			}
-			task.resume()
-		} else {
-			iconImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysOriginal)
-		}
-	}
-	
 	// MARK: - monitoring streams
 	
 	private func monitorStreams() {
@@ -160,7 +114,7 @@ class DeviceViewController: UITableViewController {
 					if let streamEntry = streamEntry as? ZIKLogStreamEntry {
 						self?.device.refreshWithLogEntry(streamEntry)
 						self?.logs.insert(streamEntry, atIndex: 0)
-						self?.updateHeader()
+						self?.updateStateImage()
 					} else if let streamEntry = streamEntry as? ZIKStreamEntry {
 						self?.mostRecentStreamValues[stream] = streamEntry.data
 					}
@@ -222,23 +176,72 @@ class DeviceViewController: UITableViewController {
 		return results
 	}
 	
+	private var hideDeviceIcon: Bool {
+		let styleProperties = JSON(device.properties)["style"]["properties"].array
+		let stateImageProperties = styleProperties?.filter({ $0["property"] == "stateImage" }) ?? [JSON]()
+		if stateImageProperties.count > 1 { print("Warning: multiple styles found for stateImage. The first style will be used.") }
+		guard let stateImageProperty = stateImageProperties.first else { return false }
+		return stateImageProperty["display"] == "none"
+	}
+	
+	private var showIcon: Bool {
+		return true
+	}
+	
 	private var nonLogStreams: [ZIKStream] {
 		return monitoredStreams.filter({ $0 != logsStream })
 	}
 	
+	// MARK: - updating state image
+	
+	lazy var iconImageView: UIImageView = {
+		let imageView = UIImageView()
+		imageView.contentMode = .ScaleAspectFit
+		return imageView
+	}()
+	
+	private lazy var nonCachingSession: NSURLSession = {
+		let config = NSURLSessionConfiguration.defaultSessionConfiguration()
+		config.requestCachePolicy = .ReloadIgnoringLocalCacheData
+		return NSURLSession(configuration: config)
+	}()
+
+	private func updateStateImage() {
+		//remove the existing image immediately to avoid displaying an incorrect state icon, especially on slow networks or if the image resource is large
+		iconImageView.image = nil
+		
+		guard let iconURL = device.iconURL else {
+			iconImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysOriginal)
+			return
+		}
+
+		let task = nonCachingSession.dataTaskWithURL(iconURL) { (data, response, error) -> Void in
+			dispatch_async(dispatch_get_main_queue(), { [weak self] in
+				guard let imageData = data where error == nil, let image = UIImage(data: imageData) else {
+					print("Unable to download state image")
+					return
+				}
+				self?.iconImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
+			})
+		}
+		task.resume()
+	}
+
+
     // MARK: - table view
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 5
+        return 6
     }
 	
 	override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		switch section {
 		case 0: return nil
-		case 1: return "Streams"
-		case 2: return "Actions"
-		case 3: return "Properties"
-		case 4: return "Events"
+		case 1: return nil
+		case 2: return "Streams"
+		case 3: return "Actions"
+		case 4: return "Properties"
+		case 5: return "Events"
 		default: return nil
 		}
 	}
@@ -250,16 +253,17 @@ class DeviceViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-		return indexPath.section == 0 ? tableView.bounds.width : 60
+		return indexPath.section < 2 ? tableView.bounds.width : 60
 	}
 	
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0: return billboardStreams.count
-		case 1: return max(nonLogStreams.count, 1)
-		case 2: return max(nonHiddenTransitions.count, 1)
-		case 3: return max(device.properties.count, 1)
-		case 4: return 1
+		case 1: return device.iconURL != nil && hideDeviceIcon == false ? 1 : 0
+		case 2: return max(nonLogStreams.count, 1)
+		case 3: return max(nonHiddenTransitions.count, 1)
+		case 4: return max(device.properties.count, 1)
+		case 5: return 1
 		default: return 0
 		}
     }
@@ -269,12 +273,14 @@ class DeviceViewController: UITableViewController {
 		case 0:
 			return billboardCellForIndexPath(indexPath)
 		case 1:
-			return nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
+			return iconCell
 		case 2:
-			return nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
+			return nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
 		case 3:
-			return device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
+			return nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
 		case 4:
+			return device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
+		case 5:
 			return logCell()
 		default:
 			return UITableViewCell()
@@ -318,6 +324,21 @@ class DeviceViewController: UITableViewController {
 		
 		return cell
 	}
+	
+	private lazy var iconCell: UITableViewCell = {
+		guard let iconURL = self.device.iconURL where !self.hideDeviceIcon else { return UITableViewCell() }
+		
+		let cell = UITableViewCell()
+		self.iconImageView.translatesAutoresizingMaskIntoConstraints = false
+		cell.contentView.addSubview(self.iconImageView)
+		self.iconImageView.snp_makeConstraints { (make) -> Void in
+			make.edges.equalTo(cell.contentView).inset(40)
+		}
+
+		self.updateStateImage()
+
+		return cell
+	}()
 	
 	private func streamCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(propertyCellIdentifier) as? PropertyCell else { return UITableViewCell() }
@@ -401,7 +422,7 @@ class DeviceViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-		return indexPath.section == 4 && !logs.isEmpty
+		return indexPath.section == 5 && !logs.isEmpty
 	}
 	
 	override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -438,7 +459,7 @@ extension DeviceViewController: ActionCellDelegate {
 			if let device = device {
 				dispatch_async(dispatch_get_main_queue(), { () -> Void in
 					self?.device = device
-					self?.updateHeader()
+					self?.updateStateImage()
 					self?.tableView.reloadData()
 				})
 			}
