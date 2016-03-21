@@ -280,10 +280,13 @@ class DeviceViewController: UITableViewController {
 
 	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
 		cell.backgroundColor = backgroundColor
+		cell.tintColor = foregroundColor
 		let appropriateColor = backgroundColor.isLight ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 		if let cell = cell as? PropertyCell {
 			cell.titleLabel.textColor = appropriateColor
 			cell.subtitleLabel.textColor = appropriateColor
+		} else if let cell = cell as? NoFieldsActionCell {
+			cell.titleLabel.textColor = appropriateColor
 		} else if let cell = cell as? SingleFieldActionCell {
 			cell.textField.textColor = appropriateColor
 		} else if let cell = cell as? MultipleFieldsActionCell {
@@ -342,7 +345,7 @@ class DeviceViewController: UITableViewController {
 		if let value = mostRecentStreamValues[stream] ?? device.properties[stream.title] { //perhaps there is a matching property to fall back on initial state
 			cell.subtitleLabel.text = String(value)
 			if value is Float || value is Int || value is Double {
-				cell.subtitleLabel.font = UIFont.monospacedDigitSystemFontOfSize(18, weight: UIFontWeightRegular)
+				cell.subtitleLabel.font = UIFont.monospacedDigitSystemFontOfSize(18, weight: UIFontWeightBold)
 			}
 			
 		}

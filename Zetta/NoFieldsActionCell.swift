@@ -19,8 +19,8 @@ class NoFieldsActionCell: UITableViewCell {
 	
 	lazy var titleLabel: UILabel = {
 		let label = UILabel()
-		label.textColor = UIColor.appMediumGrayColor()
-		label.font = UIFont.systemFontOfSize(18)
+		label.textColor = UIColor.whiteColor()
+		label.font = UIFont.systemFontOfSize(18, weight: UIFontWeightUltraLight)
 		return label
 	}()
 	
@@ -85,6 +85,6 @@ class NoFieldsActionCell: UITableViewCell {
 		super.tintColorDidChange()
 		
 		goButton.backgroundColor = tintColor
-		goButton.tintColor = tintColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
+		goButton.tintColor = self.backgroundColor
 	}
 }
