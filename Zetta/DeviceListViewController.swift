@@ -8,6 +8,7 @@
 
 import UIKit
 import ZettaKit
+import SDWebImage
 
 class DeviceListViewController: UITableViewController {
 
@@ -201,20 +202,13 @@ class DeviceListViewController: UITableViewController {
 		cell.subtitleLabel.text = device.state
 		
 		if let iconURL = device.iconURL {
-			let task = nonCachingSession.dataTaskWithURL(iconURL) { (data, response, error) -> Void in
-				guard let imageData = data where error == nil, let image = UIImage(data: imageData) else {
-					print("Unable to download image")
-					return
-				}
-				guard tableView.indexPathsForVisibleRows?.contains(indexPath) == true else { return }
-				dispatch_async(dispatch_get_main_queue(), { [weak self] in
-					cell.deviceImageView.backgroundColor = server.backgroundColor
-					cell.deviceImageView.layer.cornerRadius = 3
-					cell.deviceImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
-					cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
-				})
-			}
-			task.resume()
+			cell.deviceImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { [weak self] (image, error, cacheType, _) -> Void in
+				if let error = error { print("Error downloading state image: \(error)") }
+				guard let image = image else { return }
+				cell.deviceImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
+				cell.deviceImageView.backgroundColor = server.backgroundColor
+				cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
+			})
 		} else {
 			cell.deviceImageView.backgroundColor = UIColor.whiteColor()
 			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
@@ -229,12 +223,6 @@ class DeviceListViewController: UITableViewController {
 		
 		return cell
     }
-	
-	private lazy var nonCachingSession: NSURLSession = {
-		let config = NSURLSessionConfiguration.defaultSessionConfiguration()
-		config.requestCachePolicy = .ReloadIgnoringLocalCacheData
-		return NSURLSession(configuration: config)
-	}()
 	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
 		//exclude the 'no devices' message cell

@@ -13,6 +13,7 @@ class DeviceCell: UITableViewCell {
 	lazy var deviceImageView: UIImageView = {
 		let deviceImageView = UIImageView()
 		deviceImageView.contentMode = .ScaleAspectFit
+		deviceImageView.layer.cornerRadius = 3
 		return deviceImageView
 	}()
 

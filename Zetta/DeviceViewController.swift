@@ -207,26 +207,17 @@ class DeviceViewController: UITableViewController {
 	}()
 
 	private func updateStateImage() {
-		//remove the existing image immediately to avoid displaying an incorrect state icon, especially on slow networks or if the image resource is large
-		iconImageView.image = nil
-		
 		guard let iconURL = device.iconURL else {
 			iconImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysOriginal)
 			return
 		}
 
-		let task = nonCachingSession.dataTaskWithURL(iconURL) { (data, response, error) -> Void in
-			dispatch_async(dispatch_get_main_queue(), { [weak self] in
-				guard let imageData = data where error == nil, let image = UIImage(data: imageData) else {
-					print("Unable to download state image")
-					return
-				}
-				self?.iconImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
-			})
-		}
-		task.resume()
+		iconImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { [weak self] (image, error, cacheType, _) -> Void in
+			if let error = error { print("Error downloading state image: \(error)") }
+			guard let image = image else { return }
+			self?.iconImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
+		})
 	}
-
 
     // MARK: - table view
 
