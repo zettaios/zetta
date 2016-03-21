@@ -282,6 +282,7 @@ class DeviceViewController: UITableViewController {
 		cell.backgroundColor = backgroundColor
 		let appropriateColor = backgroundColor.isLight ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 		if let cell = cell as? PropertyCell {
+			cell.titleLabel.textColor = appropriateColor
 			cell.subtitleLabel.textColor = appropriateColor
 		} else if let cell = cell as? SingleFieldActionCell {
 			cell.textField.textColor = appropriateColor

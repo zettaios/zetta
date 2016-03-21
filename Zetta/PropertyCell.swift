@@ -14,16 +14,16 @@ class PropertyCell: UITableViewCell {
 	
 	lazy var titleLabel: UILabel = {
 		let label = UILabel()
-		label.textColor = UIColor.appMediumGrayColor()
-		label.font = UIFont.systemFontOfSize(18)
+		label.textColor = UIColor.whiteColor()
+		label.font = UIFont.systemFontOfSize(18, weight: UIFontWeightUltraLight)
 		label.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
 		return label
 	}()
 	
 	lazy var subtitleLabel: UILabel = {
 		let label = UILabel()
-		label.textColor = UIColor.appDarkGrayColor()
-		label.font = UIFont.systemFontOfSize(18)
+		label.textColor = UIColor.whiteColor()
+		label.font = UIFont.boldSystemFontOfSize(18)
 		label.textAlignment = .Right
 		label.adjustsFontSizeToFitWidth = true
 		label.minimumScaleFactor = 0.8
@@ -70,7 +70,6 @@ class PropertyCell: UITableViewCell {
 		titleLabel.text = nil
 		subtitleLabel.text = nil
 		accessoryView = nil
-		titleLabel.font = UIFont.systemFontOfSize(18)
 	}
 	
 }
