@@ -10,15 +10,6 @@ import UIKit
 
 class DeviceCell: UITableViewCell {
 	
-	override var backgroundColor: UIColor? {
-		didSet {
-			contentView.backgroundColor = backgroundColor //prevents 'flickering' when cell is recycled
-			let appropriateColor = backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
-			titleLabel.textColor = appropriateColor
-			subtitleLabel.textColor = appropriateColor
-		}
-	}
-	
 	lazy var deviceImageView: UIImageView = {
 		let deviceImageView = UIImageView()
 		deviceImageView.contentMode = .ScaleAspectFit
@@ -56,8 +47,6 @@ class DeviceCell: UITableViewCell {
 			contentView.addSubview(view)
 		}
 		
-		accessoryType = .DisclosureIndicator
-		
 		setNeedsUpdateConstraints()
 	}
 	
@@ -90,9 +79,7 @@ class DeviceCell: UITableViewCell {
 	override func prepareForReuse() {
 		super.prepareForReuse()
 		
-		deviceImageView.tintColor = UIColor.appDefaultDeviceTintColor()
 		deviceImageView.sd_cancelCurrentImageLoad() //prevent late loading
-		deviceImageView.image = nil
 	}
 	
 }

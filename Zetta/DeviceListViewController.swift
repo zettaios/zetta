@@ -195,17 +195,20 @@ class DeviceListViewController: UITableViewController {
 		let device = devices[indexPath.row]
 		
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
-		cell.backgroundColor = device.backgroundColor ?? server.backgroundColor
-		
-		cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
+		cell.contentView.backgroundColor = device.backgroundColor ?? server.backgroundColor
+		let appropriateColor = cell.contentView.backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+		cell.titleLabel.textColor = appropriateColor
+		cell.subtitleLabel.textColor = appropriateColor
+
+		cell.titleLabel.text = device.name ?? device.type ?? "Unnamed Device"
 		cell.subtitleLabel.text = device.state
 		
 		if let iconURL = device.iconURL {
-			cell.deviceImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { [weak self] (image, error, cacheType, _) -> Void in
+			cell.deviceImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { (image, error, cacheType, _) -> Void in
 				if let error = error { print("Error downloading state image: \(error)") }
 				guard let image = image else { return }
 				cell.deviceImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
-				cell.deviceImageView.tintColor = device.foregroundColor ?? self?.serverDevices[indexPath.section].server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
+				cell.deviceImageView.tintColor = device.foregroundColor ?? server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 			})
 		} else {
 			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
