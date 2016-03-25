@@ -16,7 +16,7 @@ class SingleFieldActionCell: UITableViewCell {
 	
 	override var backgroundColor: UIColor? {
 		didSet {
-			let appropriateColor = backgroundColor?.isLight == true ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+			let appropriateColor = backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 			textField.textColor = appropriateColor
 			let attributes = [NSForegroundColorAttributeName: appropriateColor, NSFontAttributeName: UIFont.systemFontOfSize(18, weight: UIFontWeightUltraLight)]
 			textField.attributedPlaceholder = NSAttributedString(string: "\(fieldName)...", attributes: attributes)

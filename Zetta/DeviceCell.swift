@@ -10,6 +10,15 @@ import UIKit
 
 class DeviceCell: UITableViewCell {
 	
+	override var backgroundColor: UIColor? {
+		didSet {
+			contentView.backgroundColor = backgroundColor //prevents 'flickering' when cell is recycled
+			let appropriateColor = backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+			titleLabel.textColor = appropriateColor
+			subtitleLabel.textColor = appropriateColor
+		}
+	}
+	
 	lazy var deviceImageView: UIImageView = {
 		let deviceImageView = UIImageView()
 		deviceImageView.contentMode = .ScaleAspectFit
@@ -19,15 +28,13 @@ class DeviceCell: UITableViewCell {
 
 	lazy var titleLabel: UILabel = {
 		let titleLabel = UILabel()
-		titleLabel.textColor = UIColor.appMediumGrayColor()
-		titleLabel.font = UIFont.systemFontOfSize(13)
+		titleLabel.font = UIFont.systemFontOfSize(12, weight: UIFontWeightUltraLight)
 		return titleLabel
 	}()
 	
 	lazy var subtitleLabel: UILabel = {
 		let subtitleLabel = UILabel()
-		subtitleLabel.textColor = UIColor.appDarkGrayColor()
-		subtitleLabel.font = UIFont.systemFontOfSize(16)
+		subtitleLabel.font = UIFont.boldSystemFontOfSize(16)
 		return subtitleLabel
 	}()
 	
@@ -84,7 +91,7 @@ class DeviceCell: UITableViewCell {
 		super.prepareForReuse()
 		
 		deviceImageView.tintColor = UIColor.appDefaultDeviceTintColor()
-//		deviceImageView.pin_cancelImageDownload() //prevent late loading
+		deviceImageView.sd_cancelCurrentImageLoad() //prevent late loading
 		deviceImageView.image = nil
 	}
 	

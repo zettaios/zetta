@@ -14,7 +14,7 @@ class PropertyCell: UITableViewCell {
 	
 	override var backgroundColor: UIColor? {
 		didSet {
-			let appropriateColor = backgroundColor?.isLight == true ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+			let appropriateColor = backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 			titleLabel.textColor = appropriateColor
 			subtitleLabel.textColor = appropriateColor
 		}

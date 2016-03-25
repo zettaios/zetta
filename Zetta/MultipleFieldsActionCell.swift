@@ -16,7 +16,7 @@ class MultipleFieldsActionCell: UITableViewCell {
 	
 	override var backgroundColor: UIColor? {
 		didSet {
-			let appropriateColor = backgroundColor?.isLight == true ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+			let appropriateColor = backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 			for field in textFields {
 				field.textColor = appropriateColor
 				if let string = field.attributedPlaceholder?.string, var attributes = field.attributedPlaceholder?.attributesAtIndex(0, effectiveRange: nil) {

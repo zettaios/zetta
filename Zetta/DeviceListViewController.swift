@@ -195,7 +195,6 @@ class DeviceListViewController: UITableViewController {
 		let device = devices[indexPath.row]
 		
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
-//		cell.contentView.backgroundColor =  server.backgroundColor
 		cell.backgroundColor = device.backgroundColor ?? server.backgroundColor
 		
 		cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
@@ -206,11 +205,9 @@ class DeviceListViewController: UITableViewController {
 				if let error = error { print("Error downloading state image: \(error)") }
 				guard let image = image else { return }
 				cell.deviceImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
-				cell.deviceImageView.backgroundColor = device.backgroundColor ?? server.backgroundColor
 				cell.deviceImageView.tintColor = device.foregroundColor ?? self?.serverDevices[indexPath.section].server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 			})
 		} else {
-			cell.deviceImageView.backgroundColor = UIColor.whiteColor()
 			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
 			cell.deviceImageView.tintColor = UIColor(white: 0.5, alpha: server.backgroundColor?.isLight == false ? 0.6 : 0.3)
 		}
