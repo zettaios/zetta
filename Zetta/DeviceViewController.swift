@@ -118,8 +118,6 @@ class DeviceViewController: UITableViewController {
 					} else if let streamEntry = streamEntry as? ZIKStreamEntry {
 						self?.mostRecentStreamValues[stream] = streamEntry.data
 					}
-
-					//TO DO: - only reload where necessary (including billboards)
 					self?.tableView.reloadData()
 				})
 			})
@@ -182,10 +180,6 @@ class DeviceViewController: UITableViewController {
 		if stateImageProperties.count > 1 { print("Warning: multiple styles found for stateImage. The first style will be used.") }
 		guard let stateImageProperty = stateImageProperties.first else { return false }
 		return stateImageProperty["display"] == "none"
-	}
-	
-	private var showIcon: Bool {
-		return true
 	}
 	
 	private var nonLogStreams: [ZIKStream] {
@@ -305,7 +299,7 @@ class DeviceViewController: UITableViewController {
 		cell.overLabel.text = billboard.stream.title
 		cell.underLabel.text = billboard.symbol
 		
-		let value = mostRecentStreamValues[billboard.stream] ?? device.properties[billboard.stream.title] //perhaps there is a matching property to fall back on initial state
+		let value = mostRecentStreamValues[billboard.stream] ?? device.properties[billboard.stream.title] //perhaps there is a matching property to fall back on for initial state
 		if let value = value as? String {
 			cell.mainLabel.text = value
 		} else if let value = value as? Float {
