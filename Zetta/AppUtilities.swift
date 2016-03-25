@@ -66,4 +66,14 @@ extension ZIKDevice {
 		}
 		return nil
 	}
+	
+	var foregroundColor: UIColor? {
+		let decimal = JSON(properties)["style"]["foregroundColor"]["decimal"]
+		return UIColor.colorFromDecimalJSON(decimal)
+	}
+	
+	var backgroundColor: UIColor? {
+		let decimal = JSON(properties)["style"]["backgroundColor"]["decimal"]
+		return UIColor.colorFromDecimalJSON(decimal)
+	}
 }

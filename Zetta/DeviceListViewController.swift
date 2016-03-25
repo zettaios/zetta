@@ -206,8 +206,8 @@ class DeviceListViewController: UITableViewController {
 				if let error = error { print("Error downloading state image: \(error)") }
 				guard let image = image else { return }
 				cell.deviceImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
-				cell.deviceImageView.backgroundColor = server.backgroundColor
-				cell.deviceImageView.tintColor = self?.serverDevices[indexPath.section].server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
+				cell.deviceImageView.backgroundColor = device.backgroundColor ?? server.backgroundColor
+				cell.deviceImageView.tintColor = device.foregroundColor ?? self?.serverDevices[indexPath.section].server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 			})
 		} else {
 			cell.deviceImageView.backgroundColor = UIColor.whiteColor()
