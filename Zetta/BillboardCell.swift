@@ -10,7 +10,7 @@ import UIKit
 
 class BillboardCell: UITableViewCell {
 
-	let defaultFontSize: CGFloat = 150
+	let defaultFontSize: CGFloat = 140
 	private var constraintsAdded = false
 	
 	lazy var overLabel: UILabel = {
