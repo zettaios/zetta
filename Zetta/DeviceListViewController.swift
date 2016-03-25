@@ -133,7 +133,7 @@ class DeviceListViewController: UITableViewController {
 				let topicComponents = streamEntry.topic.componentsSeparatedByString("/")
 				guard topicComponents.count >= 2 else { return }
 				let deviceUUID = topicComponents[1]
-				if let (device, indexPath) = self?.deviceForUUID(deviceUUID) {
+				if let (device, indexPath) = self?.deviceForUUID(deviceUUID) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
 					device.refreshWithLogEntry(streamEntry)
 					self?.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
 				}
@@ -192,12 +192,12 @@ class DeviceListViewController: UITableViewController {
 		let devices = serverDevices[indexPath.section].devices
 		
 		if devices.isEmpty { return UITableViewCell.emptyCell(message: "No devices online for this server.") }
+		let device = devices[indexPath.row]
 		
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
-//		cell.contentView.backgroundColor = server.backgroundColor
-//		cell.backgroundColor = server.backgroundColor
+//		cell.contentView.backgroundColor =  server.backgroundColor
+		cell.backgroundColor = device.backgroundColor ?? server.backgroundColor
 		
-		let device = devices[indexPath.row]
 		cell.titleLabel.text = (device.name ?? device.type) ?? "Unnamed Device"
 		cell.subtitleLabel.text = device.state
 		

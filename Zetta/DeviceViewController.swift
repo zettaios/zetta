@@ -244,12 +244,7 @@ class DeviceViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-		switch indexPath.section {
-		case 0,1: return tableView.bounds.width
-//		case 3:
-//			let action =
-		default: return 60
-		}
+		return indexPath.section < 2 ? tableView.bounds.width : 60
 	}
 	
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
