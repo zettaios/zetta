@@ -37,7 +37,6 @@ class DeviceViewController: UITableViewController {
 	private let billboardCellIdentifier = "Billboard Cell"
 	private let propertyCellIdentifier = "Property Cell"
 	private let noFieldsActionCellIdentifier = "No Fields Action Cell"
-	private let singleFieldActionCellIdentifier = "Single Field Action Cell"
 	private let logsCellIdentifier = "Logs Cell"
 	
 	init(device: ZIKDevice) {
@@ -63,7 +62,6 @@ class DeviceViewController: UITableViewController {
 		tableView.registerClass(BillboardCell.self, forCellReuseIdentifier: billboardCellIdentifier)
 		tableView.registerClass(PropertyCell.self, forCellReuseIdentifier: propertyCellIdentifier)
 		tableView.registerClass(NoFieldsActionCell.self, forCellReuseIdentifier: noFieldsActionCellIdentifier)
-		tableView.registerClass(SingleFieldActionCell.self, forCellReuseIdentifier: singleFieldActionCellIdentifier)
 		tableView.registerClass(PropertyCell.self, forCellReuseIdentifier: logsCellIdentifier)
 		tableView.keyboardDismissMode = .OnDrag
     }
@@ -238,6 +236,14 @@ class DeviceViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+		switch indexPath.section {
+		case 0,1: return tableView.bounds.width
+		case 3: return UITableViewAutomaticDimension //multi-field actions
+		default: return 60
+		}
+	}
+	
+	override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
 		return indexPath.section < 2 ? tableView.bounds.width : 60
 	}
 	
@@ -254,41 +260,29 @@ class DeviceViewController: UITableViewController {
     }
 	
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+		let cell: UITableViewCell
+		
 		switch indexPath.section {
 		case 0:
-			return billboardCellForIndexPath(indexPath)
+			cell = billboardCellForIndexPath(indexPath)
 		case 1:
-			return iconCell
+			cell = iconCell
 		case 2:
-			return nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
+			cell = nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
 		case 3:
-			return nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
+			cell = nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
 		case 4:
-			return device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
+			cell = device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
 		case 5:
-			return logCell()
+			cell = logCell()
 		default:
-			return UITableViewCell()
+			cell = UITableViewCell()
 		}
-    }
-
-	override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+		
 		cell.backgroundColor = backgroundColor
 		cell.tintColor = foregroundColor
-		let appropriateColor = backgroundColor.isLight ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
-		if let cell = cell as? PropertyCell {
-			cell.titleLabel.textColor = appropriateColor
-			cell.subtitleLabel.textColor = appropriateColor
-		} else if let cell = cell as? NoFieldsActionCell {
-			cell.titleLabel.textColor = appropriateColor
-		} else if let cell = cell as? SingleFieldActionCell {
-			cell.textField.textColor = appropriateColor
-		} else if let cell = cell as? MultipleFieldsActionCell {
-			for field in cell.textFields {
-				field.textColor = appropriateColor
-			}
-		}
-	}
+		return cell
+    }
 	
 	private func billboardCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(billboardCellIdentifier) as? BillboardCell else { return UITableViewCell() }
@@ -358,10 +352,7 @@ class DeviceViewController: UITableViewController {
 			cell.delegate = self
 			return cell
 		} else if fieldNames.count == 1 {
-			guard let cell = tableView.dequeueReusableCellWithIdentifier(singleFieldActionCellIdentifier) as? SingleFieldActionCell else { return UITableViewCell() }
-			if let placeholder = fieldNames.first?.stringByAppendingString("...") {
-				cell.textField.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: [NSForegroundColorAttributeName: UIColor.appMediumGrayColor()])
-			}
+			let cell = SingleFieldActionCell(fieldName: fieldNames.first ?? "")
 			cell.goButton.setTitle(transition.name, forState: .Normal)
 			cell.delegate = self
 			return cell

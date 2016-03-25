@@ -12,6 +12,14 @@ class PropertyCell: UITableViewCell {
 
 	private var constraintsAdded = false
 	
+	override var backgroundColor: UIColor? {
+		didSet {
+			let appropriateColor = backgroundColor?.isLight == true ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+			titleLabel.textColor = appropriateColor
+			subtitleLabel.textColor = appropriateColor
+		}
+	}
+	
 	lazy var titleLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = UIColor.whiteColor()

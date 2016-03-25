@@ -17,6 +17,20 @@ class NoFieldsActionCell: UITableViewCell {
 	weak var delegate: ActionCellDelegate?
 	private var constraintsAdded = false
 	
+	override var backgroundColor: UIColor? {
+		didSet {
+			let appropriateColor = backgroundColor?.isLight == true ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+			titleLabel.textColor = appropriateColor
+		}
+	}
+	
+	override var tintColor: UIColor? {
+		didSet {
+			goButton.backgroundColor = tintColor
+			goButton.tintColor = self.backgroundColor
+		}
+	}
+	
 	lazy var titleLabel: UILabel = {
 		let label = UILabel()
 		label.textColor = UIColor.whiteColor()
@@ -61,7 +75,8 @@ class NoFieldsActionCell: UITableViewCell {
 			}
 			
 			goButton.snp_makeConstraints { (make) -> Void in
-				make.width.greaterThanOrEqualTo(goButton.snp_height).multipliedBy(1.5)
+				make.height.equalTo(35.5)
+				make.width.greaterThanOrEqualTo(goButton.snp_height)
 			}
 			
 			constraintsAdded = true
@@ -79,12 +94,5 @@ class NoFieldsActionCell: UITableViewCell {
 	
 	@objc private func buttonTapped() {
 		delegate?.actionCell(self, didSubmitFields: [String?]())
-	}
-	
-	override func tintColorDidChange() {
-		super.tintColorDidChange()
-		
-		goButton.backgroundColor = tintColor
-		goButton.tintColor = self.backgroundColor
 	}
 }

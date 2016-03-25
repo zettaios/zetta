@@ -14,6 +14,26 @@ class MultipleFieldsActionCell: UITableViewCell {
 	let textFields: [UITextField]
 	private var constraintsAdded = false
 	
+	override var backgroundColor: UIColor? {
+		didSet {
+			let appropriateColor = backgroundColor?.isLight == true ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+			for field in textFields {
+				field.textColor = appropriateColor
+				if let string = field.attributedPlaceholder?.string, var attributes = field.attributedPlaceholder?.attributesAtIndex(0, effectiveRange: nil) {
+					attributes[NSForegroundColorAttributeName] = appropriateColor
+					field.attributedPlaceholder = NSAttributedString(string: string, attributes: attributes)
+				}
+			}
+		}
+	}
+	
+	override var tintColor: UIColor? {
+		didSet {
+			goButton.backgroundColor = tintColor
+			goButton.tintColor = self.backgroundColor
+		}
+	}
+	
 	lazy var goButton: UIButton = {
 		let button = UIButton.deviceActionButton(title: "Go")
 		button.addTarget(self, action: "buttonTapped", forControlEvents: .TouchUpInside)
@@ -34,9 +54,8 @@ class MultipleFieldsActionCell: UITableViewCell {
 	init(fieldNames: [String]) {
 		self.textFields = fieldNames.map({ (fieldName) -> UITextField in
 			let textField = UITextField()
-			textField.font = UIFont.systemFontOfSize(18)
-			textField.textColor = UIColor.appDarkGrayColor()
-			textField.attributedPlaceholder = NSAttributedString(string: fieldName.stringByAppendingString("..."), attributes: [NSForegroundColorAttributeName: UIColor.appMediumGrayColor()])
+			textField.font = UIFont.boldSystemFontOfSize(18)
+			textField.attributedPlaceholder = NSAttributedString(string: fieldName.stringByAppendingString("..."), attributes: [NSFontAttributeName: UIFont.systemFontOfSize(18, weight: UIFontWeightUltraLight)])
 			textField.returnKeyType = .Go
 			textField.autocapitalizationType = .None
 			textField.autocorrectionType = .No
@@ -65,8 +84,15 @@ class MultipleFieldsActionCell: UITableViewCell {
 				make.edges.equalTo(contentView)
 			}
 			
+			for field in textFields {
+				field.snp_makeConstraints { (make) -> Void in
+					make.height.equalTo(35.5)
+				}
+			}
+			
 			goButton.snp_makeConstraints { (make) -> Void in
-				make.width.greaterThanOrEqualTo(goButton.snp_height).multipliedBy(1.5)
+				make.height.equalTo(35.5)
+				make.width.greaterThanOrEqualTo(goButton.snp_height)
 			}
 			
 			constraintsAdded = true;
@@ -92,8 +118,8 @@ class MultipleFieldsActionCell: UITableViewCell {
 	override func tintColorDidChange() {
 		super.tintColorDidChange()
 		
-		goButton.backgroundColor = tintColor
-		goButton.tintColor = self.backgroundColor
+//		goButton.backgroundColor = tintColor
+//		goButton.tintColor = self.backgroundColor
 	}
 	
 }

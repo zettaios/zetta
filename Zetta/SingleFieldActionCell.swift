@@ -11,14 +11,30 @@ import UIKit
 class SingleFieldActionCell: UITableViewCell {
 
 	weak var delegate: ActionCellDelegate?
+	private var fieldName: String
 	private var constraintsAdded = false
+	
+	override var backgroundColor: UIColor? {
+		didSet {
+			let appropriateColor = backgroundColor?.isLight == true ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+			textField.textColor = appropriateColor
+			let attributes = [NSForegroundColorAttributeName: appropriateColor, NSFontAttributeName: UIFont.systemFontOfSize(18, weight: UIFontWeightUltraLight)]
+			textField.attributedPlaceholder = NSAttributedString(string: "\(fieldName)...", attributes: attributes)
+		}
+	}
+	
+	override var tintColor: UIColor? {
+		didSet {
+			goButton.backgroundColor = tintColor
+			goButton.tintColor = self.backgroundColor
+		}
+	}
 	
 	lazy var textField: UITextField =  {
 		let textField = UITextField()
 		textField.font = UIFont.systemFontOfSize(18)
 		textField.returnKeyType = .Go
 		textField.delegate = self
-		textField.textColor = UIColor.appDarkGrayColor()
 		textField.autocapitalizationType = .None
 		textField.autocorrectionType = .No
 		return textField
@@ -41,9 +57,11 @@ class SingleFieldActionCell: UITableViewCell {
 		return stack
 	}()
 	
-	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-		super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+	init(fieldName: String) {
+		self.fieldName = fieldName
+		
+		super.init(style: .Default, reuseIdentifier: nil)
+		
 		stack.translatesAutoresizingMaskIntoConstraints = false
 		contentView.addSubview(stack)
 		
@@ -61,7 +79,8 @@ class SingleFieldActionCell: UITableViewCell {
 			}
 			
 			goButton.snp_makeConstraints { (make) -> Void in
-				make.width.greaterThanOrEqualTo(goButton.snp_height).multipliedBy(1.5)
+				make.height.equalTo(35.5)
+				make.width.greaterThanOrEqualTo(goButton.snp_height)
 			}
 			
 			constraintsAdded = true;
@@ -81,13 +100,6 @@ class SingleFieldActionCell: UITableViewCell {
 		textField.resignFirstResponder()
 		delegate?.actionCell(self, didSubmitFields: [textField.text])
 		textField.text = nil
-	}
-	
-	override func tintColorDidChange() {
-		super.tintColorDidChange()
-		
-		goButton.backgroundColor = tintColor
-		goButton.tintColor = self.backgroundColor
 	}
 	
 }
