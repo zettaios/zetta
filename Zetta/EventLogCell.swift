@@ -14,17 +14,14 @@ class EventLogCell: UITableViewCell {
 	
 	lazy var titleLabel: UILabel = {
 		let label = UILabel()
-		label.font = UIFont.systemFontOfSize(16)
-		label.textColor = UIColor.appDarkGrayColor()
+		label.font = UIFont.boldSystemFontOfSize(12)
 		label.numberOfLines = 0
-		label.font = UIFont.systemFontOfSize(12)
 		return label
 	}()
 	
 	lazy var subtitleLabel: UILabel = {
 		let label = UILabel()
-		label.textColor = UIColor.appMediumGrayColor()
-		label.font = UIFont.systemFontOfSize(12)
+		label.font = UIFont.systemFontOfSize(10)
 		return label
 	}()
 	

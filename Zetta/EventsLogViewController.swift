@@ -62,6 +62,7 @@ class EventsLogViewController: UITableViewController {
 		cell.backgroundColor = backgroundColor
 		let appropriateColor = backgroundColor.isLight ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 		cell.titleLabel.textColor = appropriateColor
+		cell.subtitleLabel.textColor = appropriateColor
 		
 		let log = eventLogs[indexPath.row]
 		let valueStrings = log.inputs.flatMap { (input) -> String? in
