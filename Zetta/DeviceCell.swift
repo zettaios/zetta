@@ -29,6 +29,8 @@ class DeviceCell: UITableViewCell {
 		return subtitleLabel
 	}()
 	
+	let selectedBackground = UIView()
+	
 	private var constraintsAdded = false
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -46,6 +48,8 @@ class DeviceCell: UITableViewCell {
 			view.translatesAutoresizingMaskIntoConstraints = false
 			contentView.addSubview(view)
 		}
+		
+		selectedBackgroundView = selectedBackground
 		
 		setNeedsUpdateConstraints()
 	}

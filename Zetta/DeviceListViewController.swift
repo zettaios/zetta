@@ -196,6 +196,7 @@ class DeviceListViewController: UITableViewController {
 		
 		guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
 		cell.contentView.backgroundColor = device.backgroundColor ?? server.backgroundColor
+		cell.selectedBackground.backgroundColor = cell.contentView.backgroundColor?.isLight != false ? UIColor(white: 0.5, alpha: 0.2) : cell.contentView.backgroundColor?.colorWithAlphaComponent(0.7)
 		let appropriateColor = cell.contentView.backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 		cell.titleLabel.textColor = appropriateColor
 		cell.subtitleLabel.textColor = appropriateColor
@@ -214,12 +215,6 @@ class DeviceListViewController: UITableViewController {
 			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
 			cell.deviceImageView.tintColor = UIColor(white: 0.5, alpha: server.backgroundColor?.isLight == false ? 0.6 : 0.3)
 		}
-		
-//		cell.backgroundColor = UIColor.whiteColor()
-//		let selectedBackgroundView = UIView()
-//		selectedBackgroundView.backgroundColor = server.backgroundColor?.colorWithAlphaComponent(0.8)
-//		selectedBackgroundView.backgroundColor = UIColor(white: 0.5, alpha: 0.1)
-//		cell.selectedBackgroundView = selectedBackgroundView
 		
 		return cell
     }
