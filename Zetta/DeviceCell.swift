@@ -50,6 +50,7 @@ class DeviceCell: UITableViewCell {
 		}
 		
 		selectedBackgroundView = selectedBackground
+		layoutMargins = UIEdgeInsetsZero
 		
 		setNeedsUpdateConstraints()
 	}

@@ -34,6 +34,8 @@ class DeviceListViewController: UITableViewController {
 		tableView.alwaysBounceVertical = false
 		tableView.tableFooterView = UIView()
 		tableView.registerClass(DeviceCell.self, forCellReuseIdentifier: cellIdentifier)
+		tableView.separatorInset = UIEdgeInsetsZero
+		tableView.layoutMargins = UIEdgeInsetsZero
 		
 		addMessageLabel()
 		updateMessageView()
