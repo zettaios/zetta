@@ -83,6 +83,9 @@ extension UITableViewCell {
 		cell.textLabel?.textColor = UIColor.grayColor()
 		cell.textLabel?.font = UIFont.italicSystemFontOfSize(12)
 		cell.textLabel?.text = message
+		cell.contentView.snp_makeConstraints { (make) -> Void in
+			make.height.equalTo(60)
+		}
 		return cell
 	}
 }
