@@ -36,7 +36,7 @@ class DeviceListViewController: UITableViewController {
 		refreshControl.addTarget(self, action: "pullToRefreshTrigerred:", forControlEvents: .ValueChanged)
 		self.refreshControl = refreshControl
 		
-		tableView.alwaysBounceVertical = false
+		tableView.alwaysBounceVertical = true
 		tableView.tableFooterView = UIView()
 		tableView.registerClass(DeviceCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsetsZero
