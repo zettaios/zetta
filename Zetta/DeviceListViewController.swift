@@ -31,6 +31,11 @@ class DeviceListViewController: UITableViewController {
 		navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Gear Small"), style: .Plain, target: self, action: "settingsButtonTapped")
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
 		
+		let refreshControl = UIRefreshControl()
+		refreshControl.tintColor = UIColor.lightGrayColor()
+		refreshControl.addTarget(self, action: "pullToRefreshTrigerred:", forControlEvents: .ValueChanged)
+		self.refreshControl = refreshControl
+		
 		tableView.alwaysBounceVertical = false
 		tableView.tableFooterView = UIView()
 		tableView.registerClass(DeviceCell.self, forCellReuseIdentifier: cellIdentifier)
@@ -238,6 +243,11 @@ class DeviceListViewController: UITableViewController {
 	}
 	
 	// MARK: - button actions
+	
+	@objc private func pullToRefreshTrigerred(refreshControl: UIRefreshControl) {
+		refreshControl.endRefreshing()
+		refresh()
+	}
 	
 	@objc private func settingsButtonTapped() {
 		if NSUserDefaults.standardUserDefaults().connectionHistory.isEmpty {
