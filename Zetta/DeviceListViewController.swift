@@ -132,11 +132,14 @@ class DeviceListViewController: UITableViewController {
 			}
 			return false
 		})
-
+		
 		for link in monitoredLinks {
 			let stream = ZIKStream(link: link, andIsMultiplex: false)
 			stream.signal.subscribeNext({ [weak self] (streamEntry) -> Void in
 				guard let streamEntry = streamEntry as? ZIKLogStreamEntry else { return }
+
+//				here - 
+				
 				let topicComponents = streamEntry.topic.componentsSeparatedByString("/")
 				guard topicComponents.count >= 2 else { return }
 				let deviceUUID = topicComponents[1]
@@ -193,8 +196,8 @@ class DeviceListViewController: UITableViewController {
 	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
 		return 72
 	}
-
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+	
+	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
 		let server = serverDevices[indexPath.section].server
 		let devices = serverDevices[indexPath.section].devices
 		
@@ -207,9 +210,9 @@ class DeviceListViewController: UITableViewController {
 		let appropriateColor = cell.contentView.backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 		cell.titleLabel.textColor = appropriateColor
 		cell.subtitleLabel.textColor = appropriateColor
-
+		
 		cell.titleLabel.text = device.name ?? device.type ?? "Unnamed Device"
-		cell.subtitleLabel.text = device.state
+		cell.subtitleLabel.text = subtitleForDevice(device, fromServer: server)
 		
 		if let iconURL = device.iconURL {
 			cell.deviceImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { (image, error, cacheType, _) -> Void in
@@ -225,6 +228,28 @@ class DeviceListViewController: UITableViewController {
 		
 		return cell
     }
+	
+	private func subtitleForDevice(device: ZIKDevice, fromServer server: ZIKServer) -> String? {
+		//look for any 'inline' properties in the style dictionary and format accordingly. Otherwise use the device's state.
+//		guard let deviceName = device.name else { return device.state }
+//		guard let deviceStylesArray = JSON(server.properties)["style"]["devices"].array else { return device.state }
+//		
+//		
+//		
+//		let deviceStyleDictionaries = deviceStylesArray.flatMap({ $0.dictionary })
+//		if let a = deviceStyleDictionaries.filter({ $0.keys.contains(deviceName) }).first {
+//			print(a[deviceName])
+//		}
+//		
+////		
+//		for deviceStyle in deviceStylesArray.flatMap({ $0.dictionary }) {
+//			print(deviceStyle[deviceName])
+//		}
+//		
+//		//		print (deviceStyles)
+//		//		print(deviceStyles?.keys)
+		return device.state
+	}
 	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
 		//exclude the 'no devices' message cell

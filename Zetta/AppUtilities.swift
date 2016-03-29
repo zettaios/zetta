@@ -59,13 +59,17 @@ import SwiftyJSON
 
 extension ZIKDevice {
 	var iconURL: NSURL? {
-		if let stateImage = JSON(properties)["style"]["stateImage"].URL {
+		if let stateImage = JSON(properties)["style"]["stateImage"]["url"].URL {
 			return stateImage
-		} else if let typeImage = JSON(properties)["style"]["typeImage"].URL {
+		} else if let typeImage = JSON(properties)["style"]["typeImage"]["url"].URL {
 			return typeImage
 		}
 		return nil
 	}
+	
+//	var iconTintMode: UIImageRenderingMode {
+//		
+//	}
 	
 	var foregroundColor: UIColor? {
 		let decimal = JSON(properties)["style"]["foregroundColor"]["decimal"]
