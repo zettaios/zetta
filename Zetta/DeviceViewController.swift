@@ -131,11 +131,19 @@ class DeviceViewController: UITableViewController {
 	
 	private func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
 		let defaultStyle: DisplayStyle = .Inline
-		guard let actionStyles = JSON(device.properties)["style"]["actions"].array else { return defaultStyle }
-		let matchingActionStyles = actionStyles.filter({ $0["action"].string == transition.name })
-		if matchingActionStyles.count > 1 { print("Warning: multiple styles specified for action'\(transition.name)'. The first style will be used.") }
-		guard let displayString = matchingActionStyles.first?["display"].string else { return defaultStyle }
-		return DisplayStyle(rawValue: displayString) ?? defaultStyle
+		if let displayString = JSON(device.properties)["style"]["actions"][transition.name]["display"].string {
+			return DisplayStyle(rawValue: displayString) ?? defaultStyle
+		}
+		return defaultStyle
+//		print("checking \(transition.name)")
+//		print(JSON(device.properties)["style"]["actions"][transition.name]["display"].string)
+//
+//		let defaultStyle: DisplayStyle = .Inline
+//		guard let actionStyles = JSON(device.properties)["style"]["actions"].array else { return defaultStyle }
+//		let matchingActionStyles = actionStyles.filter({ $0["action"].string == transition.name })
+//		if matchingActionStyles.count > 1 { print("Warning: multiple styles specified for action'\(transition.name)'. The first style will be used.") }
+//		guard let displayString = matchingActionStyles.first?["display"].string else { return defaultStyle }
+//		return DisplayStyle(rawValue: displayString) ?? defaultStyle
 	}
 	
 	private var nonHiddenTransitions: [ZIKTransition] {
@@ -157,17 +165,14 @@ class DeviceViewController: UITableViewController {
 	
 	private var billboardStreams: [BillboardStream] {
 		//find the streams who appear in the style object with `display:billboard` and use them to build a Billboard object
-		let styleProperties = JSON(device.properties)["style"]["properties"].array
-		let billboardStyleProperties = styleProperties?.filter({ $0["display"].string == "billboard" }) ?? [JSON]()
 		var results = [BillboardStream]()
-		for style in billboardStyleProperties {
-			let property = style["property"].string
-			let matchingStreams = nonLogStreams.filter({ $0.title == property })
-			if matchingStreams.count > 1 { print("Warning: multiple streams found for billboarded property '\(property)'. The first stream will be used.") }
-			guard let stream = matchingStreams.first else { continue }
-			let symbol = style["symbol"].string
-			let significantDigits = style["significantDigits"].int
-			results.append(BillboardStream.init(stream: stream, symbol: symbol, significantDigits: significantDigits))
+		for stream in nonLogStreams {
+			let styleProperties = JSON(device.properties)["style"]["properties"][stream.title]
+			if styleProperties["display"].string == DisplayStyle.Billboard.rawValue {
+				let symbol = styleProperties["symbol"].string
+				let significantDigits = styleProperties["significantDigits"].int
+				results.append(BillboardStream.init(stream: stream, symbol: symbol, significantDigits: significantDigits))
+			}
 		}
 		return results
 	}
@@ -323,24 +328,6 @@ class DeviceViewController: UITableViewController {
 		return cell
 	}()
 	
-	private func streamCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
-		guard let cell = tableView.dequeueReusableCellWithIdentifier(propertyCellIdentifier) as? PropertyCell else { return UITableViewCell() }
-		
-		let stream = nonLogStreams[indexPath.row]
-		
-		cell.titleLabel.text = stream.title
-		
-		if let value = mostRecentStreamValues[stream] ?? device.properties[stream.title] { //perhaps there is a matching property to fall back on initial state
-			cell.subtitleLabel.text = String(value)
-			if value is Float || value is Int || value is Double {
-				cell.subtitleLabel.font = UIFont.monospacedDigitSystemFontOfSize(18, weight: UIFontWeightBold)
-			}
-			
-		}
-		
-		return cell
-	}
-	
 	private func actionCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
 		let transition = nonHiddenTransitions[indexPath.row]
 		let fieldNames = fieldNamesForTransition(transition)
@@ -374,6 +361,24 @@ class DeviceViewController: UITableViewController {
 			}
 		}
 		return fieldNames
+	}
+	
+	private func streamCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
+		guard let cell = tableView.dequeueReusableCellWithIdentifier(propertyCellIdentifier) as? PropertyCell else { return UITableViewCell() }
+		
+		let stream = nonLogStreams[indexPath.row]
+		
+		cell.titleLabel.text = stream.title
+		
+		if let value = mostRecentStreamValues[stream] ?? device.properties[stream.title] { //perhaps there is a matching property to fall back on initial state
+			cell.subtitleLabel.text = String(value)
+			if value is Float || value is Int || value is Double {
+				cell.subtitleLabel.font = UIFont.monospacedDigitSystemFontOfSize(18, weight: UIFontWeightBold)
+			}
+			
+		}
+		
+		return cell
 	}
 	
 	private func propertyCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
