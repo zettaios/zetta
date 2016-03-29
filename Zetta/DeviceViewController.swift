@@ -129,26 +129,17 @@ class DeviceViewController: UITableViewController {
 		case None = "none", Billboard = "billboard", Inline = "inline"
 	}
 	
+	private var nonHiddenTransitions: [ZIKTransition] {
+		guard let transitions = device.transitions as? [ZIKTransition] else { return [ZIKTransition]() }
+		return transitions.filter({ displayStyleForTranstion($0) != .None })
+	}
+	
 	private func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
 		let defaultStyle: DisplayStyle = .Inline
 		if let displayString = JSON(device.properties)["style"]["actions"][transition.name]["display"].string {
 			return DisplayStyle(rawValue: displayString) ?? defaultStyle
 		}
 		return defaultStyle
-//		print("checking \(transition.name)")
-//		print(JSON(device.properties)["style"]["actions"][transition.name]["display"].string)
-//
-//		let defaultStyle: DisplayStyle = .Inline
-//		guard let actionStyles = JSON(device.properties)["style"]["actions"].array else { return defaultStyle }
-//		let matchingActionStyles = actionStyles.filter({ $0["action"].string == transition.name })
-//		if matchingActionStyles.count > 1 { print("Warning: multiple styles specified for action'\(transition.name)'. The first style will be used.") }
-//		guard let displayString = matchingActionStyles.first?["display"].string else { return defaultStyle }
-//		return DisplayStyle(rawValue: displayString) ?? defaultStyle
-	}
-	
-	private var nonHiddenTransitions: [ZIKTransition] {
-		guard let transitions = device.transitions as? [ZIKTransition] else { return [ZIKTransition]() }
-		return transitions.filter({ displayStyleForTranstion($0) != .None })
 	}
 	
 	private struct BillboardStream {
@@ -177,12 +168,22 @@ class DeviceViewController: UITableViewController {
 		return results
 	}
 	
-	private var hideDeviceIcon: Bool {
-		let styleProperties = JSON(device.properties)["style"]["properties"].array
-		let stateImageProperties = styleProperties?.filter({ $0["property"] == "stateImage" }) ?? [JSON]()
-		if stateImageProperties.count > 1 { print("Warning: multiple styles found for stateImage. The first style will be used.") }
-		guard let stateImageProperty = stateImageProperties.first else { return false }
-		return stateImageProperty["display"] == "none"
+//	private var showDeviceIcon: Bool {
+		//assume the device icon is billboard unless style info says otherwise
+//		return JSON(device.properties)["style"]["properties"]["stateImage"]["display"].string == DisplayStyle.Billboard.rawValue
+//		let styleProperties = JSON(device.properties)["style"]["properties"].array
+//		let stateImageProperties = styleProperties?.filter({ $0["property"] == "stateImage" }) ?? [JSON]()
+//		if stateImageProperties.count > 1 { print("Warning: multiple styles found for stateImage. The first style will be used.") }
+//		guard let stateImageProperty = stateImageProperties.first else { return false }
+//		return stateImageProperty["display"] == "none"
+//	}
+	
+	private var displayStyleForDeviceIcon: DisplayStyle {
+		let defaultStyle: DisplayStyle = .Billboard
+		if let displayString = JSON(device.properties)["style"]["properties"]["stateImage"]["display"].string {
+			return DisplayStyle(rawValue: displayString) ?? defaultStyle
+		}
+		return defaultStyle
 	}
 	
 	private var nonLogStreams: [ZIKStream] {
@@ -255,7 +256,7 @@ class DeviceViewController: UITableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0: return billboardStreams.count
-		case 1: return device.iconURL != nil && hideDeviceIcon == false ? 1 : 0
+		case 1: return displayStyleForDeviceIcon == .Billboard && device.iconURL != nil ? 1 : 0
 		case 2: return max(nonHiddenTransitions.count, 1)
 		case 3: return max(nonLogStreams.count, 1)
 		case 4: return max(device.properties.count, 1)
@@ -314,7 +315,7 @@ class DeviceViewController: UITableViewController {
 	}
 	
 	private lazy var iconCell: UITableViewCell = {
-		guard let iconURL = self.device.iconURL where !self.hideDeviceIcon else { return UITableViewCell() }
+		guard self.displayStyleForDeviceIcon == .Billboard, let iconURL = self.device.iconURL else { return UITableViewCell() }
 		
 		let cell = UITableViewCell()
 		self.iconImageView.translatesAutoresizingMaskIntoConstraints = false
