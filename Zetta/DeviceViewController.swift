@@ -221,8 +221,8 @@ class DeviceViewController: UITableViewController {
 		switch section {
 		case 0: return nil
 		case 1: return nil
-		case 2: return "Streams"
-		case 3: return "Actions"
+		case 2: return "Actions"
+		case 3: return "Streams"
 		case 4: return "Properties"
 		case 5: return "Events"
 		default: return nil
@@ -238,7 +238,7 @@ class DeviceViewController: UITableViewController {
 	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
 		switch indexPath.section {
 		case 0,1: return tableView.bounds.width
-		case 3: return UITableViewAutomaticDimension //multi-field actions
+		case 2: return UITableViewAutomaticDimension //multi-field actions
 		default: return 60
 		}
 	}
@@ -251,8 +251,8 @@ class DeviceViewController: UITableViewController {
 		switch section {
 		case 0: return billboardStreams.count
 		case 1: return device.iconURL != nil && hideDeviceIcon == false ? 1 : 0
-		case 2: return max(nonLogStreams.count, 1)
-		case 3: return max(nonHiddenTransitions.count, 1)
+		case 2: return max(nonHiddenTransitions.count, 1)
+		case 3: return max(nonLogStreams.count, 1)
 		case 4: return max(device.properties.count, 1)
 		case 5: return 1
 		default: return 0
@@ -268,9 +268,9 @@ class DeviceViewController: UITableViewController {
 		case 1:
 			cell = iconCell
 		case 2:
-			cell = nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
-		case 3:
 			cell = nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
+		case 3:
+			cell = nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
 		case 4:
 			cell = device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
 		case 5:
@@ -419,9 +419,8 @@ class DeviceViewController: UITableViewController {
 
 extension DeviceViewController: ActionCellDelegate {
 	func actionCell(cell: UITableViewCell, didSubmitFields fields: [String?]) {
-		guard let indexPath = tableView.indexPathForCell(cell) where indexPath.row < device.transitions?.count else { return }
-		guard let transition = device.transitions?[indexPath.row] as? ZIKTransition else { return }
-
+		guard let indexPath = tableView.indexPathForCell(cell) where indexPath.row < nonHiddenTransitions.count else { return }
+		let transition = nonHiddenTransitions[indexPath.row]
 		let fieldNames = fieldNamesForTransition(transition)
 		guard fieldNames.count == fields.count else { return } //something went wrong in setup if these don't match
 		
