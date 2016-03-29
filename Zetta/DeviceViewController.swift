@@ -206,8 +206,8 @@ class DeviceViewController: UITableViewController {
 
 		iconImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { [weak self] (image, error, cacheType, _) -> Void in
 			if let error = error { print("Error downloading state image: \(error)") }
-			guard let image = image else { return }
-			self?.iconImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
+			guard let unwrappedSelf = self, image = image else { return }
+			unwrappedSelf.iconImageView.image = image.imageWithRenderingMode(unwrappedSelf.device.iconTintMode)
 		})
 	}
 

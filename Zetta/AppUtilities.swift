@@ -45,12 +45,12 @@ import ZettaKit
 
 extension ZIKServer {
 	var foregroundColor: UIColor? {
-		let decimal = JSON(properties)["style"]["foregroundColor"]["decimal"]
+		let decimal = JSON(properties)["style"]["properties"]["foregroundColor"]["decimal"]
 		return UIColor.colorFromDecimalJSON(decimal)
 	}
 	
 	var backgroundColor: UIColor? {
-		let decimal = JSON(properties)["style"]["backgroundColor"]["decimal"]
+		let decimal = JSON(properties)["style"]["properties"]["backgroundColor"]["decimal"]
 		return UIColor.colorFromDecimalJSON(decimal)
 	}
 }
@@ -59,25 +59,25 @@ import SwiftyJSON
 
 extension ZIKDevice {
 	var iconURL: NSURL? {
-		if let stateImage = JSON(properties)["style"]["stateImage"]["url"].URL {
+		if let stateImage = JSON(properties)["style"]["properties"]["stateImage"]["url"].URL {
 			return stateImage
-		} else if let typeImage = JSON(properties)["style"]["typeImage"]["url"].URL {
+		} else if let typeImage = JSON(properties)["style"]["properties"]["typeImage"]["url"].URL {
 			return typeImage
 		}
 		return nil
 	}
 	
-//	var iconTintMode: UIImageRenderingMode {
-//		
-//	}
+	var iconTintMode: UIImageRenderingMode {
+		return JSON(properties)["style"]["properties"]["stateImage"]["tintMode"].string == "original" ? .AlwaysOriginal : .AlwaysTemplate
+	}
 	
 	var foregroundColor: UIColor? {
-		let decimal = JSON(properties)["style"]["foregroundColor"]["decimal"]
+		let decimal = JSON(properties)["style"]["properties"]["foregroundColor"]["decimal"]
 		return UIColor.colorFromDecimalJSON(decimal)
 	}
 	
 	var backgroundColor: UIColor? {
-		let decimal = JSON(properties)["style"]["backgroundColor"]["decimal"]
+		let decimal = JSON(properties)["style"]["properties"]["backgroundColor"]["decimal"]
 		return UIColor.colorFromDecimalJSON(decimal)
 	}
 }

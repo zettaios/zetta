@@ -218,7 +218,7 @@ class DeviceListViewController: UITableViewController {
 			cell.deviceImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { (image, error, cacheType, _) -> Void in
 				if let error = error { print("Error downloading state image: \(error)") }
 				guard let image = image else { return }
-				cell.deviceImageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
+				cell.deviceImageView.image = image.imageWithRenderingMode(device.iconTintMode)
 				cell.deviceImageView.tintColor = device.foregroundColor ?? server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 			})
 		} else {
