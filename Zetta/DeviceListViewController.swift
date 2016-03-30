@@ -136,27 +136,24 @@ class DeviceListViewController: UITableViewController {
 		for link in monitoredLinks {
 			let stream = ZIKStream(link: link, andIsMultiplex: false)
 			stream.signal.subscribeNext({ [weak self] (streamEntry) -> Void in
-				guard let streamEntry = streamEntry as? ZIKLogStreamEntry else { return }
-
-//				here - 
-				
-				let topicComponents = streamEntry.topic.componentsSeparatedByString("/")
-				guard topicComponents.count >= 2 else { return }
-				let deviceUUID = topicComponents[1]
-				if let (device, indexPath) = self?.deviceForUUID(deviceUUID) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
+				if let streamEntry = streamEntry as? ZIKLogStreamEntry {
 					device.refreshWithLogEntry(streamEntry)
-					self?.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+					if let indexPath = self?.indexPathForDevice(device) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
+						self?.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+					}
+				} else if let streamEntry = streamEntry as? ZIKStreamEntry {
+//					print(streamEntry.data)
 				}
 			})
 			stream.resume()
 		}
 	}
-	
-	private func deviceForUUID(uuid: String) -> (device: ZIKDevice, indexPath: NSIndexPath)? {
+
+	private func indexPathForDevice(device: ZIKDevice) -> NSIndexPath? {
 		for (serverIndex, serverDevice) in serverDevices.enumerate() {
-			for (deviceIndex, device) in serverDevice.devices.enumerate() {
-				if device.uuid == uuid {
-					return (device: device, indexPath: NSIndexPath(forRow: deviceIndex, inSection: serverIndex))
+			for (deviceIndex, thisDevice) in serverDevice.devices.enumerate() {
+				if thisDevice == device {
+					return NSIndexPath(forRow: deviceIndex, inSection: serverIndex)
 				}
 			}
 		}
@@ -230,6 +227,7 @@ class DeviceListViewController: UITableViewController {
     }
 	
 	private func subtitleForDevice(device: ZIKDevice, fromServer server: ZIKServer) -> String? {
+		
 		//look for any 'inline' properties in the style dictionary and format accordingly. Otherwise use the device's state.
 //		guard let deviceName = device.name else { return device.state }
 //		guard let deviceStylesArray = JSON(server.properties)["style"]["devices"].array else { return device.state }

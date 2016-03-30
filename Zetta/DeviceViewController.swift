@@ -168,16 +168,6 @@ class DeviceViewController: UITableViewController {
 		return results
 	}
 	
-//	private var showDeviceIcon: Bool {
-		//assume the device icon is billboard unless style info says otherwise
-//		return JSON(device.properties)["style"]["properties"]["stateImage"]["display"].string == DisplayStyle.Billboard.rawValue
-//		let styleProperties = JSON(device.properties)["style"]["properties"].array
-//		let stateImageProperties = styleProperties?.filter({ $0["property"] == "stateImage" }) ?? [JSON]()
-//		if stateImageProperties.count > 1 { print("Warning: multiple styles found for stateImage. The first style will be used.") }
-//		guard let stateImageProperty = stateImageProperties.first else { return false }
-//		return stateImageProperty["display"] == "none"
-//	}
-	
 	private var displayStyleForDeviceIcon: DisplayStyle {
 		let defaultStyle: DisplayStyle = .Billboard
 		if let displayString = JSON(device.properties)["style"]["properties"]["stateImage"]["display"].string {
