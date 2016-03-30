@@ -9,10 +9,12 @@
 import UIKit
 import ZettaKit
 import SDWebImage
+import SwiftyJSON
 
 class DeviceListViewController: UITableViewController {
 
 	private var serverDevices = [(server: ZIKServer, devices:[ZIKDevice])]()
+	private var mostRecentPreferredStreamValuesAndStyles = [ZIKDevice: (value: AnyObject, style: JSON)]()
 	private let cellIdentifier = "Cell"
 	
 	lazy var messageLabel: UILabel = {
@@ -71,8 +73,6 @@ class DeviceListViewController: UITableViewController {
 		}
 	}
 	
-	// MARK: - data
-	
 	private func refresh() {
 		if let url = NSUserDefaults.standardUserDefaults().connectionHistory.first {
 			refreshServersFromURL(url)
@@ -80,6 +80,8 @@ class DeviceListViewController: UITableViewController {
 			updateMessageView()
 		}
 	}
+	
+	// MARK: - fetching servers
 	
 	private func refreshServersFromURL(url: NSURL) {
 		serverDevices.removeAll()
@@ -137,12 +139,19 @@ class DeviceListViewController: UITableViewController {
 			let stream = ZIKStream(link: link, andIsMultiplex: false)
 			stream.signal.subscribeNext({ [weak self] (streamEntry) -> Void in
 				if let streamEntry = streamEntry as? ZIKLogStreamEntry {
+					//update the device and show the new state
 					device.refreshWithLogEntry(streamEntry)
 					if let indexPath = self?.indexPathForDevice(device) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
 						self?.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
 					}
 				} else if let streamEntry = streamEntry as? ZIKStreamEntry {
-//					print(streamEntry.data)
+					//some devices hide their state in preference of another property (e.g. a photocell's intensity). Values for these streams need to be collected.
+					if let preferredStream = self?.preferredStyledStreamForDevice(device) where preferredStream.title == stream.title {
+						self?.mostRecentPreferredStreamValuesAndStyles[device] = (value: streamEntry.data, style: preferredStream.style)
+						if let indexPath = self?.indexPathForDevice(device) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
+							self?.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+						}
+					}
 				}
 			})
 			stream.resume()
@@ -158,6 +167,24 @@ class DeviceListViewController: UITableViewController {
 			}
 		}
 		return nil
+	}
+	
+	private func serverForDevice(device: ZIKDevice) -> ZIKServer? {
+		for serverDevice in serverDevices where serverDevice.devices.contains(device) {
+			return serverDevice.server
+		}
+		return nil
+	}
+	
+	private func preferredStyledStreamForDevice(device: ZIKDevice) -> (title: String, style: JSON)? {
+		//some devices hide state in preference of another stream (e.g. a photocell's intensity). If so, return the style information for the preferred stream.
+		guard let server = serverForDevice(device), deviceName = device.name else { return nil }
+		// FIXME: - remove .lowercaseString
+		let devicePropertyStyles = JSON(server.properties)["style"]["entities"][deviceName.lowercaseString]["properties"]
+		guard devicePropertyStyles["state"]["display"].string == "none" else { return nil }
+		//use any other property listed beside state (there should only be one)
+		guard let nextPropertyName = devicePropertyStyles.dictionary?.keys.filter({ $0 != "state" }).first else { return nil }
+		return (title: nextPropertyName, style: devicePropertyStyles[nextPropertyName])
 	}
 	
 	// MARK: - message view
@@ -209,7 +236,7 @@ class DeviceListViewController: UITableViewController {
 		cell.subtitleLabel.textColor = appropriateColor
 		
 		cell.titleLabel.text = device.name ?? device.type ?? "Unnamed Device"
-		cell.subtitleLabel.text = subtitleForDevice(device, fromServer: server)
+		cell.subtitleLabel.attributedText = attributedSubtitleForDevice(device, usingFont: cell.subtitleLabel.font)
 		
 		if let iconURL = device.iconURL {
 			cell.deviceImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { (image, error, cacheType, _) -> Void in
@@ -226,27 +253,25 @@ class DeviceListViewController: UITableViewController {
 		return cell
     }
 	
-	private func subtitleForDevice(device: ZIKDevice, fromServer server: ZIKServer) -> String? {
+	private func attributedSubtitleForDevice(device: ZIKDevice, usingFont font: UIFont) -> NSAttributedString? {
+		if let mostRecent = mostRecentPreferredStreamValuesAndStyles[device] {
+			if let value = mostRecent.value as? String {
+				return NSAttributedString(string: value, attributes: [NSFontAttributeName: font])
+			} else if let value = mostRecent.value as? Float {
+				var string: String
+				if let significantDigits = mostRecent.style["significantDigits"].int {
+					string = String(format: "%.\(significantDigits)f", value)
+				} else {
+					string = String(value)
+				}
+				if let symbol = mostRecent.style["symbol"].string {
+					string += " \(symbol)"
+				}
+				return NSAttributedString(string: string, attributes: [NSFontAttributeName: UIFont.monospacedDigitSystemFontOfSize(font.pointSize, weight: UIFontWeightBold)])
+			}
+		}
 		
-		//look for any 'inline' properties in the style dictionary and format accordingly. Otherwise use the device's state.
-//		guard let deviceName = device.name else { return device.state }
-//		guard let deviceStylesArray = JSON(server.properties)["style"]["devices"].array else { return device.state }
-//		
-//		
-//		
-//		let deviceStyleDictionaries = deviceStylesArray.flatMap({ $0.dictionary })
-//		if let a = deviceStyleDictionaries.filter({ $0.keys.contains(deviceName) }).first {
-//			print(a[deviceName])
-//		}
-//		
-////		
-//		for deviceStyle in deviceStylesArray.flatMap({ $0.dictionary }) {
-//			print(deviceStyle[deviceName])
-//		}
-//		
-//		//		print (deviceStyles)
-//		//		print(deviceStyles?.keys)
-		return device.state
+		return NSAttributedString(string: device.state ?? "", attributes: [NSFontAttributeName: font])
 	}
 	
 	override func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {

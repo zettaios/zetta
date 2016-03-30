@@ -181,6 +181,7 @@
 				C560B5361C4996A900E5F1F9 /* Sources */,
 				C560B5371C4996A900E5F1F9 /* Frameworks */,
 				C560B5381C4996A900E5F1F9 /* Resources */,
+				C51C029C1CAB7AAA00CFCFEC /* Add Warnings */,
 				C560B54F1C49975100E5F1F9 /* Increment Build Number */,
 				BF58387E0E57739F88C84CC0 /* Embed Pods Frameworks */,
 				CB6EA1FA4E750A13E85DFC8B /* Copy Pods Resources */,
@@ -270,6 +271,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		C51C029C1CAB7AAA00CFCFEC /* Add Warnings */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Add Warnings";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TAGS=\"TODO:|FIXME:\"\necho \"searching ${SRCROOT} for ${TAGS}\"\nfind \"${SRCROOT}\" \\( -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\"";
 		};
 		C560B54F1C49975100E5F1F9 /* Increment Build Number */ = {
 			isa = PBXShellScriptBuildPhase;

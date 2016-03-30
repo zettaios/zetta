@@ -361,14 +361,14 @@ class DeviceViewController: UITableViewController {
 		
 		cell.titleLabel.text = stream.title
 		
-		if let value = mostRecentStreamValues[stream] ?? device.properties[stream.title] { //perhaps there is a matching property to fall back on initial state
+		if let value = mostRecentStreamValues[stream] ?? device.properties[stream.title] { //perhaps there is a matching property to fall back on for initial state
 			cell.subtitleLabel.text = String(value)
 			if value is Float || value is Int || value is Double {
 				cell.subtitleLabel.font = UIFont.monospacedDigitSystemFontOfSize(18, weight: UIFontWeightBold)
 			}
 			
 		}
-		
+
 		return cell
 	}
 	
