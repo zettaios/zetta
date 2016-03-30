@@ -178,9 +178,8 @@ class DeviceListViewController: UITableViewController {
 	
 	private func preferredStyledStreamForDevice(device: ZIKDevice) -> (title: String, style: JSON)? {
 		//some devices hide state in preference of another stream (e.g. a photocell's intensity). If so, return the style information for the preferred stream.
-		guard let server = serverForDevice(device), deviceName = device.name else { return nil }
-		// FIXME: - remove .lowercaseString
-		let devicePropertyStyles = JSON(server.properties)["style"]["entities"][deviceName.lowercaseString]["properties"]
+		guard let server = serverForDevice(device) else { return nil }
+		let devicePropertyStyles = JSON(server.properties)["style"]["entities"][device.type]["properties"]
 		guard devicePropertyStyles["state"]["display"].string == "none" else { return nil }
 		//use any other property listed beside state (there should only be one)
 		guard let nextPropertyName = devicePropertyStyles.dictionary?.keys.filter({ $0 != "state" }).first else { return nil }
