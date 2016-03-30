@@ -395,7 +395,7 @@ class DeviceViewController: UITableViewController {
 		cell.accessoryType = logs.isEmpty ? .None : .DisclosureIndicator
 		cell.titleLabel.text = "View Events (\(self.logs.count))"
 		let selectedView = UIView()
-		selectedView.backgroundColor = UIColor(white: (backgroundColor.isLight ? 0.5 : 1), alpha: 0.2)
+		selectedView.backgroundColor = (cell.contentView.backgroundColor ?? UIColor.lightGrayColor()).colorWithAlphaComponent(0.7)
 		cell.selectedBackgroundView = selectedView
 		return cell
 	}
