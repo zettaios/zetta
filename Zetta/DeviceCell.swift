@@ -10,6 +10,8 @@ import UIKit
 
 class DeviceCell: UITableViewCell {
 	
+	private var constraintsAdded = false
+	
 	lazy var deviceImageView: UIImageView = {
 		let deviceImageView = UIImageView()
 		deviceImageView.contentMode = .ScaleAspectFit
@@ -29,35 +31,21 @@ class DeviceCell: UITableViewCell {
 		return subtitleLabel
 	}()
 	
-	private lazy var selectedBackground: UIView = {
-		let view = UIView()
-		view.backgroundColor = UIColor(white: 0.5, alpha: 1)
-		view.alpha = 0
-		return view
-	}()
-	
-	private var constraintsAdded = false
-	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
-		commonInit()
-	}
-	
-	required init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-		commonInit()
-	}
-	
-	private func commonInit() {
+
 		for view in [deviceImageView, titleLabel, subtitleLabel] {
 			view.translatesAutoresizingMaskIntoConstraints = false
 			contentView.addSubview(view)
 		}
 		
-		selectedBackgroundView = selectedBackground
 		layoutMargins = UIEdgeInsetsZero
 		
 		setNeedsUpdateConstraints()
+	}
+	
+	required init?(coder aDecoder: NSCoder) {
+		fatalError("NSCoding not supported")
 	}
 	
 	override func updateConstraints() {
@@ -98,17 +86,4 @@ class DeviceCell: UITableViewCell {
 			}
 		}
 	}
-	
-	override func setHighlighted(highlighted: Bool, animated: Bool) {
-		super.setHighlighted(highlighted, animated: animated)
-		
-		selectedBackground.alpha = highlighted ? 0.3 : 0
-	}
-	
-	override func setSelected(selected: Bool, animated: Bool) {
-		super.setSelected(selected, animated: animated)
-		
-		selectedBackground.alpha = selected ? 0.3 : 0
-	}
-	
 }
