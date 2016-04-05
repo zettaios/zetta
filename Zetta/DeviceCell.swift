@@ -85,6 +85,13 @@ class DeviceCell: UITableViewCell {
 		super.prepareForReuse()
 		
 		deviceImageView.sd_cancelCurrentImageLoad() //prevent late loading
+		
+		//remove long presses to avoid double-fires when recycled
+		if let recognizers = contentView.gestureRecognizers {
+			for recognizer in recognizers {
+				contentView.removeGestureRecognizer(recognizer)
+			}
+		}
 	}
 	
 }

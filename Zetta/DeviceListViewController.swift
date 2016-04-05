@@ -15,7 +15,8 @@ class DeviceListViewController: UITableViewController {
 
 	private var serverDevices = [(server: ZIKServer, devices:[ZIKDevice])]()
 	private var mostRecentPreferredStreamValuesAndStyles = [ZIKDevice: (value: AnyObject, style: JSON)]()
-	private let cellIdentifier = "Cell"
+	private var deviceCells = NSCache()
+//	private var expandedDevice: ZIKDevice?
 	
 	lazy var messageLabel: UILabel = {
 		let label = UILabel()
@@ -40,7 +41,6 @@ class DeviceListViewController: UITableViewController {
 		
 		tableView.alwaysBounceVertical = true
 		tableView.tableFooterView = UIView()
-		tableView.registerClass(DeviceCell.self, forCellReuseIdentifier: cellIdentifier)
 		tableView.separatorInset = UIEdgeInsetsZero
 		tableView.layoutMargins = UIEdgeInsetsZero
 		
@@ -141,15 +141,15 @@ class DeviceListViewController: UITableViewController {
 				if let streamEntry = streamEntry as? ZIKLogStreamEntry {
 					//update the device and show the new state
 					device.refreshWithLogEntry(streamEntry)
-					if let indexPath = self?.indexPathForDevice(device) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
-						self?.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+					if let indexPath = self?.indexPathForDevice(device) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true, let cell = self?.tableView.cellForRowAtIndexPath(indexPath) as? DeviceCell {
+						self?.configureCell(cell, forDevice: device)
 					}
 				} else if let streamEntry = streamEntry as? ZIKStreamEntry {
 					//some devices hide their state in preference of another property (e.g. a photocell's intensity). Values for these streams need to be collected.
 					if let preferredStream = self?.preferredStyledStreamForDevice(device) where preferredStream.title == stream.title {
 						self?.mostRecentPreferredStreamValuesAndStyles[device] = (value: streamEntry.data, style: preferredStream.style)
-						if let indexPath = self?.indexPathForDevice(device) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true {
-							self?.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+						if let indexPath = self?.indexPathForDevice(device) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true, let cell = self?.tableView.cellForRowAtIndexPath(indexPath) as? DeviceCell {
+							self?.configureCell(cell, forDevice: device)
 						}
 					}
 				}
@@ -221,17 +221,23 @@ class DeviceListViewController: UITableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		let server = serverDevices[indexPath.section].server
 		let devices = serverDevices[indexPath.section].devices
-		
 		if devices.isEmpty { return UITableViewCell.emptyCell(message: "No devices online for this server.") }
 		let device = devices[indexPath.row]
 		
-		guard let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as? DeviceCell else { return UITableViewCell() }
-		cell.contentView.backgroundColor = device.backgroundColor ?? server.backgroundColor
+		//cells are cached manually so that specfic labels can be updated quickly without interfering with gestures. Reloading the indexPath would cancel the gesture.
+		let cell = deviceCells.objectForKey(device) as? DeviceCell ?? DeviceCell()
+		configureCell(cell, forDevice: device)
+		deviceCells.setObject(cell, forKey: device)
+		return cell
+    }
+	
+	private func configureCell(cell: DeviceCell, forDevice device: ZIKDevice) {
+		let server = serverForDevice(device)
+		cell.contentView.backgroundColor = device.backgroundColor ?? server?.backgroundColor
 		cell.selectedBackground.backgroundColor = (cell.contentView.backgroundColor ?? UIColor.lightGrayColor()).colorWithAlphaComponent(0.7)
 		let appropriateColor = cell.contentView.backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
-
+		
 		cell.titleLabel.textColor = appropriateColor
 		cell.subtitleLabel.textColor = appropriateColor
 		
@@ -243,15 +249,13 @@ class DeviceListViewController: UITableViewController {
 				if let error = error { print("Error downloading state image: \(error)") }
 				guard let image = image else { return }
 				cell.deviceImageView.image = image.imageWithRenderingMode(device.iconTintMode)
-				cell.deviceImageView.tintColor = device.foregroundColor ?? server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
+				cell.deviceImageView.tintColor = device.foregroundColor ?? server?.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 			})
 		} else {
 			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
-			cell.deviceImageView.tintColor = UIColor(white: 0.5, alpha: server.backgroundColor?.isLight == false ? 0.6 : 0.3)
+			cell.deviceImageView.tintColor = UIColor(white: 0.5, alpha: server?.backgroundColor?.isLight == false ? 0.6 : 0.3)
 		}
-		
-		return cell
-    }
+	}
 	
 	private func attributedSubtitleForDevice(device: ZIKDevice, usingFont font: UIFont) -> NSAttributedString? {
 		if let mostRecent = mostRecentPreferredStreamValuesAndStyles[device] {
