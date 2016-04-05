@@ -234,10 +234,9 @@ class DeviceListViewController: UITableViewController {
 	
 	private func configureCell(cell: DeviceCell, forDevice device: ZIKDevice) {
 		let server = serverForDevice(device)
-		cell.contentView.backgroundColor = device.backgroundColor ?? server?.backgroundColor
-		cell.selectedBackground.backgroundColor = (cell.contentView.backgroundColor ?? UIColor.lightGrayColor()).colorWithAlphaComponent(0.7)
-		let appropriateColor = cell.contentView.backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+		cell.backgroundColor = device.backgroundColor ?? server?.backgroundColor
 		
+		let appropriateColor = cell.backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 		cell.titleLabel.textColor = appropriateColor
 		cell.subtitleLabel.textColor = appropriateColor
 		
@@ -245,15 +244,15 @@ class DeviceListViewController: UITableViewController {
 		cell.subtitleLabel.attributedText = attributedSubtitleForDevice(device, usingFont: cell.subtitleLabel.font)
 		
 		if let iconURL = device.iconURL {
-			cell.deviceImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { (image, error, cacheType, _) -> Void in
+			cell.deviceImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { [weak self] (image, error, cacheType, _) -> Void in
 				if let error = error { print("Error downloading state image: \(error)") }
 				guard let image = image else { return }
 				cell.deviceImageView.image = image.imageWithRenderingMode(device.iconTintMode)
-				cell.deviceImageView.tintColor = device.foregroundColor ?? server?.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
+				cell.deviceImageView.tintColor = device.foregroundColor ?? self?.serverForDevice(device)?.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 			})
 		} else {
 			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
-			cell.deviceImageView.tintColor = UIColor(white: 0.5, alpha: server?.backgroundColor?.isLight == false ? 0.6 : 0.3)
+			cell.deviceImageView.tintColor = UIColor(white: 0.5, alpha: serverForDevice(device)?.backgroundColor?.isLight == false ? 0.6 : 0.3)
 		}
 	}
 	

@@ -81,3 +81,22 @@ extension ZIKDevice {
 		return UIColor.colorFromDecimalJSON(decimal)
 	}
 }
+
+extension ZIKDevice {
+	var nonHiddenTransitions: [ZIKTransition] {
+		guard let transitions = transitions as? [ZIKTransition] else { return [ZIKTransition]() }
+		return transitions.filter({ displayStyleForTranstion($0) != .None })
+	}
+	
+	private func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
+		let defaultStyle: DisplayStyle = .Inline
+		if let displayString = JSON(properties)["style"]["actions"][transition.name]["display"].string {
+			return DisplayStyle(rawValue: displayString) ?? defaultStyle
+		}
+		return defaultStyle
+	}
+}
+
+enum DisplayStyle: String {
+	case None = "none", Billboard = "billboard", Inline = "inline"
+}

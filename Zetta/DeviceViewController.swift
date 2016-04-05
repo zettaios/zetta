@@ -125,22 +125,18 @@ class DeviceViewController: UITableViewController {
 	
 	// data helpers
 	
-	private enum DisplayStyle: String {
-		case None = "none", Billboard = "billboard", Inline = "inline"
-	}
-	
-	private var nonHiddenTransitions: [ZIKTransition] {
-		guard let transitions = device.transitions as? [ZIKTransition] else { return [ZIKTransition]() }
-		return transitions.filter({ displayStyleForTranstion($0) != .None })
-	}
-	
-	private func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
-		let defaultStyle: DisplayStyle = .Inline
-		if let displayString = JSON(device.properties)["style"]["actions"][transition.name]["display"].string {
-			return DisplayStyle(rawValue: displayString) ?? defaultStyle
-		}
-		return defaultStyle
-	}
+//	private var nonHiddenTransitions: [ZIKTransition] {
+//		guard let transitions = device.transitions as? [ZIKTransition] else { return [ZIKTransition]() }
+//		return transitions.filter({ displayStyleForTranstion($0) != .None })
+//	}
+//	
+//	private func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
+//		let defaultStyle: DisplayStyle = .Inline
+//		if let displayString = JSON(device.properties)["style"]["actions"][transition.name]["display"].string {
+//			return DisplayStyle(rawValue: displayString) ?? defaultStyle
+//		}
+//		return defaultStyle
+//	}
 	
 	private struct BillboardStream {
 		let stream: ZIKStream
@@ -247,7 +243,7 @@ class DeviceViewController: UITableViewController {
 		switch section {
 		case 0: return billboardStreams.count
 		case 1: return displayStyleForDeviceIcon == .Billboard && device.iconURL != nil ? 1 : 0
-		case 2: return max(nonHiddenTransitions.count, 1)
+		case 2: return max(device.nonHiddenTransitions.count, 1)
 		case 3: return max(nonLogStreams.count, 1)
 		case 4: return max(device.properties.count, 1)
 		case 5: return 1
@@ -264,7 +260,7 @@ class DeviceViewController: UITableViewController {
 		case 1:
 			cell = iconCell
 		case 2:
-			cell = nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
+			cell = device.nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
 		case 3:
 			cell = nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
 		case 4:
@@ -320,7 +316,7 @@ class DeviceViewController: UITableViewController {
 	}()
 	
 	private func actionCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
-		let transition = nonHiddenTransitions[indexPath.row]
+		let transition = device.nonHiddenTransitions[indexPath.row]
 		let fieldNames = fieldNamesForTransition(transition)
 		
 		if fieldNames.isEmpty {
@@ -415,8 +411,8 @@ class DeviceViewController: UITableViewController {
 
 extension DeviceViewController: ActionCellDelegate {
 	func actionCell(cell: UITableViewCell, didSubmitFields fields: [String?]) {
-		guard let indexPath = tableView.indexPathForCell(cell) where indexPath.row < nonHiddenTransitions.count else { return }
-		let transition = nonHiddenTransitions[indexPath.row]
+		guard let indexPath = tableView.indexPathForCell(cell) where indexPath.row < device.nonHiddenTransitions.count else { return }
+		let transition = device.nonHiddenTransitions[indexPath.row]
 		let fieldNames = fieldNamesForTransition(transition)
 		guard fieldNames.count == fields.count else { return } //something went wrong in setup if these don't match
 		

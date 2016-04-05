@@ -29,7 +29,12 @@ class DeviceCell: UITableViewCell {
 		return subtitleLabel
 	}()
 	
-	let selectedBackground = UIView()
+	private lazy var selectedBackground: UIView = {
+		let view = UIView()
+		view.backgroundColor = UIColor(white: 0.5, alpha: 1)
+		view.alpha = 0
+		return view
+	}()
 	
 	private var constraintsAdded = false
 	
@@ -92,6 +97,18 @@ class DeviceCell: UITableViewCell {
 				contentView.removeGestureRecognizer(recognizer)
 			}
 		}
+	}
+	
+	override func setHighlighted(highlighted: Bool, animated: Bool) {
+		super.setHighlighted(highlighted, animated: animated)
+		
+		selectedBackground.alpha = highlighted ? 0.3 : 0
+	}
+	
+	override func setSelected(selected: Bool, animated: Bool) {
+		super.setSelected(selected, animated: animated)
+		
+		selectedBackground.alpha = selected ? 0.3 : 0
 	}
 	
 }
