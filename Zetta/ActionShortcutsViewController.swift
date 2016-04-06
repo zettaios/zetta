@@ -54,7 +54,7 @@ class ActionShortcutsViewController: UIViewController {
 		
 		let imageTap = UITapGestureRecognizer(target: self, action: "backgroundTapped:")
 		imageTap.numberOfTapsRequired = 1
-		view.addGestureRecognizer(imageTap)
+		mainView.dismissZone.addGestureRecognizer(imageTap)
 	
 		mainView.tableView.dataSource = self
 		
@@ -90,7 +90,7 @@ extension ActionShortcutsViewController: UITableViewDataSource {
 			let cell = NoFieldsActionCell()
 			cell.titleLabel.text = transition.name
 			cell.goButton.setTitle(transition.name, forState: .Normal)
-			//			cell.delegate = self
+			cell.delegate = self
 			return cell
 //		} else if transition.fieldNames.count == 1 {
 //			let cell = SingleFieldActionCell(fieldName: transition.fieldNames.first ?? "")
@@ -103,5 +103,38 @@ extension ActionShortcutsViewController: UITableViewDataSource {
 //			//			cell.delegate = self
 //			return cell
 //		}
+	}
+}
+
+extension ActionShortcutsViewController: ActionCellDelegate {
+	func actionCell(cell: UITableViewCell, didSubmitFields fields: [String?]) {
+		guard let indexPath = mainView.tableView.indexPathForCell(cell) else { return }
+		let transition = device.singleFieldNonHiddenTransitions[indexPath.row]
+//		guard transition.fieldNames.count == fields.count else { return } //something went wrong in setup if these don't match
+		
+		var arguments = [String: String]()
+//		for (index, field) in fields.enumerate() {
+//			if let field = field {
+//				arguments[transition.fieldNames[index]] = field
+//			}
+//		}
+		
+		device.transition(transition.name, withArguments: arguments) { [weak self] (error, device) -> Void in
+			if let error = error {
+				print(error.localizedDescription)
+				return
+			}
+			
+			//a new device is returned, representing the latest state
+//			if let device = device {
+//				dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//					self?.device = device
+//					self?.updateStateImage()
+//					self?.tableView.reloadData()
+//				})
+//			}
+		}
+		
+		delegate?.didRequestDismiss()
 	}
 }

@@ -30,13 +30,19 @@ class ActionShortcutsView: UIView {
 		return tableView
 	}()
 	
+	let dismissZone = UIView()
+	
+	private lazy var stack: UIStackView = {
+		let stack = UIStackView(arrangedSubviews: [self.dismissZone, self.deviceLabel, self.tableView])
+		stack.axis = .Vertical
+		return stack
+	}()
+	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
-
-		for view in [deviceLabel, tableView] {
-			view.translatesAutoresizingMaskIntoConstraints = false
-			addSubview(view)
-		}
+		
+		stack.translatesAutoresizingMaskIntoConstraints = false
+		addSubview(stack)
 		
 		setNeedsUpdateConstraints()
 	}
@@ -47,15 +53,15 @@ class ActionShortcutsView: UIView {
 	
 	override func updateConstraints() {
 		if !constraintsAdded {
+			stack.snp_makeConstraints { (make) -> Void in
+				make.edges.equalTo(self)
+			}
+			
 			tableView.snp_makeConstraints { (make) -> Void in
-				make.left.right.bottom.equalTo(self)
 				make.height.lessThanOrEqualTo(self).multipliedBy(0.5)
-//				make.height.equalTo(device.nonHiddenTransitions.count * 60).priorityHigh()
 			}
 			
 			deviceLabel.snp_makeConstraints { (make) -> Void in
-				make.left.right.equalTo(tableView)
-				make.bottom.equalTo(tableView.snp_top)
 				make.height.equalTo(44)
 			}
 			
