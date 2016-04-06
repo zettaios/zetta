@@ -317,37 +317,23 @@ class DeviceViewController: UITableViewController {
 	
 	private func actionCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
 		let transition = device.nonHiddenTransitions[indexPath.row]
-		let fieldNames = fieldNamesForTransition(transition)
-		
-		if fieldNames.isEmpty {
+		if transition.fieldNames.isEmpty {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(noFieldsActionCellIdentifier) as? NoFieldsActionCell else { return UITableViewCell() }
 			cell.titleLabel.text = transition.name
 			cell.goButton.setTitle(transition.name, forState: .Normal)
 			cell.delegate = self
 			return cell
-		} else if fieldNames.count == 1 {
-			let cell = SingleFieldActionCell(fieldName: fieldNames.first ?? "")
+		} else if transition.fieldNames.count == 1 {
+			let cell = SingleFieldActionCell(fieldName: transition.fieldNames.first ?? "")
 			cell.goButton.setTitle(transition.name, forState: .Normal)
 			cell.delegate = self
 			return cell
 		} else {
-			let cell = MultipleFieldsActionCell(fieldNames: fieldNames)
+			let cell = MultipleFieldsActionCell(fieldNames: transition.fieldNames)
 			cell.goButton.setTitle(transition.name, forState: .Normal)
 			cell.delegate = self
 			return cell
 		}
-	}
-	
-	private func fieldNamesForTransition(transition: ZIKTransition) -> [String] {
-		var fieldNames = [String]()
-		if let fields = transition.fields as? [[String: AnyObject]] {
-			for field in fields {
-				if let type = field["type"] as? String where type != "hidden", let name = field["name"] as? String {
-					fieldNames.append(name)
-				}
-			}
-		}
-		return fieldNames
 	}
 	
 	private func streamCellForIndexPath(indexPath: NSIndexPath) -> UITableViewCell {
@@ -413,13 +399,12 @@ extension DeviceViewController: ActionCellDelegate {
 	func actionCell(cell: UITableViewCell, didSubmitFields fields: [String?]) {
 		guard let indexPath = tableView.indexPathForCell(cell) where indexPath.row < device.nonHiddenTransitions.count else { return }
 		let transition = device.nonHiddenTransitions[indexPath.row]
-		let fieldNames = fieldNamesForTransition(transition)
-		guard fieldNames.count == fields.count else { return } //something went wrong in setup if these don't match
+		guard transition.fieldNames.count == fields.count else { return } //something went wrong in setup if these don't match
 		
 		var arguments = [String: String]()
 		for (index, field) in fields.enumerate() {
 			if let field = field {
-				arguments[fieldNames[index]] = field
+				arguments[transition.fieldNames[index]] = field
 			}
 		}
 		

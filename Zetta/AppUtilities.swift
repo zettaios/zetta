@@ -88,6 +88,10 @@ extension ZIKDevice {
 		return transitions.filter({ displayStyleForTranstion($0) != .None })
 	}
 	
+	var singleFieldNonHiddenTransitions: [ZIKTransition] {
+		return nonHiddenTransitions.filter({ $0.fieldNames.isEmpty })
+	}
+	
 	private func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
 		let defaultStyle: DisplayStyle = .Inline
 		if let displayString = JSON(properties)["style"]["actions"][transition.name]["display"].string {
@@ -99,4 +103,17 @@ extension ZIKDevice {
 
 enum DisplayStyle: String {
 	case None = "none", Billboard = "billboard", Inline = "inline"
+}
+
+extension ZIKTransition {
+	var fieldNames: [String] {
+		var fieldNames = [String]()
+		guard let fields = fields as? [[String: AnyObject]] else { return fieldNames }
+		for field in fields {
+			if let type = field["type"] as? String where type != "hidden", let name = field["name"] as? String {
+				fieldNames.append(name)
+			}
+		}
+		return fieldNames
+	}
 }

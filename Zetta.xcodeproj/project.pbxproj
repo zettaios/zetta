@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		190E2CD31F528248381A253D /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93731F1E0D5A6AA529EDBBCC /* Pods.framework */; };
+		C518E1891CB58303002327F9 /* ActionShortcutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C518E1881CB58303002327F9 /* ActionShortcutsView.swift */; };
+		C520FA951CB55D4D00643C33 /* ActionShortcutsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C520FA941CB55D4D00643C33 /* ActionShortcutsViewController.swift */; };
 		C53840231C99E8D000F30B2C /* EventsLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53840221C99E8D000F30B2C /* EventsLogViewController.swift */; };
 		C53840251C99EA7D00F30B2C /* EventLogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53840241C99EA7D00F30B2C /* EventLogCell.swift */; };
 		C53F0B5A1C9C4A0000E5354D /* BillboardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F0B591C9C4A0000E5354D /* BillboardCell.swift */; };
@@ -35,6 +37,8 @@
 		7ABFB02E682D9D8209158878 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		8713BDDCF40B417C09FA6F21 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		93731F1E0D5A6AA529EDBBCC /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C518E1881CB58303002327F9 /* ActionShortcutsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionShortcutsView.swift; sourceTree = "<group>"; };
+		C520FA941CB55D4D00643C33 /* ActionShortcutsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActionShortcutsViewController.swift; sourceTree = "<group>"; };
 		C53840221C99E8D000F30B2C /* EventsLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsLogViewController.swift; sourceTree = "<group>"; };
 		C53840241C99EA7D00F30B2C /* EventLogCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventLogCell.swift; sourceTree = "<group>"; };
 		C53F0B591C9C4A0000E5354D /* BillboardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BillboardCell.swift; sourceTree = "<group>"; };
@@ -166,6 +170,8 @@
 				C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */,
 				C5CFB05A1C8A62D400C208EF /* DeviceListHeader.swift */,
 				C560B5581C49B14800E5F1F9 /* DeviceCell.swift */,
+				C520FA941CB55D4D00643C33 /* ActionShortcutsViewController.swift */,
+				C518E1881CB58303002327F9 /* ActionShortcutsView.swift */,
 			);
 			name = "Device List";
 			sourceTree = "<group>";
@@ -336,10 +342,12 @@
 				C5B72C581C53CD3200E4B68C /* SettingsViewController.swift in Sources */,
 				C5B72C621C53F92400E4B68C /* AddConnectionViewController.swift in Sources */,
 				C5AF70ED1C780EA400C7AD2C /* PropertyCell.swift in Sources */,
+				C520FA951CB55D4D00643C33 /* ActionShortcutsViewController.swift in Sources */,
 				C53840251C99EA7D00F30B2C /* EventLogCell.swift in Sources */,
 				C5AF70E71C750DA400C7AD2C /* MultipleFieldsActionCell.swift in Sources */,
 				C54094EB1C6EC04C00257831 /* DeviceViewController.swift in Sources */,
 				C5AF70E51C750AB200C7AD2C /* SingleFieldActionCell.swift in Sources */,
+				C518E1891CB58303002327F9 /* ActionShortcutsView.swift in Sources */,
 				C53840231C99E8D000F30B2C /* EventsLogViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

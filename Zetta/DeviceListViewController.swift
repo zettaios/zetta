@@ -16,7 +16,6 @@ class DeviceListViewController: UITableViewController {
 	private var serverDevices = [(server: ZIKServer, devices:[ZIKDevice])]()
 	private var mostRecentPreferredStreamValuesAndStyles = [ZIKDevice: (value: AnyObject, style: JSON)]()
 	private var deviceCells = NSCache()
-//	private var expandedDevice: ZIKDevice?
 	
 	lazy var messageLabel: UILabel = {
 		let label = UILabel()
@@ -254,6 +253,10 @@ class DeviceListViewController: UITableViewController {
 			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
 			cell.deviceImageView.tintColor = UIColor(white: 0.5, alpha: serverForDevice(device)?.backgroundColor?.isLight == false ? 0.6 : 0.3)
 		}
+		
+		let longPress = UILongPressGestureRecognizer(target: self, action: "deviceCellLongPressed:")
+		longPress.minimumPressDuration = 1.0
+		cell.contentView.addGestureRecognizer(longPress)
 	}
 	
 	private func attributedSubtitleForDevice(device: ZIKDevice, usingFont font: UIFont) -> NSAttributedString? {
@@ -313,10 +316,54 @@ class DeviceListViewController: UITableViewController {
 			presentViewController(nav, animated: true, completion: nil)
 		}
 	}
+	
+	private lazy var mask: UIView = {
+		let view = UIView(frame: self.navigationController?.view.frame ?? CGRect.zero)
+		view.backgroundColor = UIColor(white: 0, alpha: 0.4)
+		return view
+	}()
+	
+	@objc private func deviceCellLongPressed(sender: UIGestureRecognizer) {
+		guard sender.state == UIGestureRecognizerState.Began else { return }
+		let point = sender.locationInView(tableView)
+		guard let indexPath = tableView.indexPathForRowAtPoint(point) else { return }
+		
+		let server = serverDevices[indexPath.section].server
+		let device = serverDevices[indexPath.section].devices[indexPath.row]
+		if device.singleFieldNonHiddenTransitions.isEmpty { return }
+		
+		mask.alpha = 0
+		navigationController?.view.addSubview(mask)
+		UIView.animateWithDuration(0.3) { [weak self] () -> Void in
+			self?.navigationController?.view.tintAdjustmentMode = .Dimmed
+			self?.mask.alpha = 1
+		}
+		
+		let controller = ActionShortcutsViewController(device: device)
+		controller.modalPresentationStyle = .Custom
+		controller.delegate = self
+		controller.foregroundColor = device.foregroundColor ?? server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
+		controller.backgroundColor = device.backgroundColor ?? server.backgroundColor ?? UIColor.whiteColor()
+		presentViewController(controller, animated: true, completion: nil)
+	}
 }
 
 extension DeviceListViewController: SettingsDelegate {
 	func selectedConnectionChanged() {
 		refresh()
+	}
+}
+
+extension DeviceListViewController: ActionShortcutsDelegate {
+	func didRequestDismiss() {
+		UIView.animateWithDuration(0.3,
+			animations: { [weak self] () -> Void in
+				self?.mask.alpha = 0
+				self?.navigationController?.view.tintAdjustmentMode = .Normal
+			}, completion: { [weak self] (_) -> Void in
+				self?.mask.removeFromSuperview()
+		})
+		
+		dismissViewControllerAnimated(true, completion: nil)
 	}
 }
