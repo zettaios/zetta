@@ -125,19 +125,6 @@ class DeviceViewController: UITableViewController {
 	
 	// data helpers
 	
-//	private var nonHiddenTransitions: [ZIKTransition] {
-//		guard let transitions = device.transitions as? [ZIKTransition] else { return [ZIKTransition]() }
-//		return transitions.filter({ displayStyleForTranstion($0) != .None })
-//	}
-//	
-//	private func displayStyleForTranstion(transition: ZIKTransition) -> DisplayStyle {
-//		let defaultStyle: DisplayStyle = .Inline
-//		if let displayString = JSON(device.properties)["style"]["actions"][transition.name]["display"].string {
-//			return DisplayStyle(rawValue: displayString) ?? defaultStyle
-//		}
-//		return defaultStyle
-//	}
-	
 	private struct BillboardStream {
 		let stream: ZIKStream
 		let symbol: String?

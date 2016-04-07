@@ -23,10 +23,10 @@ class ActionShortcutsView: UIView {
 		let tableView = UITableView()
 		tableView.alwaysBounceVertical = false
 		tableView.tableFooterView = UIView()
-//		tableView.backgroundColor = self.backgroundColor
 		tableView.rowHeight = UITableViewAutomaticDimension
 		tableView.estimatedRowHeight = 60
 		tableView.allowsSelection = false
+		tableView.keyboardDismissMode = .Interactive
 		return tableView
 	}()
 	
@@ -58,7 +58,7 @@ class ActionShortcutsView: UIView {
 			}
 			
 			tableView.snp_makeConstraints { (make) -> Void in
-				make.height.lessThanOrEqualTo(self).multipliedBy(0.5)
+				make.height.lessThanOrEqualTo(self).multipliedBy(0.6) //sufficient for keyboard + one field + device label on smallest device size
 			}
 			
 			deviceLabel.snp_makeConstraints { (make) -> Void in

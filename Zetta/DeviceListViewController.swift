@@ -330,7 +330,7 @@ class DeviceListViewController: UITableViewController {
 		
 		let server = serverDevices[indexPath.section].server
 		let device = serverDevices[indexPath.section].devices[indexPath.row]
-		if device.singleFieldNonHiddenTransitions.isEmpty { return }
+		if device.nonHiddenTransitions.isEmpty { return }
 		
 		mask.alpha = 0
 		navigationController?.view.addSubview(mask)
