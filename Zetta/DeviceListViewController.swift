@@ -38,6 +38,7 @@ class DeviceListViewController: UITableViewController {
 		refreshControl.addTarget(self, action: #selector(pullToRefreshTrigerred(_:)), forControlEvents: .ValueChanged)
 		self.refreshControl = refreshControl
 		
+		tableView.backgroundColor = UIColor.appBackgroundColor()
 		tableView.alwaysBounceVertical = true
 		tableView.tableFooterView = UIView()
 		tableView.separatorInset = UIEdgeInsetsZero
@@ -52,9 +53,9 @@ class DeviceListViewController: UITableViewController {
 	override func viewWillAppear(animated: Bool) {
 		super.viewWillAppear(animated)
 		
-		if navigationController?.navigationBar.barTintColor != UIColor.whiteColor() {
+		if navigationController?.navigationBar.barTintColor != UIColor.appBackgroundColor() {
 			UIView.animateWithDuration(0.3) { [weak self] () -> Void in
-				self?.navigationController?.navigationBar.barTintColor = UIColor.whiteColor()
+				self?.navigationController?.navigationBar.barTintColor = UIColor.appBackgroundColor()
 			}
 		}
 		

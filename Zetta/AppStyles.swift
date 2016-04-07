@@ -36,6 +36,10 @@ extension UIColor {
 		return UIColor(red:0.784,  green:0.780,  blue:0.800, alpha:1)
 	}
 	
+	class func appBackgroundColor() -> UIColor {
+		return UIColor(red:0.969,  green:0.969,  blue:0.969, alpha:1)
+	}
+	
 	convenience init?(colorValues: [Int]) {
 		guard colorValues.count == 3 else { return nil }
 		let red = CGFloat(colorValues[0])
@@ -80,6 +84,7 @@ extension UIButton {
 extension UITableViewCell {
 	class func emptyCell(message message: String?) -> UITableViewCell {
 		let cell = UITableViewCell()
+		cell.backgroundColor = UIColor.appBackgroundColor()
 		cell.textLabel?.textColor = UIColor.grayColor()
 		cell.textLabel?.font = UIFont.italicSystemFontOfSize(12)
 		cell.textLabel?.text = message
