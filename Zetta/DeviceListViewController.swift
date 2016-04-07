@@ -30,12 +30,12 @@ class DeviceListViewController: UITableViewController {
         super.viewDidLoad()
 		
 		title = "Zetta"
-		navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Gear Small"), style: .Plain, target: self, action: "settingsButtonTapped")
+		navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Gear Small"), style: .Plain, target: self, action: #selector(settingsButtonTapped))
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
 		
 		let refreshControl = UIRefreshControl()
 		refreshControl.tintColor = UIColor.lightGrayColor()
-		refreshControl.addTarget(self, action: "pullToRefreshTrigerred:", forControlEvents: .ValueChanged)
+		refreshControl.addTarget(self, action: #selector(pullToRefreshTrigerred(_:)), forControlEvents: .ValueChanged)
 		self.refreshControl = refreshControl
 		
 		tableView.alwaysBounceVertical = true
@@ -254,7 +254,7 @@ class DeviceListViewController: UITableViewController {
 			cell.deviceImageView.tintColor = UIColor(white: 0.5, alpha: serverForDevice(device)?.backgroundColor?.isLight == false ? 0.6 : 0.3)
 		}
 		
-		let longPress = UILongPressGestureRecognizer(target: self, action: "deviceCellLongPressed:")
+		let longPress = UILongPressGestureRecognizer(target: self, action: #selector(deviceCellLongPressed(_:)))
 		longPress.minimumPressDuration = 1.0
 		cell.contentView.addGestureRecognizer(longPress)
 	}

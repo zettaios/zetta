@@ -36,7 +36,7 @@ class MultipleFieldsActionCell: UITableViewCell {
 	
 	lazy var goButton: UIButton = {
 		let button = UIButton.deviceActionButton(title: "Go")
-		button.addTarget(self, action: "buttonTapped", forControlEvents: .TouchUpInside)
+		button.addTarget(self, action: #selector(buttonTapped), forControlEvents: .TouchUpInside)
 		return button
 	}()
 	

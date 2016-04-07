@@ -52,7 +52,7 @@ class ActionShortcutsViewController: UIViewController {
 		
 		mainView.deviceLabel.text = self.device.name ?? self.device.type ?? "Unnamed Device"
 		
-		let imageTap = UITapGestureRecognizer(target: self, action: "backgroundTapped:")
+		let imageTap = UITapGestureRecognizer(target: self, action: #selector(backgroundTapped(_:)))
 		imageTap.numberOfTapsRequired = 1
 		mainView.dismissZone.addGestureRecognizer(imageTap)
 	

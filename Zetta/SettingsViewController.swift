@@ -29,7 +29,7 @@ class SettingsViewController: UITableViewController {
 		previousURL = NSUserDefaults.standardUserDefaults().connectionHistory.first
 		
 		title = "Settings"
-		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonTapped")
+		navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(doneButtonTapped))
 
 		tableView.backgroundColor = UIColor.groupTableViewBackgroundColor()
     }
@@ -85,7 +85,7 @@ class SettingsViewController: UITableViewController {
 		} else {
 			let button = UIButton(type: .System)
 			button.setTitle("Zetta Discuss", forState: .Normal)
-			button.addTarget(self, action: "supportButtonTapped", forControlEvents: .TouchUpInside)
+			button.addTarget(self, action: #selector(supportButtonTapped), forControlEvents: .TouchUpInside)
 			button.contentHorizontalAlignment = .Left
 			button.contentEdgeInsets = UIEdgeInsetsMake(0, tableView.layoutMargins.left, 0, tableView.layoutMargins.right)
 			button.translatesAutoresizingMaskIntoConstraints = false

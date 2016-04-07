@@ -44,7 +44,7 @@ class SingleFieldActionCell: UITableViewCell {
 		let button = UIButton.deviceActionButton(title: "Go")
 		button.setContentHuggingPriority(1000, forAxis: .Horizontal)
 		button.setContentCompressionResistancePriority(1000, forAxis: .Horizontal)
-		button.addTarget(self, action: "buttonTapped", forControlEvents: .TouchUpInside)
+		button.addTarget(self, action: #selector(buttonTapped), forControlEvents: .TouchUpInside)
 		return button
 	}()
 	

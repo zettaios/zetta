@@ -26,13 +26,13 @@ class AddConnectionViewController: UIViewController, UITextFieldDelegate {
 		super.viewDidLoad()
 		
 		title = "Add API"
-		addButton = UIBarButtonItem(title: "Add", style: .Done, target: self, action: "addButtonTapped")
+		addButton = UIBarButtonItem(title: "Add", style: .Done, target: self, action: #selector(addButtonTapped))
 		addButton?.enabled = false
 		navigationItem.rightBarButtonItem = addButton
-		navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTapped")
+		navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(cancelButtonTapped))
 		
 		mainView.urlField.delegate = self
-		mainView.urlField.addTarget(self, action: "textFieldChanged", forControlEvents: .EditingChanged)
+		mainView.urlField.addTarget(self, action: #selector(textFieldChanged), forControlEvents: .EditingChanged)
 		mainView.urlField.becomeFirstResponder()
 	}
 	
