@@ -15,6 +15,7 @@ class DeviceViewController: UITableViewController {
 		didSet {
 			view.tintColor = foregroundColor
 			navigationController?.navigationBar.tintColor = foregroundColor
+			iconLabel.textColor = foregroundColor
 			tableView.reloadData()
 		}
 	}
@@ -112,7 +113,7 @@ class DeviceViewController: UITableViewController {
 					if let streamEntry = streamEntry as? ZIKLogStreamEntry {
 						self?.device.refreshWithLogEntry(streamEntry)
 						self?.logs.insert(streamEntry, atIndex: 0)
-						self?.updateStateImage()
+						self?.updateStateIcon()
 					} else if let streamEntry = streamEntry as? ZIKStreamEntry {
 						self?.mostRecentStreamValues[stream] = streamEntry.data
 					}
@@ -163,7 +164,7 @@ class DeviceViewController: UITableViewController {
 		return monitoredStreams.filter({ $0 != logsStream })
 	}
 	
-	// MARK: - updating state image
+	// MARK: - updating billboarded state image and label
 	
 	lazy var iconImageView: UIImageView = {
 		let imageView = UIImageView()
@@ -171,23 +172,34 @@ class DeviceViewController: UITableViewController {
 		return imageView
 	}()
 	
-	private lazy var nonCachingSession: NSURLSession = {
-		let config = NSURLSessionConfiguration.defaultSessionConfiguration()
-		config.requestCachePolicy = .ReloadIgnoringLocalCacheData
-		return NSURLSession(configuration: config)
+	lazy var iconLabel: UILabel = {
+		let label = UILabel()
+		label.font = UIFont.boldSystemFontOfSize(24)
+		label.textAlignment = .Center
+		label.textColor = self.foregroundColor
+		label.text = "state here"
+		label.setContentCompressionResistancePriority(1000, forAxis: .Vertical)
+		return label
 	}()
-
-	private func updateStateImage() {
-		guard let iconURL = device.iconURL else {
+	
+	private func updateStateIcon() {
+		if let iconURL = device.iconURL {
+			iconImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { [weak self] (image, error, cacheType, _) -> Void in
+				if let error = error { print("Error downloading state image: \(error)") }
+				guard let unwrappedSelf = self, image = image else { return }
+				unwrappedSelf.iconImageView.image = image.imageWithRenderingMode(unwrappedSelf.device.iconTintMode)
+				})
+		} else {
 			iconImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysOriginal)
-			return
 		}
-
-		iconImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { [weak self] (image, error, cacheType, _) -> Void in
-			if let error = error { print("Error downloading state image: \(error)") }
-			guard let unwrappedSelf = self, image = image else { return }
-			unwrappedSelf.iconImageView.image = image.imageWithRenderingMode(unwrappedSelf.device.iconTintMode)
-		})
+		
+		if let stateStream = self.monitoredStreams.filter({ $0.title == "state"}).first, recentValue = mostRecentStreamValues[stateStream] {
+			iconLabel.text = String(recentValue)
+		} else if let propertyValue = device.properties["state"] {
+			iconLabel.text = String(propertyValue)
+		} else {
+			iconLabel.text = nil
+		}
 	}
 
     // MARK: - table view
@@ -291,13 +303,18 @@ class DeviceViewController: UITableViewController {
 		guard self.displayStyleForDeviceIcon == .Billboard, let iconURL = self.device.iconURL else { return UITableViewCell() }
 		
 		let cell = UITableViewCell()
-		self.iconImageView.translatesAutoresizingMaskIntoConstraints = false
-		cell.contentView.addSubview(self.iconImageView)
-		self.iconImageView.snp_makeConstraints { (make) -> Void in
-			make.edges.equalTo(cell.contentView).inset(40)
+		let stack = UIStackView(arrangedSubviews: [self.iconImageView, self.iconLabel])
+		stack.axis = .Vertical
+		stack.spacing = 10
+		stack.layoutMarginsRelativeArrangement = true
+		stack.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 30, right: 20)
+		stack.translatesAutoresizingMaskIntoConstraints = false
+		cell.contentView.addSubview(stack)
+		stack.snp_makeConstraints { (make) -> Void in
+			make.edges.equalTo(cell.contentView)
 		}
 
-		self.updateStateImage()
+		self.updateStateIcon()
 
 		return cell
 	}()
@@ -405,7 +422,7 @@ extension DeviceViewController: ActionCellDelegate {
 			if let device = device {
 				dispatch_async(dispatch_get_main_queue(), { () -> Void in
 					self?.device = device
-					self?.updateStateImage()
+					self?.updateStateIcon()
 					self?.tableView.reloadData()
 				})
 			}
