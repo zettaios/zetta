@@ -41,6 +41,54 @@ extension UIColor
 	}
 }
 
+class NavigationTitleView: UIView {
+	private lazy var titleLabel: UILabel = {
+		let label = UILabel()
+		label.font = UIFont.boldSystemFontOfSize(16)
+		label.setContentHuggingPriority(1000, forAxis: .Vertical)
+		return label
+	}()
+	
+	private lazy var subtitleLabel: UILabel = {
+		let label = UILabel()
+		label.font = UIFont.systemFontOfSize(12)
+		label.setContentHuggingPriority(1000, forAxis: .Vertical)
+		return label
+	}()
+	
+	init(title: String?, subtitle: String?) {
+		super.init(frame: CGRect(x: 0, y: 0, width: 250, height: 44))
+		
+		titleLabel.text = title
+		titleLabel.hidden = title?.isEmpty != false
+		
+		subtitleLabel.text = subtitle
+		subtitleLabel.hidden = subtitle?.isEmpty != false
+		
+		let stack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+		stack.axis = .Vertical
+		stack.alignment = .Center
+		subtitleLabel.setContentHuggingPriority(1000, forAxis: .Vertical)
+		
+		stack.translatesAutoresizingMaskIntoConstraints = false
+		addSubview(stack)
+		stack.snp_makeConstraints { (make) -> Void in
+			make.center.equalTo(self)
+		}
+	}
+	
+	required init?(coder aDecoder: NSCoder) {
+		fatalError("NSCoding not supported")
+	}
+	
+	var foregroundColor: UIColor = UIColor.blackColor() {
+		didSet {
+			titleLabel.textColor = foregroundColor
+			subtitleLabel.textColor = foregroundColor
+		}
+	}
+}
+
 import ZettaKit
 
 extension ZIKServer {

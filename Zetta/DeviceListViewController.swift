@@ -291,7 +291,7 @@ class DeviceListViewController: UITableViewController {
 
 		let server = serverDevices[indexPath.section].server
 		let device = serverDevices[indexPath.section].devices[indexPath.row]
-		let controller = DeviceViewController(device: device)
+		let controller = DeviceViewController(device: device, serverName: server.name)
 		controller.foregroundColor = device.foregroundColor ?? server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 		controller.backgroundColor = device.backgroundColor ?? server.backgroundColor ?? UIColor.whiteColor()
 		navigationController?.pushViewController(controller, animated: true)

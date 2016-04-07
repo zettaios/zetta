@@ -22,6 +22,7 @@ class DeviceViewController: UITableViewController {
 	
 	var backgroundColor: UIColor = UIColor.whiteColor() {
 		didSet {
+			titleView.foregroundColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
 			tableView.backgroundColor = backgroundColor
 			tableView.tableHeaderView?.backgroundColor = backgroundColor
 			tableView.indicatorStyle = backgroundColor.isLight ? .Black : .White
@@ -29,7 +30,10 @@ class DeviceViewController: UITableViewController {
 		}
 	}
 	
+	private lazy var titleView: NavigationTitleView = NavigationTitleView(title: self.title, subtitle: self.serverName)
+	
 	private var device: ZIKDevice
+	private let serverName: String?
 	private var monitoredStreams = [ZIKStream]()
 	private var mostRecentStreamValues = [ZIKStream: AnyObject]()
 	private var logsStream: ZIKStream? //so it can be identified and excluded from streams section
@@ -40,9 +44,12 @@ class DeviceViewController: UITableViewController {
 	private let noFieldsActionCellIdentifier = "No Fields Action Cell"
 	private let logsCellIdentifier = "Logs Cell"
 	
-	init(device: ZIKDevice) {
+	init(device: ZIKDevice, serverName: String?) {
 		self.device = device
+		self.serverName = serverName
+		
 		super.init(nibName: nil, bundle: nil)
+		
 		monitorStreams()
 	}
 	
@@ -54,6 +61,7 @@ class DeviceViewController: UITableViewController {
         super.viewDidLoad()
 		
 		title = (device.name ?? device.type) ?? "Unnamed Device"
+		navigationItem.titleView = titleView
 		navigationController?.navigationBar.barStyle = UIBarStyle.BlackTranslucent
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
 		
