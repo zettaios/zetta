@@ -69,5 +69,9 @@ class ActionShortcutsView: UIView {
 		}
 		
 		super.updateConstraints()
+		
+		tableView.snp_updateConstraints { (make) -> Void in
+			make.height.equalTo(tableView.contentSize.height).priorityHigh()
+		}
 	}
 }

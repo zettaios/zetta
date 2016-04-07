@@ -60,11 +60,6 @@ class ActionShortcutsViewController: UIViewController {
 		mainView.dismissZone.addGestureRecognizer(imageTap)
 	
 		mainView.tableView.dataSource = self
-		
-		mainView.tableView.snp_makeConstraints { (make) -> Void in
-			// TODO: - need to account for multi-height cells
-			make.height.equalTo(device.nonHiddenTransitions.count * 60).priorityHigh()
-		}
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
