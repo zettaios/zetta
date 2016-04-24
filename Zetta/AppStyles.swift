@@ -70,7 +70,7 @@ extension UILabel {
 
 extension UIButton {
 	class func deviceActionButton(title title: String?) -> UIButton {
-		let button = UIButton(type: .System)
+		let button = UIButton(type: .Custom)
 		button.setTitle(title, forState: .Normal)
 		button.titleLabel?.font = UIFont.boldSystemFontOfSize(16)
 		button.backgroundColor = UIColor.appTintColor()

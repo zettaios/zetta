@@ -332,17 +332,23 @@ class DeviceViewController: UITableViewController {
 		if transition.fieldNames.isEmpty {
 			guard let cell = tableView.dequeueReusableCellWithIdentifier(noFieldsActionCellIdentifier) as? NoFieldsActionCell else { return UITableViewCell() }
 			cell.titleLabel.text = transition.name
-			cell.goButton.setTitle(transition.name, forState: .Normal)
+			UIView.performWithoutAnimation({
+				cell.goButton.setTitle(transition.name, forState: .Normal)
+			})
 			cell.delegate = self
 			return cell
 		} else if transition.fieldNames.count == 1 {
 			let cell = SingleFieldActionCell(fieldName: transition.fieldNames.first ?? "")
-			cell.goButton.setTitle(transition.name, forState: .Normal)
+			UIView.performWithoutAnimation({
+				cell.goButton.setTitle(transition.name, forState: .Normal)
+			})
 			cell.delegate = self
 			return cell
 		} else {
 			let cell = MultipleFieldsActionCell(fieldNames: transition.fieldNames)
-			cell.goButton.setTitle(transition.name, forState: .Normal)
+			UIView.performWithoutAnimation({
+				cell.goButton.setTitle(transition.name, forState: .Normal)
+			})
 			cell.delegate = self
 			return cell
 		}
