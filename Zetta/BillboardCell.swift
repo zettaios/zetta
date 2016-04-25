@@ -9,7 +9,6 @@
 import UIKit
 
 class BillboardCell: UITableViewCell {
-
 	let defaultFontSize: CGFloat = 140
 	private var constraintsAdded = false
 	
@@ -17,7 +16,6 @@ class BillboardCell: UITableViewCell {
 		let label = UILabel()
 		label.font = UIFont.systemFontOfSize(18)
 		label.textAlignment = .Center
-		label.textColor = self.tintColor
 		return label
 	}()
 	
@@ -34,7 +32,6 @@ class BillboardCell: UITableViewCell {
 		let label = UILabel()
 		label.font = UIFont.boldSystemFontOfSize(24)
 		label.textAlignment = .Center
-		label.textColor = self.tintColor
 		return label
 	}()
 	
@@ -89,5 +86,4 @@ class BillboardCell: UITableViewCell {
 			label.textColor = tintColor
 		}
 	}
-	
 }

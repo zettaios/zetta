@@ -15,10 +15,11 @@
 		C53F0B5A1C9C4A0000E5354D /* BillboardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C53F0B591C9C4A0000E5354D /* BillboardCell.swift */; };
 		C54094EB1C6EC04C00257831 /* DeviceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54094EA1C6EC04C00257831 /* DeviceViewController.swift */; };
 		C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C544BE801C4ABAA20072CECD /* AppUtilities.swift */; };
+		C55FD6641CCD601D00C3B78A /* BillboardStateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55FD6631CCD601D00C3B78A /* BillboardStateCell.swift */; };
 		C560B53E1C4996A900E5F1F9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */; };
 		C560B5451C4996A900E5F1F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C560B5441C4996A900E5F1F9 /* Assets.xcassets */; };
 		C560B5571C49B0F900E5F1F9 /* DeviceListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */; };
-		C560B5591C49B14800E5F1F9 /* DeviceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5581C49B14800E5F1F9 /* DeviceCell.swift */; };
+		C560B5591C49B14800E5F1F9 /* InlineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B5581C49B14800E5F1F9 /* InlineCell.swift */; };
 		C560B55B1C49B41800E5F1F9 /* AppStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C560B55A1C49B41800E5F1F9 /* AppStyles.swift */; };
 		C5A17B6E1C81F41D0052F375 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C5A17B6D1C81F41D0052F375 /* GoogleService-Info.plist */; };
 		C5AF70E31C75017300C7AD2C /* NoFieldsActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AF70E21C75017300C7AD2C /* NoFieldsActionCell.swift */; };
@@ -44,12 +45,13 @@
 		C53F0B591C9C4A0000E5354D /* BillboardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BillboardCell.swift; sourceTree = "<group>"; };
 		C54094EA1C6EC04C00257831 /* DeviceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceViewController.swift; sourceTree = "<group>"; };
 		C544BE801C4ABAA20072CECD /* AppUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppUtilities.swift; sourceTree = "<group>"; };
+		C55FD6631CCD601D00C3B78A /* BillboardStateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BillboardStateCell.swift; sourceTree = "<group>"; };
 		C560B53A1C4996A900E5F1F9 /* Zetta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Zetta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C560B53D1C4996A900E5F1F9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C560B5441C4996A900E5F1F9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C560B5491C4996A900E5F1F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceListViewController.swift; sourceTree = "<group>"; };
-		C560B5581C49B14800E5F1F9 /* DeviceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceCell.swift; sourceTree = "<group>"; };
+		C560B5581C49B14800E5F1F9 /* InlineCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InlineCell.swift; sourceTree = "<group>"; };
 		C560B55A1C49B41800E5F1F9 /* AppStyles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStyles.swift; sourceTree = "<group>"; };
 		C5A17B6D1C81F41D0052F375 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C5A17B6F1C81F5730052F375 /* Zetta-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Zetta-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -111,9 +113,18 @@
 				C5AF70E21C75017300C7AD2C /* NoFieldsActionCell.swift */,
 				C5AF70E41C750AB200C7AD2C /* SingleFieldActionCell.swift */,
 				C5AF70E61C750DA400C7AD2C /* MultipleFieldsActionCell.swift */,
-				C53F0B591C9C4A0000E5354D /* BillboardCell.swift */,
 			);
 			name = Device;
+			sourceTree = "<group>";
+		};
+		C55FD6651CCD607400C3B78A /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C560B5581C49B14800E5F1F9 /* InlineCell.swift */,
+				C53F0B591C9C4A0000E5354D /* BillboardCell.swift */,
+				C55FD6631CCD601D00C3B78A /* BillboardStateCell.swift */,
+			);
+			name = Cells;
 			sourceTree = "<group>";
 		};
 		C560B5311C4996A900E5F1F9 = {
@@ -141,6 +152,7 @@
 				C5B72C5B1C53ECFE00E4B68C /* AppDefaults.swift */,
 				C560B55A1C49B41800E5F1F9 /* AppStyles.swift */,
 				C544BE801C4ABAA20072CECD /* AppUtilities.swift */,
+				C55FD6651CCD607400C3B78A /* Cells */,
 				C5B72C5E1C53F28400E4B68C /* Device List */,
 				C53855571C63CF1D00C53339 /* Device */,
 				C53840261C99ECE500F30B2C /* Logs */,
@@ -169,7 +181,6 @@
 			children = (
 				C560B5561C49B0F900E5F1F9 /* DeviceListViewController.swift */,
 				C5CFB05A1C8A62D400C208EF /* DeviceListHeader.swift */,
-				C560B5581C49B14800E5F1F9 /* DeviceCell.swift */,
 				C520FA941CB55D4D00643C33 /* ActionShortcutsViewController.swift */,
 				C518E1881CB58303002327F9 /* ActionShortcutsView.swift */,
 			);
@@ -332,7 +343,7 @@
 				C5B72C5C1C53ECFE00E4B68C /* AppDefaults.swift in Sources */,
 				C560B5571C49B0F900E5F1F9 /* DeviceListViewController.swift in Sources */,
 				C560B55B1C49B41800E5F1F9 /* AppStyles.swift in Sources */,
-				C560B5591C49B14800E5F1F9 /* DeviceCell.swift in Sources */,
+				C560B5591C49B14800E5F1F9 /* InlineCell.swift in Sources */,
 				C5B72C641C53F97300E4B68C /* AddConnectionView.swift in Sources */,
 				C5CFB05B1C8A62D400C208EF /* DeviceListHeader.swift in Sources */,
 				C544BE811C4ABAA20072CECD /* AppUtilities.swift in Sources */,
@@ -345,6 +356,7 @@
 				C520FA951CB55D4D00643C33 /* ActionShortcutsViewController.swift in Sources */,
 				C53840251C99EA7D00F30B2C /* EventLogCell.swift in Sources */,
 				C5AF70E71C750DA400C7AD2C /* MultipleFieldsActionCell.swift in Sources */,
+				C55FD6641CCD601D00C3B78A /* BillboardStateCell.swift in Sources */,
 				C54094EB1C6EC04C00257831 /* DeviceViewController.swift in Sources */,
 				C5AF70E51C750AB200C7AD2C /* SingleFieldActionCell.swift in Sources */,
 				C518E1891CB58303002327F9 /* ActionShortcutsView.swift in Sources */,

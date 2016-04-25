@@ -15,14 +15,15 @@ class DeviceViewController: UITableViewController {
 		didSet {
 			view.tintColor = foregroundColor
 			navigationController?.navigationBar.tintColor = foregroundColor
-			iconLabel.textColor = foregroundColor
+			stateIcon?.tintColor = foregroundColor
+			stateLabel?.textColor = foregroundColor
 			tableView.reloadData()
 		}
 	}
 	
 	var backgroundColor: UIColor = UIColor.whiteColor() {
 		didSet {
-			titleView.foregroundColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
+			(navigationItem.titleView as? NavigationTitleView)?.foregroundColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
 			tableView.backgroundColor = backgroundColor
 			tableView.tableHeaderView?.backgroundColor = backgroundColor
 			tableView.indicatorStyle = backgroundColor.isLight ? .Black : .White
@@ -30,8 +31,7 @@ class DeviceViewController: UITableViewController {
 		}
 	}
 	
-	private lazy var titleView: NavigationTitleView = NavigationTitleView(title: self.title, subtitle: self.serverName)
-	
+	private var titleView: NavigationTitleView?
 	private var device: ZIKDevice
 	private let serverName: String?
 	private var monitoredStreams = [ZIKStream]()
@@ -60,7 +60,9 @@ class DeviceViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		title = (device.name ?? device.type) ?? "Unnamed Device"
+		title = device.name ?? device.type ?? "Unnamed Device" //needs to be set immediately since so that the title view will be built
+		let titleView = NavigationTitleView(title: self.title, subtitle: self.serverName)
+		titleView.foregroundColor = backgroundColor.isLight ? UIColor.blackColor() : UIColor.whiteColor()
 		navigationItem.titleView = titleView
 		navigationController?.navigationBar.barStyle = UIBarStyle.BlackTranslucent
 		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .Plain, target: nil, action: nil)
@@ -121,7 +123,7 @@ class DeviceViewController: UITableViewController {
 					if let streamEntry = streamEntry as? ZIKLogStreamEntry {
 						self?.device.refreshWithLogEntry(streamEntry)
 						self?.logs.insert(streamEntry, atIndex: 0)
-						self?.updateStateIcon()
+						self?.updateStateViews()
 					} else if let streamEntry = streamEntry as? ZIKStreamEntry {
 						self?.mostRecentStreamValues[stream] = streamEntry.data
 					}
@@ -172,44 +174,31 @@ class DeviceViewController: UITableViewController {
 		return monitoredStreams.filter({ $0 != logsStream })
 	}
 	
-	// MARK: - updating billboarded state image and label
+	// MARK: - state views
 	
-	lazy var iconImageView: UIImageView = {
-		let imageView = UIImageView()
-		imageView.contentMode = .ScaleAspectFit
-		return imageView
-	}()
+	//these are set if and swhen the state cell is created
+	private var stateIcon: UIImageView?
+	private var stateLabel: UILabel?
 	
-	lazy var iconLabel: UILabel = {
-		let label = UILabel()
-		label.font = UIFont.boldSystemFontOfSize(24)
-		label.textAlignment = .Center
-		label.textColor = self.foregroundColor
-		label.text = "state here"
-		label.setContentCompressionResistancePriority(1000, forAxis: .Vertical)
-		return label
-	}()
-	
-	private func updateStateIcon() {
-		if let iconURL = device.iconURL {
-			iconImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { [weak self] (image, error, cacheType, _) -> Void in
+	private func updateStateViews() {
+		if let url = device.iconURL {
+			stateIcon?.sd_setImageWithURL(url, placeholderImage: UIImage(), options: .RefreshCached, completed: { [weak self] (image, error, cacheType, _) -> Void in
 				if let error = error { print("Error downloading state image: \(error)") }
-				guard let unwrappedSelf = self, image = image else { return }
-				unwrappedSelf.iconImageView.image = image.imageWithRenderingMode(unwrappedSelf.device.iconTintMode)
-				})
+				self?.stateIcon?.image = image.imageWithRenderingMode(self?.device.iconTintMode ?? .AlwaysTemplate)
+			})
 		} else {
-			iconImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysOriginal)
+			stateIcon?.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysOriginal)
 		}
 		
 		if let stateStream = self.monitoredStreams.filter({ $0.title == "state"}).first, recentValue = mostRecentStreamValues[stateStream] {
-			iconLabel.text = String(recentValue)
+			stateLabel?.text = String(recentValue)
 		} else if let propertyValue = device.properties["state"] {
-			iconLabel.text = String(propertyValue)
+			stateLabel?.text = String(propertyValue)
 		} else {
-			iconLabel.text = nil
+			stateLabel?.text = nil
 		}
 	}
-
+	
     // MARK: - table view
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -236,7 +225,8 @@ class DeviceViewController: UITableViewController {
 	
 	override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
 		switch indexPath.section {
-		case 0,1: return tableView.bounds.width
+		case 0: return tableView.bounds.width
+		case 1: return displayStyleForDeviceIcon == .Inline ? 72 : tableView.bounds.width
 		case 2: return UITableViewAutomaticDimension //multi-field actions
 		default: return 60
 		}
@@ -249,7 +239,7 @@ class DeviceViewController: UITableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		switch section {
 		case 0: return billboardStreams.count
-		case 1: return displayStyleForDeviceIcon == .Billboard && device.iconURL != nil ? 1 : 0
+		case 1: return displayStyleForDeviceIcon != .None && device.iconURL != nil ? 1 : 0
 		case 2: return max(device.nonHiddenTransitions.count, 1)
 		case 3: return max(nonLogStreams.count, 1)
 		case 4: return max(device.properties.count, 1)
@@ -262,20 +252,18 @@ class DeviceViewController: UITableViewController {
 		let cell: UITableViewCell
 		
 		switch indexPath.section {
-		case 0:
-			cell = billboardCellForIndexPath(indexPath)
+		case 0: cell = billboardCellForIndexPath(indexPath)
 		case 1:
-			cell = iconCell
-		case 2:
-			cell = device.nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
-		case 3:
-			cell = nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
-		case 4:
-			cell = device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
-		case 5:
-			cell = logCell()
-		default:
-			cell = UITableViewCell()
+			switch displayStyleForDeviceIcon {
+			case .Billboard: return billboardIconCell
+			case .Inline: return inlineIconCell
+			default: return UITableViewCell()
+			}
+		case 2: cell = device.nonHiddenTransitions.isEmpty ? UITableViewCell.emptyCell(message: "No actions for this device.") : actionCellForIndexPath(indexPath)
+		case 3: cell = nonLogStreams.isEmpty ? UITableViewCell.emptyCell(message: "No streams for this device.") : streamCellForIndexPath(indexPath)
+		case 4: cell = device.properties.isEmpty ? UITableViewCell.emptyCell(message: "No properties for this device.") : propertyCellForIndexPath(indexPath)
+		case 5: cell = logCell()
+		default: cell = UITableViewCell()
 		}
 		
 		cell.backgroundColor = backgroundColor
@@ -307,23 +295,29 @@ class DeviceViewController: UITableViewController {
 		return cell
 	}
 	
-	private lazy var iconCell: UITableViewCell = {
-		guard self.displayStyleForDeviceIcon == .Billboard, let iconURL = self.device.iconURL else { return UITableViewCell() }
+	private lazy var billboardIconCell: BillboardStateCell = {
+		let cell = BillboardStateCell()
+		cell.backgroundColor = self.tableView.backgroundColor
+
+		self.stateIcon = cell.iconImageView
+		self.stateLabel = cell.underLabel
+		self.updateStateViews()
+
+		return cell
+	}()
+	
+	private lazy var inlineIconCell: InlineCell = {
+		let cell = InlineCell()
+		cell.backgroundColor = self.tableView.backgroundColor
+		let appropriateColor = cell.backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
+		cell.titleLabel.textColor = appropriateColor
+		cell.subtitleLabel.textColor = appropriateColor
+		cell.titleLabel.text = "state"
 		
-		let cell = UITableViewCell()
-		let stack = UIStackView(arrangedSubviews: [self.iconImageView, self.iconLabel])
-		stack.axis = .Vertical
-		stack.spacing = 10
-		stack.layoutMarginsRelativeArrangement = true
-		stack.layoutMargins = UIEdgeInsets(top: 10, left: 20, bottom: 30, right: 20)
-		stack.translatesAutoresizingMaskIntoConstraints = false
-		cell.contentView.addSubview(stack)
-		stack.snp_makeConstraints { (make) -> Void in
-			make.edges.equalTo(cell.contentView)
-		}
-
-		self.updateStateIcon()
-
+		self.stateIcon = cell.deviceImageView
+		self.stateLabel = cell.subtitleLabel
+		self.updateStateViews()
+		
 		return cell
 	}()
 	
@@ -436,7 +430,7 @@ extension DeviceViewController: ActionCellDelegate {
 			if let device = device {
 				dispatch_async(dispatch_get_main_queue(), { () -> Void in
 					self?.device = device
-					self?.updateStateIcon()
+					self?.updateStateViews()
 					self?.tableView.reloadData()
 				})
 			}

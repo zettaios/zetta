@@ -141,14 +141,14 @@ class DeviceListViewController: UITableViewController {
 				if let streamEntry = streamEntry as? ZIKLogStreamEntry {
 					//update the device and show the new state
 					device.refreshWithLogEntry(streamEntry)
-					if let indexPath = self?.indexPathForDevice(device) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true, let cell = self?.tableView.cellForRowAtIndexPath(indexPath) as? DeviceCell {
+					if let indexPath = self?.indexPathForDevice(device) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true, let cell = self?.tableView.cellForRowAtIndexPath(indexPath) as? InlineCell {
 						self?.configureCell(cell, forDevice: device)
 					}
 				} else if let streamEntry = streamEntry as? ZIKStreamEntry {
 					//some devices hide their state in preference of another property (e.g. a photocell's intensity). Values for these streams need to be collected.
 					if let preferredStream = self?.preferredStyledStreamForDevice(device) where preferredStream.title == stream.title {
 						self?.mostRecentPreferredStreamValuesAndStyles[device] = (value: streamEntry.data, style: preferredStream.style)
-						if let indexPath = self?.indexPathForDevice(device) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true, let cell = self?.tableView.cellForRowAtIndexPath(indexPath) as? DeviceCell {
+						if let indexPath = self?.indexPathForDevice(device) where self?.tableView.indexPathsForVisibleRows?.contains(indexPath) == true, let cell = self?.tableView.cellForRowAtIndexPath(indexPath) as? InlineCell {
 							self?.configureCell(cell, forDevice: device)
 						}
 					}
@@ -226,15 +226,16 @@ class DeviceListViewController: UITableViewController {
 		let device = devices[indexPath.row]
 		
 		//cells are cached manually so that specfic labels can be updated quickly without interfering with gestures. Reloading the indexPath would cancel the gesture.
-		let cell = deviceCells.objectForKey(device) as? DeviceCell ?? DeviceCell()
+		let cell = deviceCells.objectForKey(device) as? InlineCell ?? InlineCell()
 		configureCell(cell, forDevice: device)
 		deviceCells.setObject(cell, forKey: device)
 		return cell
     }
 	
-	private func configureCell(cell: DeviceCell, forDevice device: ZIKDevice) {
+	private func configureCell(cell: InlineCell, forDevice device: ZIKDevice) {
 		let server = serverForDevice(device)
 		cell.backgroundColor = device.backgroundColor ?? server?.backgroundColor
+		cell.tintColor = device.foregroundColor ?? server?.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 		
 		let appropriateColor = cell.backgroundColor?.isLight != false ? UIColor.appDarkGrayColor() : UIColor.whiteColor()
 		cell.titleLabel.textColor = appropriateColor
@@ -244,11 +245,10 @@ class DeviceListViewController: UITableViewController {
 		cell.subtitleLabel.attributedText = attributedSubtitleForDevice(device, usingFont: cell.subtitleLabel.font)
 		
 		if let iconURL = device.iconURL {
-			cell.deviceImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { [weak self] (image, error, cacheType, _) -> Void in
+			cell.deviceImageView.sd_setImageWithURL(iconURL, placeholderImage: UIImage(), options: .RefreshCached, completed: { (image, error, cacheType, _) -> Void in
 				if let error = error { print("Error downloading state image: \(error)") }
 				guard let image = image else { return }
 				cell.deviceImageView.image = image.imageWithRenderingMode(device.iconTintMode)
-				cell.deviceImageView.tintColor = device.foregroundColor ?? self?.serverForDevice(device)?.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 			})
 		} else {
 			cell.deviceImageView.image = UIImage(named: "Device Placeholder")?.imageWithRenderingMode(.AlwaysTemplate)
@@ -292,8 +292,8 @@ class DeviceListViewController: UITableViewController {
 		let server = serverDevices[indexPath.section].server
 		let device = serverDevices[indexPath.section].devices[indexPath.row]
 		let controller = DeviceViewController(device: device, serverName: server.name)
-		controller.foregroundColor = device.foregroundColor ?? server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 		controller.backgroundColor = device.backgroundColor ?? server.backgroundColor ?? UIColor.whiteColor()
+		controller.foregroundColor = device.foregroundColor ?? server.foregroundColor ?? UIColor.appDefaultDeviceTintColor()
 		navigationController?.pushViewController(controller, animated: true)
 	}
 	

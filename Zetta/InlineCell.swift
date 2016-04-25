@@ -8,8 +8,7 @@
 
 import UIKit
 
-class DeviceCell: UITableViewCell {
-	
+class InlineCell: UITableViewCell {	
 	private var constraintsAdded = false
 	
 	lazy var deviceImageView: UIImageView = {
@@ -85,5 +84,11 @@ class DeviceCell: UITableViewCell {
 				contentView.removeGestureRecognizer(recognizer)
 			}
 		}
+	}
+	
+	override func tintColorDidChange() {
+		super.tintColorDidChange()
+		
+		deviceImageView.tintColor = tintColor
 	}
 }

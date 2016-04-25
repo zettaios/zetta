@@ -27,7 +27,7 @@ class NoFieldsActionCell: UITableViewCell {
 	override var tintColor: UIColor? {
 		didSet {
 			goButton.backgroundColor = tintColor
-			goButton.tintColor = self.backgroundColor
+			goButton.setTitleColor(tintColor?.isLight != false ? backgroundColor : UIColor.whiteColor(), forState: .Normal)
 		}
 	}
 	
