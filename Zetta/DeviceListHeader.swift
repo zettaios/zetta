@@ -12,13 +12,13 @@ class DeviceListHeader: UIView {
 
 	private var constraintsAdded = false
 	
-	private lazy var colorBox: UIView = {
+	lazy var colorBox: UIView = {
 		let view = UIView()
 		view.layer.cornerRadius = 2
 		return view
 	}()
 	
-	private lazy var titleLabel: UILabel = {
+	lazy var titleLabel: UILabel = {
 		let label = UILabel()
 		label.font = UIFont.boldSystemFontOfSize(17)
 		label.textColor = UIColor(red: 0.14, green: 0.14, blue: 0.14, alpha: 1)
@@ -34,13 +34,10 @@ class DeviceListHeader: UIView {
 		return stack
 	}()
 	
-	init(title: String?, color: UIColor?) {
+	init() {
 		super.init(frame: CGRect.zero)
 
 		backgroundColor = UIColor(red: 0.97, green: 0.97, blue: 0.97, alpha: 1)
-		titleLabel.text = title
-		colorBox.backgroundColor = color
-		colorBox.hidden = color == nil
 		
 		stack.translatesAutoresizingMaskIntoConstraints = false
 		addSubview(stack)

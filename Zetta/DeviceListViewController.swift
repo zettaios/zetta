@@ -209,7 +209,13 @@ class DeviceListViewController: UITableViewController {
 
 	override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 		let server = serverDevices[section].server
-		return DeviceListHeader(title: server.name, color: server.foregroundColor ?? UIColor.appDefaultDeviceTintColor())
+		let header = DeviceListHeader()
+		header.titleLabel.text = server.name
+		header.backgroundColor = server.backgroundColor
+		header.titleLabel.textColor = server.foregroundColor
+		header.colorBox.backgroundColor = server.foregroundColor
+		header.colorBox.hidden = server.foregroundColor == nil
+		return header		
 	}
 	
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
